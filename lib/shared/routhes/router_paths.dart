@@ -1,0 +1,33 @@
+// ignore_for_file: constant_identifier_names
+
+class RouterPaths{
+  static const String HOME_PAGE = '/homePage';
+  static const String LOGIN_PAGE = '/loginPage';
+  static const String REGISTER_PAGE = '/registerPage';
+  static const String DASHBOARD_PAGE = '/dashboardPage';
+  static const String CREATE_COMPANY_PAGE = '/createCompanyPage';
+  static const String CREATE_ADVISER_PAGE = '/createAdviserPage';
+  static const String QUOTE_CONSULT_PAGE = '/quoteConsultPage';
+  static const String QUOTE_STATS_PAGE = '/quoteStatsPage';
+  static const String QUOTE_UNIT_STATUS_PAGE = '/quoteUnitStatusPage';
+  static const String UNIT_DETAIL_PAGE = '/unitDetailPage';
+  static const String UNIT_QUOTE_PAGE = '/unitQuotePage';
+  static const String UNIT_QUOTE_DETAIL_PAGE = '/unitQuoteDetailPage';
+  static const String UNIT_PAYMENT_SCHEDULE_PAGE = '/unitPaymentSchedulePage';
+  static const String CREDIT_APPLICATION_PAGE = '/creditApplicationPage';
+  static const String CREDIT_USER_APPLICATION_PAGE = '/creditUserApplicationPage';
+  static const String FINANCIAL_ENTITY_CREATION_PAGE = '/financialEntityCreationPage';
+  static const String BANK_EXECUTIVE_PAGE = '/bankExecutivePage';
+  static const String BANK_EXECUTIVE_CLIENT_PAGE = '/bankExecutiveClientPage';
+  static const String BANK_CLIENT_DETAIL_PAGE = '/bankClientDetailPage';
+  static const String BANK_EXECUTIVE_STATS_PAGE = '/bankExecutiveStatsPage';
+  static const String BANK_EXECUTIVE_UNIT_STATUS_PAGE = '/bankExecutiveUnitStatusPage';
+  static const String CLIENT_DETAIL_PAGE = '/clientDetailPage';
+  static const String CLIENT_QUOTE_PAGE = '/clientQuotePage';
+  static const String CLIENT_DASHBOARD_PAGE = '/clientDashboardPage';
+  static const String CLIENT_BANK_OFFERS_PAGE = '/clientBankOffersPage';
+  static const String CLIENT_OFFER_DETAIL_PAGE = '/clientOfferDetailPage';
+  static const String CLIENT_DOCUMENTS_PAGE = '/clientDocumentsPage';
+  static const String CLIENT_CREDIT_DETAIL_PAGE = '/clientCreditDetailPage';
+  static const String CLIENT_CREDIT_ADVANCE_PAGE = '/clientCreditAdvancePage';
+}
