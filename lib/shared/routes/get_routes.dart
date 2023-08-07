@@ -27,7 +27,7 @@ import 'package:developer_company/views/quotes/pages/quote_consult_page.dart';
 import 'package:developer_company/views/quotes/pages/quote_stats_page.dart';
 import 'package:developer_company/views/quotes/pages/quote_unit_status_page.dart';
 import 'package:developer_company/views/quotes/pages/unit_detail_page.dart';
-import 'package:developer_company/shared/routhes/router_paths.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:get/get.dart';
 
 class GetRoutes{

@@ -1,7 +1,7 @@
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
-import 'package:developer_company/shared/routhes/router_paths.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
@@ -258,7 +258,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                 ),
                                 Text(
-                                  "Haz clic aqui para crear una nueva entidad financiera y ejectuvo.",
+                                  "Haz clic aquí para crear una nueva entidad financiera y ejecutivo.",
                                   style: Get.theme.textTheme.bodyLarge!
                                       .copyWith(
                                           fontSize: 16,
@@ -306,7 +306,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
-                          "Creacion de solicitud de credito",
+                          "Creación de solicitud de crédito",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: Dimensions.largeTextSize,
@@ -474,12 +474,12 @@ class _DashboardPageState extends State<DashboardPage> {
                       percent: overviewPercentage[indexTab.value] / 100,
                       center: Text(
                         "${overviewPercentage[indexTab.value]}.0%",
-                        style: new TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20.0),
                       ),
-                      footer: new Text(
-                        "${overviewText[indexTab.value]}",
-                        style: new TextStyle(
+                      footer: Text(
+                        "${overviewText[indexTab.value]} ",
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 17.0),
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
@@ -495,7 +495,10 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ),
         onWillPop: () async {
-          Get.back(closeOverlays: true);
+          // Get.back(closeOverlays: true);
+          Get.overlayContext
+              ?.findRootAncestorStateOfType<NavigatorState>();
+              
           return false;
         });
   }

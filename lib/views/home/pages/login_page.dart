@@ -8,7 +8,7 @@ import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
-import 'package:developer_company/shared/routhes/router_paths.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

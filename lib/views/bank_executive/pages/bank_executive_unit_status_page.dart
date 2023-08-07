@@ -1,7 +1,7 @@
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/routhes/router_paths.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';

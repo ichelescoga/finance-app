@@ -1,5 +1,5 @@
-import 'package:developer_company/shared/routhes/get_routes.dart';
-import 'package:developer_company/shared/routhes/router_paths.dart';
+import 'package:developer_company/shared/routes/get_routes.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

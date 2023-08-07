@@ -1,7 +1,7 @@
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
-import 'package:developer_company/shared/routhes/router_paths.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
