@@ -2,13 +2,15 @@ import 'package:developer_company/shared/routhes/get_routes.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'shared/resources/colors.dart';
 
-void main() {
+Future<void> main() async{
+  await dotenv.load();
   runApp(const MyApp());
 }
 class MyApp extends StatefulWidget {
