@@ -21,7 +21,7 @@ class Strings {
   static String signUp = 'Registrarse';
 
   //sign in screen
-  static String signInAccount = 'Iniciar sesion';
+  static String signInAccount = 'Iniciar sesión';
   static String password = 'Password';
   static String typePassword = 'Contraseña';
   static String typeRePassword = 'Confirmar contraseña';

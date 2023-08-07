@@ -1,11 +1,11 @@
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
+
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 
 class GraphicTestPage extends StatefulWidget {
   const GraphicTestPage({Key? key}) : super(key: key);

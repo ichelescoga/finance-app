@@ -17,11 +17,12 @@ class HttpAdapter {
     }
   }
 
-  Future<http.Response> postApi(String url, Object body) async {
+  Future<http.Response> postApi(String url, Object body, Map<String, String>? headers) async {
     try {
       final response = await http.post(
         Uri.parse("$apiURL/$url"),
         body: body,
+        headers: headers
       );
       return response;
     } catch (e) {

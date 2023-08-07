@@ -42,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
       container.read(userProvider.notifier).setUser(user);
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }
