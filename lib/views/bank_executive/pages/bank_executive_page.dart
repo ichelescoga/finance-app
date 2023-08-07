@@ -1,17 +1,14 @@
 import 'package:developer_company/views/bank_executive/controllers/bank_executive_page_controller.dart';
-import 'package:developer_company/views/home/controllers/register_page_controller.dart';
-import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class BankExecutivePage extends StatefulWidget {
   const BankExecutivePage({Key? key}) : super(key: key);
@@ -22,7 +19,26 @@ class BankExecutivePage extends StatefulWidget {
 
 class _BankExecutivePageState extends State<BankExecutivePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  BankExecutivePageController bankExecutivePageController = Get.put(BankExecutivePageController());
+  BankExecutivePageController bankExecutivePageController =
+      Get.put(BankExecutivePageController());
+
+  final List<Map<String, dynamic>> sideBarList = [
+    {
+      'icon': Icons.business,
+      'title': 'Ejecutivo bancario',
+      'route': RouterPaths.BANK_EXECUTIVE_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Consultas ejecutivo',
+      'route': RouterPaths.BANK_EXECUTIVE_STATS_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Estado de unidades',
+      'route': RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE,
+    },
+  ];
 
   @override
   void initState() {
@@ -30,7 +46,6 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
     bankExecutivePageController.startController();
     bankExecutivePageController.status.text = 'En planos';
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,24 +67,24 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                 }
               },
             ),
-            actions: [
-              createIconTopProfile()
-            ],
+            actions: [createIconTopProfile()],
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title:const Text(
               'Consulta de Cotizaciones',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          drawer: createDrawer(),
+          drawer: SideBarWidget(
+              listTiles: sideBarList, onPressedProfile: () => Get.back()),
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -86,14 +101,16 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                           Text('Logo Desarrollador')
                         ],
                       ),
-                      SizedBox(width: responsive.wp(10)), // Add spacing between the images
+                      SizedBox(
+                          width: responsive
+                              .wp(10)), // Add spacing between the images
                       Column(
                         children: [
                           Image.asset(
                             'assets/logo_test.png',
                             width: responsive.wp(30),
                           ),
-                          Text('Logo proyecto')
+                          const Text('Logo proyecto')
                         ],
                       ),
                     ],
@@ -185,7 +202,8 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                       );
                       if (date != null) {
                         final formattedDate = DateFormat.yMd().format(date);
-                        bankExecutivePageController.dateStart.text = formattedDate;
+                        bankExecutivePageController.dateStart.text =
+                            formattedDate;
                       }
                     },
                     child: AbsorbPointer(
@@ -200,7 +218,8 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                         },
                         decoration: InputDecoration(
                           hintText: "Fecha inicial",
-                          contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 10.0),
                           labelStyle: CustomStyle.textStyle,
                           filled: true,
                           fillColor: AppColors.lightColor,
@@ -232,7 +251,8 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                       );
                       if (date != null) {
                         final formattedDate = DateFormat.yMd().format(date);
-                        bankExecutivePageController.dateEnd.text = formattedDate;
+                        bankExecutivePageController.dateEnd.text =
+                            formattedDate;
                       }
                     },
                     child: AbsorbPointer(
@@ -247,7 +267,8 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                         },
                         decoration: InputDecoration(
                           hintText: "Fecha final",
-                          contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 10.0),
                           labelStyle: CustomStyle.textStyle,
                           filled: true,
                           fillColor: AppColors.lightColor,
@@ -269,18 +290,19 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: responsive.dp(1.8),
-                          fontWeight: FontWeight.w600
-                      ),
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                   const SizedBox(height: Dimensions.heightSize),
                   Container(
                     height: responsive.hp(30),
                     child: ListView.builder(
-                      itemCount: bankExecutivePageController.executivesName.length,
+                      itemCount:
+                          bankExecutivePageController.executivesName.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(' \u2022 ${bankExecutivePageController.executivesName[index]}'),
+                          title: Text(
+                              ' \u2022 ${bankExecutivePageController.executivesName[index]}'),
                         );
                       },
                     ),
@@ -301,110 +323,11 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
     return IconButton(
       icon: ClipRRect(
         borderRadius: BorderRadius.circular(60.0),
-        child:Image.asset(
+        child: Image.asset(
           'assets/icondef.png',
         ),
       ),
-      onPressed: () {
-
-      },
-    );
-  }
-
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Ejecutivo bancario",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.BANK_EXECUTIVE_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Consultas ejecutivo",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.BANK_EXECUTIVE_STATS_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Estado de unidades",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
+      onPressed: () {},
     );
   }
 }

@@ -1,14 +1,11 @@
-import 'package:developer_company/views/home/controllers/register_page_controller.dart';
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -21,7 +18,26 @@ class QuoteStatsPage extends StatefulWidget {
 
 class _QuoteStatsPageState extends State<QuoteStatsPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  QuoteConsultPageController quoteConsultPageController = Get.put(QuoteConsultPageController());
+  QuoteConsultPageController quoteConsultPageController =
+      Get.put(QuoteConsultPageController());
+
+  final List<Map<String, dynamic>> sideBarList = [
+    {
+      'icon': Icons.business,
+      'title': 'Consulta de cotizaciones',
+      'route': RouterPaths.QUOTE_CONSULT_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Tipo de unidades',
+      'route': RouterPaths.QUOTE_STATS_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Estado de unidades',
+      'route': RouterPaths.QUOTE_UNIT_STATUS_PAGE,
+    },
+  ];
 
   final List<String> overviews = [
     "Vendidas",
@@ -35,11 +51,7 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
     "Rendimiento Mes pasado",
   ];
 
-  final List<double> overviewPercentage = [
-    64,
-    40,
-    100
-  ];
+  final List<double> overviewPercentage = [64, 40, 100];
 
   final List<Color> overviewColors = [
     AppColors.mainColor,
@@ -58,7 +70,6 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
     super.initState();
     quoteConsultPageController.startController();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,30 +91,30 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                 }
               },
             ),
-            actions: [
-              createIconTopProfile()
-            ],
+            actions: [createIconTopProfile()],
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Consulta de Cotizaciones',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          drawer: createDrawer(),
+          drawer: SideBarWidget(
+              listTiles: sideBarList, onPressedProfile: () => Get.back()),
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: Dimensions.heightSize),
                   SwitchListTile(
-                    title: Text(
+                    title: const Text(
                       'Semana actual',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -116,9 +127,9 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                     },
                     activeColor: AppColors.softMainColor,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text(
+                    title: const Text(
                       'Semana pasada',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -148,7 +159,7 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Obx(
-                                      () => InkWell(
+                                  () => InkWell(
                                     onTap: () {
                                       indexTab.value = index;
                                       showFirst.value = true;
@@ -162,20 +173,23 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                                         //x.setFirstThreeMonth();
                                       }
 
-                                      Future.delayed(const Duration(milliseconds: 2500), () {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 2500),
+                                          () {
                                         showFirst.value = false;
                                       });
                                     },
                                     child: Container(
-                                      margin:
-                                      EdgeInsets.only(right: Get.width / 30, bottom: 5),
+                                      margin: EdgeInsets.only(
+                                          right: Get.width / 30, bottom: 5),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       decoration: BoxDecoration(
                                         boxShadow: [
                                           if (index == indexTab.value)
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.3),
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
                                               blurRadius: 5,
                                               offset: const Offset(0.5, 1.5),
                                             ),
@@ -186,11 +200,13 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                                             : AppColors.lightColor,
                                       ),
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           if (index == indexTab.value)
                                             const CircleAvatar(
-                                              backgroundColor: AppColors.mainColor,
+                                              backgroundColor:
+                                                  AppColors.mainColor,
                                               radius: 3,
                                             ),
                                           if (index == indexTab.value)
@@ -199,10 +215,14 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                                             overviews[index],
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                fontSize: index == indexTab.value ? 15 : 14,
-                                                fontWeight: index == indexTab.value
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
+                                                fontSize:
+                                                    index == indexTab.value
+                                                        ? 15
+                                                        : 14,
+                                                fontWeight:
+                                                    index == indexTab.value
+                                                        ? FontWeight.bold
+                                                        : FontWeight.normal,
                                                 color: index == indexTab.value
                                                     ? Colors.black
                                                     : Colors.grey),
@@ -229,13 +249,13 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                       percent: overviewPercentage[indexTab.value] / 100,
                       center: Text(
                         "${overviewPercentage[indexTab.value]}.0%",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
                       ),
                       footer: new Text(
                         "Meta de ventas",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17.0),
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
                       progressColor: overviewColors[indexTab.value],
@@ -246,64 +266,69 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                     "Cantidad / Monto",
                     style: TextStyle(color: Colors.black),
                   ),
-                  indexTab.value == 2 ?
-                  SfCircularChart(
-                    title: ChartTitle(text: ''),
-                    legend: Legend(isVisible: false),
-                    series: <PieSeries<ChartData2, String>>[
-                      PieSeries<ChartData2, String>(
-                        dataSource: [
-                          ChartData2('Product A', 60),
-                          ChartData2('Product B', 40),
-                        ],
-                        xValueMapper: (ChartData2 data, _) => data.product,
-                        yValueMapper: (ChartData2 data, _) => data.sales,
-                        dataLabelSettings: DataLabelSettings(isVisible: true),
-                      ),
-                    ],
-                  ) : SfCartesianChart(
-            title: ChartTitle(text: 'Lead optimizations'),
-            legend: Legend(isVisible: false),
-            series: <StackedColumnSeries>[
-              StackedColumnSeries<ChartData, String>(
-                  dataSource: [
-                    ChartData('Jan', 10, 20, 30),
-                    ChartData('Feb', 20, 30, 10),
-                    ChartData('Mar', 30, 10, 20),
-                    ChartData('Apr', 15, 25, 35),
-                    ChartData('May', 25, 35, 15),
-                  ],
-                  xValueMapper: (ChartData sales, _) => sales.month,
-                  yValueMapper: (ChartData sales, _) => sales.sales1,
-                  name: 'Product A',
-                  color: AppColors.blueColor
-              ),
-              StackedColumnSeries<ChartData, String>(
-                  dataSource: [
-                    ChartData('Jan', 20, 10, 30),
-                    ChartData('Feb', 30, 20, 10),
-                    ChartData('Mar', 10, 30, 20),
-                    ChartData('Apr', 25, 15, 35),
-                    ChartData('May', 35, 25, 15),
-                  ],
-                  xValueMapper: (ChartData sales, _) => sales.month,
-                  yValueMapper: (ChartData sales, _) => sales.sales2,
-                  name: 'Product B',
-                  color: AppColors.softMainColor
-              ),
-            ],
-            primaryXAxis: CategoryAxis(),
-          ),
+                  indexTab.value == 2
+                      ? SfCircularChart(
+                          title: ChartTitle(text: ''),
+                          legend: Legend(isVisible: false),
+                          series: <PieSeries<ChartData2, String>>[
+                            PieSeries<ChartData2, String>(
+                              dataSource: [
+                                ChartData2('Product A', 60),
+                                ChartData2('Product B', 40),
+                              ],
+                              xValueMapper: (ChartData2 data, _) =>
+                                  data.product,
+                              yValueMapper: (ChartData2 data, _) => data.sales,
+                              dataLabelSettings:
+                                  DataLabelSettings(isVisible: true),
+                            ),
+                          ],
+                        )
+                      : SfCartesianChart(
+                          title: ChartTitle(text: 'Lead optimizations'),
+                          legend: Legend(isVisible: false),
+                          series: <StackedColumnSeries>[
+                            StackedColumnSeries<ChartData, String>(
+                                dataSource: [
+                                  ChartData('Jan', 10, 20, 30),
+                                  ChartData('Feb', 20, 30, 10),
+                                  ChartData('Mar', 30, 10, 20),
+                                  ChartData('Apr', 15, 25, 35),
+                                  ChartData('May', 25, 35, 15),
+                                ],
+                                xValueMapper: (ChartData sales, _) =>
+                                    sales.month,
+                                yValueMapper: (ChartData sales, _) =>
+                                    sales.sales1,
+                                name: 'Product A',
+                                color: AppColors.blueColor),
+                            StackedColumnSeries<ChartData, String>(
+                                dataSource: [
+                                  ChartData('Jan', 20, 10, 30),
+                                  ChartData('Feb', 30, 20, 10),
+                                  ChartData('Mar', 10, 30, 20),
+                                  ChartData('Apr', 25, 15, 35),
+                                  ChartData('May', 35, 25, 15),
+                                ],
+                                xValueMapper: (ChartData sales, _) =>
+                                    sales.month,
+                                yValueMapper: (ChartData sales, _) =>
+                                    sales.sales2,
+                                name: 'Product B',
+                                color: AppColors.softMainColor),
+                          ],
+                          primaryXAxis: CategoryAxis(),
+                        ),
                   const SizedBox(height: Dimensions.heightSize),
                   GestureDetector(
                     child: Center(
                       child: Container(
                         height: 50.0,
-                        width: Get.width /2,
+                        width: Get.width / 2,
                         decoration: const BoxDecoration(
                             color: AppColors.mainColor,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(Dimensions.radius))),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(Dimensions.radius))),
                         child: Center(
                           child: Text(
                             "Detalle",
@@ -315,9 +340,7 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
                         ),
                       ),
                     ),
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                   ),
                   const SizedBox(height: Dimensions.heightSize),
                 ],
@@ -335,112 +358,14 @@ class _QuoteStatsPageState extends State<QuoteStatsPage> {
     return IconButton(
       icon: ClipRRect(
         borderRadius: BorderRadius.circular(60.0),
-        child:Image.asset(
+        child: Image.asset(
           'assets/icondef.png',
         ),
       ),
-      onPressed: () {
-
-      },
+      onPressed: () {},
     );
   }
 
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Consulta de cotizaciones",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.QUOTE_CONSULT_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Tipo de unidades",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.QUOTE_STATS_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Estado de unidades",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.QUOTE_UNIT_STATUS_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class ChartData {

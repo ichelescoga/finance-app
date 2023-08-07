@@ -1,9 +1,5 @@
-import 'package:developer_company/views/home/controllers/register_page_controller.dart';
-import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:flutter/material.dart';
@@ -378,74 +374,6 @@ class _ClientDashboardPageState extends State<ClientDashboardPage> {
     );
   }
 
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Ejecutivo bancario",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.UNIT_QUOTE_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class ChartData {

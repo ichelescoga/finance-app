@@ -1,14 +1,11 @@
-import 'package:developer_company/views/home/controllers/register_page_controller.dart';
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -21,7 +18,26 @@ class BankExecutiveStatsPage extends StatefulWidget {
 
 class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  QuoteConsultPageController quoteConsultPageController = Get.put(QuoteConsultPageController());
+  QuoteConsultPageController quoteConsultPageController =
+      Get.put(QuoteConsultPageController());
+
+  final List<Map<String, dynamic>> sideBarList = [
+    {
+      'icon': Icons.business,
+      'title': 'Ejecutivo bancario',
+      'route': RouterPaths.BANK_EXECUTIVE_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Consultas ejecutivo',
+      'route': RouterPaths.BANK_EXECUTIVE_STATS_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Estado de unidades',
+      'route': RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE,
+    },
+  ];
 
   final List<String> overviews = [
     "Aprobadas",
@@ -33,10 +49,7 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
     "Meta de ventas",
   ];
 
-  final List<double> overviewPercentage = [
-    64,
-    40
-  ];
+  final List<double> overviewPercentage = [64, 40];
 
   final List<Color> overviewColors = [
     AppColors.mainColor,
@@ -54,7 +67,6 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
     super.initState();
     quoteConsultPageController.startController();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,30 +88,30 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                 }
               },
             ),
-            actions: [
-              createIconTopProfile()
-            ],
+            actions: [createIconTopProfile()],
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Consulta de Cotizaciones',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          drawer: createDrawer(),
+          drawer: SideBarWidget(
+              listTiles: sideBarList, onPressedProfile: () => Get.back()),
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: Dimensions.heightSize),
                   SwitchListTile(
-                    title: Text(
+                    title: const Text(
                       'Semana actual',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -112,9 +124,9 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                     },
                     activeColor: AppColors.softMainColor,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text(
+                    title: const Text(
                       'Semana pasada',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -144,7 +156,7 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Obx(
-                                      () => InkWell(
+                                  () => InkWell(
                                     onTap: () {
                                       indexTab.value = index;
                                       showFirst.value = true;
@@ -158,20 +170,23 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                                         //x.setFirstThreeMonth();
                                       }
 
-                                      Future.delayed(const Duration(milliseconds: 2500), () {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 2500),
+                                          () {
                                         showFirst.value = false;
                                       });
                                     },
                                     child: Container(
-                                      margin:
-                                      EdgeInsets.only(right: Get.width / 30, bottom: 5),
+                                      margin: EdgeInsets.only(
+                                          right: Get.width / 30, bottom: 5),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       decoration: BoxDecoration(
                                         boxShadow: [
                                           if (index == indexTab.value)
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.3),
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
                                               blurRadius: 5,
                                               offset: const Offset(0.5, 1.5),
                                             ),
@@ -182,11 +197,13 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                                             : AppColors.lightColor,
                                       ),
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           if (index == indexTab.value)
                                             const CircleAvatar(
-                                              backgroundColor: AppColors.mainColor,
+                                              backgroundColor:
+                                                  AppColors.mainColor,
                                               radius: 3,
                                             ),
                                           if (index == indexTab.value)
@@ -195,10 +212,14 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                                             overviews[index],
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                fontSize: index == indexTab.value ? 15 : 14,
-                                                fontWeight: index == indexTab.value
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
+                                                fontSize:
+                                                    index == indexTab.value
+                                                        ? 15
+                                                        : 14,
+                                                fontWeight:
+                                                    index == indexTab.value
+                                                        ? FontWeight.bold
+                                                        : FontWeight.normal,
                                                 color: index == indexTab.value
                                                     ? Colors.black
                                                     : Colors.grey),
@@ -225,13 +246,13 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                       percent: overviewPercentage[indexTab.value] / 100,
                       center: Text(
                         "${overviewPercentage[indexTab.value]}.0%",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
                       ),
-                      footer: new Text(
+                      footer: const Text(
                         "Meta de ventas",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17.0),
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
                       progressColor: overviewColors[indexTab.value],
@@ -257,8 +278,7 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                           xValueMapper: (ChartData sales, _) => sales.month,
                           yValueMapper: (ChartData sales, _) => sales.sales1,
                           name: 'Product A',
-                          color: AppColors.blueColor
-                      ),
+                          color: AppColors.blueColor),
                       StackedColumnSeries<ChartData, String>(
                           dataSource: [
                             ChartData('Jan', 20, 10, 30),
@@ -270,8 +290,7 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                           xValueMapper: (ChartData sales, _) => sales.month,
                           yValueMapper: (ChartData sales, _) => sales.sales2,
                           name: 'Product B',
-                          color: AppColors.softMainColor
-                      ),
+                          color: AppColors.softMainColor),
                     ],
                     primaryXAxis: CategoryAxis(),
                   ),
@@ -280,11 +299,11 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                     child: Center(
                       child: Container(
                         height: 50.0,
-                        width: Get.width /2,
+                        width: Get.width / 2,
                         decoration: const BoxDecoration(
                             color: AppColors.mainColor,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(Dimensions.radius))),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(Dimensions.radius))),
                         child: Center(
                           child: Text(
                             "Detalle",
@@ -296,9 +315,7 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
                         ),
                       ),
                     ),
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                   ),
                   const SizedBox(height: Dimensions.heightSize),
                   const SizedBox(height: Dimensions.heightSize),
@@ -317,112 +334,14 @@ class _BankExecutiveStatsPageState extends State<BankExecutiveStatsPage> {
     return IconButton(
       icon: ClipRRect(
         borderRadius: BorderRadius.circular(60.0),
-        child:Image.asset(
+        child: Image.asset(
           'assets/icondef.png',
         ),
       ),
-      onPressed: () {
-
-      },
+      onPressed: () {},
     );
   }
 
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Ejecutivo bancario",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.BANK_EXECUTIVE_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Consultas ejecutivo",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.BANK_EXECUTIVE_STATS_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Estado de unidades",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class ChartData {

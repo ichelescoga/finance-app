@@ -1,14 +1,10 @@
-import 'package:developer_company/views/home/controllers/register_page_controller.dart';
-import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -22,6 +18,19 @@ class UnitQuotePage extends StatefulWidget {
 class _UnitQuotePageState extends State<UnitQuotePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final List<Map<String, dynamic>> sideBarList = [
+    {
+      'icon': Icons.business,
+      'title': 'Cotización de unidad',
+      'route': RouterPaths.UNIT_QUOTE_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Aplicación a crédito',
+      'route': RouterPaths.CREDIT_APPLICATION_PAGE,
+    },
+  ];
+
   final List<String> overviews = [
     "Semana actual",
     "Semana pasada",
@@ -34,11 +43,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
     "Rendimiento Mes pasado",
   ];
 
-  final List<double> overviewPercentage = [
-    64,
-    40,
-    90
-  ];
+  final List<double> overviewPercentage = [64, 40, 90];
 
   final List<Color> overviewColors = [
     AppColors.mainColor,
@@ -53,7 +58,6 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -75,24 +79,24 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                 }
               },
             ),
-            actions: [
-              createIconTopProfile()
-            ],
+            actions: [createIconTopProfile()],
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Cotización de unidad',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          drawer: createDrawer(),
+          drawer: SideBarWidget(
+              listTiles: sideBarList, onPressedProfile: () => Get.back()),
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -113,7 +117,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Obx(
-                                      () => InkWell(
+                                  () => InkWell(
                                     onTap: () {
                                       indexTab.value = index;
                                       showFirst.value = true;
@@ -127,20 +131,23 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                         //x.setFirstThreeMonth();
                                       }
 
-                                      Future.delayed(const Duration(milliseconds: 2500), () {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 2500),
+                                          () {
                                         showFirst.value = false;
                                       });
                                     },
                                     child: Container(
-                                      margin:
-                                      EdgeInsets.only(right: Get.width / 30, bottom: 5),
+                                      margin: EdgeInsets.only(
+                                          right: Get.width / 30, bottom: 5),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       decoration: BoxDecoration(
                                         boxShadow: [
                                           if (index == indexTab.value)
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.3),
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
                                               blurRadius: 5,
                                               offset: const Offset(0.5, 1.5),
                                             ),
@@ -151,11 +158,13 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                             : AppColors.lightColor,
                                       ),
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           if (index == indexTab.value)
                                             const CircleAvatar(
-                                              backgroundColor: AppColors.mainColor,
+                                              backgroundColor:
+                                                  AppColors.mainColor,
                                               radius: 3,
                                             ),
                                           if (index == indexTab.value)
@@ -164,10 +173,14 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                             overviews[index],
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                fontSize: index == indexTab.value ? 15 : 14,
-                                                fontWeight: index == indexTab.value
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
+                                                fontSize:
+                                                    index == indexTab.value
+                                                        ? 15
+                                                        : 14,
+                                                fontWeight:
+                                                    index == indexTab.value
+                                                        ? FontWeight.bold
+                                                        : FontWeight.normal,
                                                 color: index == indexTab.value
                                                     ? Colors.black
                                                     : Colors.grey),
@@ -194,13 +207,13 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                       percent: overviewPercentage[indexTab.value] / 100,
                       center: Text(
                         "${overviewPercentage[indexTab.value]}.0%",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
                       ),
                       footer: new Text(
                         "${overviewText[indexTab.value]}",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17.0),
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
                       progressColor: overviewColors[indexTab.value],
@@ -222,8 +235,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                           xValueMapper: (ChartData sales, _) => sales.month,
                           yValueMapper: (ChartData sales, _) => sales.sales1,
                           name: 'Product A',
-                          color: AppColors.blueColor
-                      ),
+                          color: AppColors.blueColor),
                       StackedColumnSeries<ChartData, String>(
                           dataSource: [
                             ChartData('Jan', 20, 10, 30),
@@ -235,8 +247,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                           xValueMapper: (ChartData sales, _) => sales.month,
                           yValueMapper: (ChartData sales, _) => sales.sales2,
                           name: 'Product B',
-                          color: AppColors.softMainColor
-                      ),
+                          color: AppColors.softMainColor),
                     ],
                     primaryXAxis: CategoryAxis(),
                   ),
@@ -245,7 +256,8 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                     child: DataTable(
                       showCheckboxColumn: false,
                       headingRowHeight: responsive.hp(6),
-                      headingRowColor: MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
+                      headingRowColor: MaterialStateProperty.all<Color>(
+                          AppColors.secondaryMainColor),
                       columns: const <DataColumn>[
                         DataColumn(
                           label: Expanded(
@@ -256,7 +268,6 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -272,7 +283,6 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -288,7 +298,6 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -298,27 +307,29 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                       ],
                       rows: List.generate(8, (index) {
                         return DataRow(
-                            onSelectChanged: (value){
+                            onSelectChanged: (value) {
                               print('Unidad ${index + 1}');
                               Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE);
                             },
                             cells: [
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
-                                child: Text('Unidad ${index + 1 }'),
+                                width: (Get.width / 5) - 10,
+                                child: Text('Unidad ${index + 1}'),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                             ],
-                            color: index % 2 == 0 ? MaterialStateProperty.all<Color>(AppColors.lightColor) : MaterialStateProperty.all<Color>(AppColors.lightSecondaryColor)
-
-                        );
+                            color: index % 2 == 0
+                                ? MaterialStateProperty.all<Color>(
+                                    AppColors.lightColor)
+                                : MaterialStateProperty.all<Color>(
+                                    AppColors.lightSecondaryColor));
                       }),
                     ),
                   ),
@@ -338,98 +349,15 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
     return IconButton(
       icon: ClipRRect(
         borderRadius: BorderRadius.circular(60.0),
-        child:Image.asset(
+        child: Image.asset(
           'assets/icondef.png',
         ),
       ),
-      onPressed: () {
-
-      },
+      onPressed: () {},
     );
   }
 
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Cotización de unidad",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.UNIT_QUOTE_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Aplicación a credito",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.CREDIT_APPLICATION_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
 
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class ChartData {

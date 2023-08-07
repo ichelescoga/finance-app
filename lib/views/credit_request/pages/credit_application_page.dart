@@ -1,4 +1,3 @@
-import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
@@ -6,6 +5,7 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,7 +18,21 @@ class CreditApplicationPage extends StatefulWidget {
 
 class _CreditApplicationPageState extends State<CreditApplicationPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  UnitDetailPageController unitDetailPageController = Get.put(UnitDetailPageController());
+  UnitDetailPageController unitDetailPageController =
+      Get.put(UnitDetailPageController());
+
+  final List<Map<String, dynamic>> sideBarList = [
+    {
+      'icon': Icons.business,
+      'title': 'Cotización de unidad',
+      'route': RouterPaths.UNIT_QUOTE_PAGE,
+    },
+    {
+      'icon': Icons.business,
+      'title': 'Aplicación a crédito',
+      'route': RouterPaths.CREDIT_APPLICATION_PAGE,
+    },
+  ];
 
   @override
   void initState() {
@@ -46,24 +60,24 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                 }
               },
             ),
-            actions: [
-              createIconTopProfile()
-            ],
+            actions: [createIconTopProfile()],
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
-              'Aplicación a credito',
-              style: const TextStyle(
+            title: const Text(
+              'Aplicación a crédito',
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          drawer: createDrawer(),
+          drawer: SideBarWidget(
+              listTiles: sideBarList, onPressedProfile: () => Get.back()),
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -378,7 +392,8 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                     child: DataTable(
                       showCheckboxColumn: false,
                       headingRowHeight: responsive.hp(6),
-                      headingRowColor: MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
+                      headingRowColor: MaterialStateProperty.all<Color>(
+                          AppColors.secondaryMainColor),
                       columns: const <DataColumn>[
                         DataColumn(
                           label: Expanded(
@@ -389,7 +404,6 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -405,7 +419,6 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -421,7 +434,6 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -437,38 +449,38 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                             ),
                           ),
-
                         ),
                       ],
                       rows: List.generate(8, (index) {
                         return DataRow(
                             cells: [
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
-                                child: Text('Mes ${index + 1 }'),
+                                width: (Get.width / 5) - 10,
+                                child: Text('Mes ${index + 1}'),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                             ],
-                            color: index % 2 == 0 ? MaterialStateProperty.all<Color>(AppColors.lightColor) : MaterialStateProperty.all<Color>(AppColors.lightSecondaryColor)
-
-                        );
+                            color: index % 2 == 0
+                                ? MaterialStateProperty.all<Color>(
+                                    AppColors.lightColor)
+                                : MaterialStateProperty.all<Color>(
+                                    AppColors.lightSecondaryColor));
                       }),
                     ),
                   ),
@@ -480,8 +492,8 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
                           "Aplicar",
@@ -497,7 +509,6 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                     },
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-
                 ],
               ),
             ),
@@ -513,96 +524,11 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
     return IconButton(
       icon: ClipRRect(
         borderRadius: BorderRadius.circular(60.0),
-        child:Image.asset(
+        child: Image.asset(
           'assets/icondef.png',
         ),
       ),
-      onPressed: () {
-
-      },
-    );
-  }
-
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Cotización de unidad",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.UNIT_QUOTE_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Aplicación a credito",
-              ),
-              onTap: () {
-                Get.offNamed(RouterPaths.CREDIT_APPLICATION_PAGE);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
+      onPressed: () {},
     );
   }
 }
