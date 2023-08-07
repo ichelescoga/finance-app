@@ -1,13 +1,11 @@
-import 'package:developer_company/views/home/controllers/register_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -19,6 +17,14 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final List<Map<String, dynamic>> sideBarList = [
+    {
+      'icon': Icons.business,
+      'title': 'Empresa Desarrolladora',
+      'route': RouterPaths.QUOTE_CONSULT_PAGE,
+    },
+  ];
 
   final List<String> overviews = [
     "Semana actual",
@@ -32,11 +38,7 @@ class _DashboardPageState extends State<DashboardPage> {
     "Rendimiento Mes pasado",
   ];
 
-  final List<double> overviewPercentage = [
-    64,
-    40,
-    90
-  ];
+  final List<double> overviewPercentage = [64, 40, 90];
 
   final List<Color> overviewColors = [
     AppColors.mainColor,
@@ -51,7 +53,6 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 }
               },
             ),
-            actions: [
-              createIconTopProfile()
-            ],
+            actions: [createIconTopProfile()],
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
             title: Text(
@@ -86,11 +85,15 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
           ),
-          drawer: createDrawer(),
+          drawer: SideBarWidget(
+            listTiles: sideBarList,
+            onPressedProfile: () => Get.back(),
+          ),
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -139,10 +142,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                                 Text(
                                   "Haz clic aqui para crear una nueva empresa desarrolladora",
-                                  style: Get.theme.textTheme.bodyLarge!.copyWith(
-                                      fontSize: 16,
-                                      color: Colors.grey[500],
-                                      fontWeight: FontWeight.w800),
+                                  style: Get.theme.textTheme.bodyLarge!
+                                      .copyWith(
+                                          fontSize: 16,
+                                          color: Colors.grey[500],
+                                          fontWeight: FontWeight.w800),
                                 ),
                               ],
                             ),
@@ -196,10 +200,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                                 Text(
                                   "Haz clic aqui para crear un nuevo asesor",
-                                  style: Get.theme.textTheme.bodyLarge!.copyWith(
-                                      fontSize: 16,
-                                      color: Colors.grey[500],
-                                      fontWeight: FontWeight.w800),
+                                  style: Get.theme.textTheme.bodyLarge!
+                                      .copyWith(
+                                          fontSize: 16,
+                                          color: Colors.grey[500],
+                                          fontWeight: FontWeight.w800),
                                 ),
                               ],
                             ),
@@ -218,7 +223,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: Center(
                         child: InkWell(
                           onTap: () {
-                            Get.toNamed(RouterPaths.FINANCIAL_ENTITY_CREATION_PAGE);
+                            Get.toNamed(
+                                RouterPaths.FINANCIAL_ENTITY_CREATION_PAGE);
                           },
                           child: Container(
                             margin: const EdgeInsets.only(right: 10, bottom: 5),
@@ -253,10 +259,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                                 Text(
                                   "Haz clic aqui para crear una nueva entidad financiera y ejectuvo.",
-                                  style: Get.theme.textTheme.bodyLarge!.copyWith(
-                                      fontSize: 16,
-                                      color: Colors.grey[500],
-                                      fontWeight: FontWeight.w800),
+                                  style: Get.theme.textTheme.bodyLarge!
+                                      .copyWith(
+                                          fontSize: 16,
+                                          color: Colors.grey[500],
+                                          fontWeight: FontWeight.w800),
                                 ),
                               ],
                             ),
@@ -272,8 +279,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
                           "Consulta de cotizaciones por unidad",
@@ -295,8 +302,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
                           "Creacion de solicitud de credito",
@@ -318,8 +325,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
                           "Ejecutivo bancario",
@@ -341,8 +348,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
                           "Cliente",
@@ -377,7 +384,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Obx(
-                                      () => InkWell(
+                                  () => InkWell(
                                     onTap: () {
                                       indexTab.value = index;
                                       showFirst.value = true;
@@ -391,20 +398,23 @@ class _DashboardPageState extends State<DashboardPage> {
                                         //x.setFirstThreeMonth();
                                       }
 
-                                      Future.delayed(const Duration(milliseconds: 2500), () {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 2500),
+                                          () {
                                         showFirst.value = false;
                                       });
                                     },
                                     child: Container(
-                                      margin:
-                                      EdgeInsets.only(right: Get.width / 30, bottom: 5),
+                                      margin: EdgeInsets.only(
+                                          right: Get.width / 30, bottom: 5),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       decoration: BoxDecoration(
                                         boxShadow: [
                                           if (index == indexTab.value)
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.3),
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
                                               blurRadius: 5,
                                               offset: const Offset(0.5, 1.5),
                                             ),
@@ -415,11 +425,13 @@ class _DashboardPageState extends State<DashboardPage> {
                                             : AppColors.lightColor,
                                       ),
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           if (index == indexTab.value)
                                             const CircleAvatar(
-                                              backgroundColor: AppColors.mainColor,
+                                              backgroundColor:
+                                                  AppColors.mainColor,
                                               radius: 3,
                                             ),
                                           if (index == indexTab.value)
@@ -428,10 +440,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                             overviews[index],
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                fontSize: index == indexTab.value ? 15 : 14,
-                                                fontWeight: index == indexTab.value
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
+                                                fontSize:
+                                                    index == indexTab.value
+                                                        ? 15
+                                                        : 14,
+                                                fontWeight:
+                                                    index == indexTab.value
+                                                        ? FontWeight.bold
+                                                        : FontWeight.normal,
                                                 color: index == indexTab.value
                                                     ? Colors.black
                                                     : Colors.grey),
@@ -458,13 +474,13 @@ class _DashboardPageState extends State<DashboardPage> {
                       percent: overviewPercentage[indexTab.value] / 100,
                       center: Text(
                         "${overviewPercentage[indexTab.value]}.0%",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
                       ),
                       footer: new Text(
                         "${overviewText[indexTab.value]}",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17.0),
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
                       progressColor: overviewColors[indexTab.value],
@@ -488,82 +504,11 @@ class _DashboardPageState extends State<DashboardPage> {
     return IconButton(
       icon: ClipRRect(
         borderRadius: BorderRadius.circular(60.0),
-        child:Image.asset(
+        child: Image.asset(
           'assets/icondef.png',
         ),
       ),
-      onPressed: () {
-
-      },
-    );
-  }
-
-  Widget createDrawer() {
-    return Drawer(
-      child: Container(
-        color: AppColors.BACKGROUND,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: profileWidget(),
-              decoration: const BoxDecoration(
-                color: AppColors.mainColor,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.business,
-                color: Colors.black87,
-              ),
-              title: const Text(
-                "Empresa desarrolladora",
-              ),
-              onTap: () {
-                Get.back();
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            ),
-            const Divider(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  profileWidget() {
-    return InkWell(
-      onTap: () {
-        Get.back();
-        //actionToAccount(x, member);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5 * 3,
-        ),
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
-            ),
-          ),
-          title: Text(
-            "User",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                height: 1.1),
-          ),
-          subtitle: Text(
-            "${Strings.appName}",
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
+      onPressed: () {},
     );
   }
 }

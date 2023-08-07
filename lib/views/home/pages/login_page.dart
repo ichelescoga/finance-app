@@ -2,6 +2,7 @@ import 'package:developer_company/data/implementations/user_repository_impl.dart
 import 'package:developer_company/data/models/user_model.dart';
 import 'package:developer_company/data/providers/user_provider.dart';
 import 'package:developer_company/data/repositories/user_repository.dart';
+import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/views/home/controllers/login_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
@@ -10,6 +11,7 @@ import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routhes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -22,6 +24,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   LoginPageController loginPageController = Get.put(LoginPageController());
+
   final UserRepository userRepository = UserRepositoryImpl(UserProvider());
   bool successLogin = true;
 
@@ -30,19 +33,23 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  Future<bool> _loginUser() async {
+  Future<bool> _loginUser(ProviderContainer container) async {
     try {
       User user = await userRepository.loginUser(
           loginPageController.emailController.value.text,
           loginPageController.passwordController.value.text);
+
+      container.read(userProvider.notifier).setUser(user);
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final container = ProviderContainer();
     Responsive responsive = Responsive.of(context);
     return WillPopScope(
         child: Scaffold(
@@ -217,10 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                         await Future.delayed(const Duration(milliseconds: 1200),
                             () async {
                           EasyLoading.dismiss();
-                          // final httpAdapter = HttpAdapter();
-                          // final result = await httpAdapter.getApi("orders/v1/healthcheck");
-                          // print(result.body);
-                          final loginResult = await _loginUser();
+                          final loginResult = await _loginUser(container);
                           if (loginResult) {
                             Get.toNamed(RouterPaths.DASHBOARD_PAGE);
                           }
@@ -268,7 +272,6 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           //signup
                           Get.back();
-                          //Get.to(LoginScreen());
                         },
                       )
                     ],
