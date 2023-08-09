@@ -1,16 +1,20 @@
 import 'dart:io';
 
+import 'package:developer_company/shared/validations/email_validator.dart';
+import 'package:developer_company/shared/validations/nit_validation.dart';
+import 'package:developer_company/shared/validations/not_empty.dart';
 import 'package:developer_company/views/advisers/controllers/create_adviser_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/custom_dropdown_widget.dart';
+import 'package:developer_company/widgets/custom_input_widget.dart';
+import 'package:developer_company/widgets/upload_button_widget.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class CreateAdviserPage extends StatefulWidget {
   const CreateAdviserPage({Key? key}) : super(key: key);
@@ -21,7 +25,10 @@ class CreateAdviserPage extends StatefulWidget {
 
 class _CreateAdviserPageState extends State<CreateAdviserPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  CreateAdviserPageController createAdviserPageController = Get.put(CreateAdviserPageController());
+  final _formKeyDeveloper = GlobalKey<FormState>();
+  final _formKeyCollaborator = GlobalKey<FormState>();
+  CreateAdviserPageController createAdviserPageController =
+      Get.put(CreateAdviserPageController());
 
   int activeStep = 0;
   double circleRadius = 20;
@@ -30,7 +37,6 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
     super.initState();
     createAdviserPageController.collaboratorRol.text = 'Asesor';
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +56,9 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
             ),
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Crear asesor',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
@@ -61,7 +67,8 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -79,7 +86,7 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                     showLoadingAnimation: false,
                     stepRadius: 15,
                     showStepBorder: false,
-                    lineDotRadius: 2,
+                    lineThickness: 2,
                     steps: [
                       EasyStep(
                         customStep: CircleAvatar(
@@ -87,8 +94,9 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: circleRadius,
-                            backgroundColor:
-                            activeStep >= 0 ? AppColors.mainColor : Colors.white,
+                            backgroundColor: activeStep >= 0
+                                ? AppColors.mainColor
+                                : Colors.white,
                           ),
                         ),
                         title: 'Desarrollador',
@@ -99,8 +107,9 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: circleRadius,
-                            backgroundColor:
-                            activeStep >= 1 ? AppColors.mainColor : Colors.white,
+                            backgroundColor: activeStep >= 1
+                                ? AppColors.mainColor
+                                : Colors.white,
                           ),
                         ),
                         title: 'Colaborador',
@@ -111,17 +120,18 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                         setState(() => activeStep = index),
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-                  activeStep == 0 ? developerWidget(context) : projectWidget(context)
-
+                  activeStep == 0
+                      ? developerWidget(context)
+                      : projectWidget(context)
                 ],
               ),
             ),
           ),
         ),
         onWillPop: () async {
-          if(activeStep == 0){
+          if (activeStep == 0) {
             Get.back(closeOverlays: true);
-          }else if(activeStep >= 1){
+          } else if (activeStep >= 1) {
             activeStep -= 1;
             setState(() {});
           }
@@ -129,611 +139,212 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
         });
   }
 
-  Widget developerWidget(BuildContext context){
+  Widget developerWidget(BuildContext context) {
     Responsive responsive = Responsive.of(context);
     return Padding(
       padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-      child:  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Desarrollador",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
+      child: Form(
+        key: _formKeyDeveloper,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomInputWidget(
+                controller: createAdviserPageController.developerName,
+                label: "Desarrollador",
+                hintText: "Desarrollador",
+                validator: (value) => notEmptyFieldValidator(value),
+                prefixIcon: Icons.person_outline),
+            LogoUploadWidget(
+              developerLogoController:
+                  createAdviserPageController.developerLogo,
+              text: "Logo",
+              validator: (value) {
+                if (value == null) {
+                  return "Seleccione un logo para desarrollador";
+                }
                 return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Desarrollador",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
+              },
             ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          GestureDetector(
-            child: Container(
-              height: 50.0,
-              width: Get.width,
-              decoration: const BoxDecoration(
-                  color: AppColors.mainColor,
-                  borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius))),
-              child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Logo",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Dimensions.largeTextSize,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 5,),
-                      Icon(
-                        Icons.upload,
-                        color: Colors.white,
-                      )
-                    ],
-                  )),
-            ),
-            onTap: () async {
-              final picker = ImagePicker();
-              final pickedFile = await picker.getImage(source: ImageSource.gallery);
-              if (pickedFile != null) {
-                createAdviserPageController.developerLogo.value = pickedFile.path;
-                createAdviserPageController.update();
-              } else {
-                print('No image selected.');
-              }
-            },
-          ),
-          const SizedBox(height: Dimensions.heightSize),
-          Obx(() => Center(
-            child: createAdviserPageController.developerLogo.value.isNotEmpty
-                ? Image.file(File(createAdviserPageController.developerLogo.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Proyecto",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.dpi,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
+            CustomInputWidget(
+                controller: createAdviserPageController.dpi,
+                label: "Proyecto",
+                hintText: "Proyecto",
+                validator: (value) => notEmptyFieldValidator(value),
+                prefixIcon: Icons.person_outline),
+            LogoUploadWidget(
+              developerLogoController: createAdviserPageController.projectLogo,
+              text: "Logo",
+              validator: (value) {
+                if (value == null) {
+                  return "Seleccione un logo para Proyecto";
+                }
                 return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Proyecto",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
+              },
             ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          GestureDetector(
-            child: Container(
-              height: 50.0,
-              width: Get.width,
-              decoration: const BoxDecoration(
-                  color: AppColors.mainColor,
-                  borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius))),
-              child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Logo",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Dimensions.largeTextSize,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 5,),
-                      Icon(
-                        Icons.upload,
-                        color: Colors.white,
-                      )
-                    ],
-                  )),
-            ),
-            onTap: () async {
-              final picker = ImagePicker();
-              final pickedFile = await picker.getImage(source: ImageSource.gallery);
-              if (pickedFile != null) {
-                createAdviserPageController.projectLogo.value = pickedFile.path;
-                createAdviserPageController.update();
-              } else {
-                print('No image selected.');
-              }
-            },
-          ),
-          const SizedBox(height: Dimensions.heightSize),
-          Obx(() => Center(
-            child: createAdviserPageController.projectLogo.value.isNotEmpty
-                ? Image.file(File(createAdviserPageController.projectLogo.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Dimensions.marginSize, right: Dimensions.marginSize),
-            child: GestureDetector(
-              child: Container(
-                height: 50.0,
-                width: Get.width,
-                decoration: const BoxDecoration(
-                    color: AppColors.mainColor,
-                    borderRadius:
-                    BorderRadius.all(Radius.circular(Dimensions.radius))),
-                child: Center(
-                  child: Text(
-                    "Siguiente".toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: Dimensions.largeTextSize,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              onTap: () async {
-                EasyLoading.show(status: 'Cargando...');
-                await Future.delayed(const Duration(milliseconds: 100),
+            CustomButtonWidget(
+                text: "Siguiente".toUpperCase(),
+                onTap: () async {
+                  if (_formKeyDeveloper.currentState!.validate()) {
+                    EasyLoading.show(status: 'Cargando...');
+                    await Future.delayed(const Duration(milliseconds: 100),
                         () async {
                       EasyLoading.dismiss();
                       activeStep = 1;
                       setState(() {});
                     });
-              },
+                  } else {
+                    EasyLoading.showError('Por favor valide campos.');
+                  }
+                }),
+            const SizedBox(
+              height: Dimensions.heightSize,
             ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-  Widget projectWidget(BuildContext context){
+
+  Widget projectWidget(BuildContext context) {
     Responsive responsive = Responsive.of(context);
     return Padding(
       padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-      child:  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: responsive.wp(100),
-            height: responsive.hp(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Obx(() => Center(
-                  child: createAdviserPageController.projectLogo.value.isNotEmpty
-                      ? Image.file(File(createAdviserPageController.projectLogo.value), width: 130, height: 100,)
-                      : Text('Seleccione un logo por favor.'),
-                )),
-                const SizedBox(
-                  width: Dimensions.widthSize * 2,
-                ),
-                Obx(() => Center(
-                  child: createAdviserPageController.developerLogo.value.isNotEmpty
-                      ? Image.file(File(createAdviserPageController.developerLogo.value), width: 130, height: 100,)
-                      : Text('Seleccione un logo por favor.'),
-                )),
-              ],
-            ),
-          ),
-          const Text(
-            "Nombre de colaborador",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Nombre de colaborador",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "DPI",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorDPI,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "DPI",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "NIT",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorNIT,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "NIT",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Rol",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          DropdownButtonFormField<String>(
-            style: CustomStyle.textStyle,
-            value: createAdviserPageController.collaboratorRol.text,
-            items: createAdviserPageController.rol.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              createAdviserPageController.collaboratorRol.text = newValue!;
-            },
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              hintText: "Departamento",
-              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Telefono",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorCellPhone,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Telefono",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Correo",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorEmail,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Correo",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Foto",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorPhoto,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Foto",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Comision",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorCommission,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Comision",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Meta de ventas",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createAdviserPageController.collaboratorSalesGoal,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Meta de ventas",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Dimensions.marginSize, right: Dimensions.marginSize),
-            child: GestureDetector(
-              child: Container(
-                height: 50.0,
-                width: Get.width,
-                decoration: const BoxDecoration(
-                    color: AppColors.mainColor,
-                    borderRadius:
-                    BorderRadius.all(Radius.circular(Dimensions.radius))),
-                child: Center(
-                  child: Text(
-                    "Siguiente".toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: Dimensions.largeTextSize,
-                        fontWeight: FontWeight.bold),
+      child: Form(
+        key: _formKeyCollaborator,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: responsive.wp(100),
+              height: responsive.hp(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(() => Center(
+                        child: createAdviserPageController
+                                .projectLogo.value.isNotEmpty
+                            ? Image.file(
+                                File(createAdviserPageController
+                                    .projectLogo.value),
+                                width: 130,
+                                height: 100,
+                              )
+                            : const Text('Seleccione un logo por favor.'),
+                      )),
+                  const SizedBox(
+                    width: Dimensions.widthSize * 2,
                   ),
-                ),
+                  Obx(() => Center(
+                        child: createAdviserPageController
+                                .developerLogo.value.isNotEmpty
+                            ? Image.file(
+                                File(createAdviserPageController
+                                    .developerLogo.value),
+                                width: 130,
+                                height: 100,
+                              )
+                            : const Text('Seleccione un logo por favor.'),
+                      )),
+                ],
               ),
-              onTap: () async {
-                EasyLoading.show(status: 'Cargando...');
-                await Future.delayed(const Duration(milliseconds: 1000),
+            ),
+            CustomInputWidget(
+                controller: createAdviserPageController.collaboratorName,
+                label: "Nombre de colaborador",
+                hintText: "Nombre de colaborador",
+                validator: (value) => notEmptyFieldValidator(value),
+                prefixIcon: Icons.person_outline),
+            CustomInputWidget(
+                controller: createAdviserPageController.collaboratorNIT,
+                label: "NIT",
+                hintText: "NIT",
+                prefixIcon: Icons.person_outline,
+                validator: (value) => nitValidation(value)),
+            CustomDropdownWidget(
+                labelText: "Rol",
+                hintText: "Asesor",
+                selectedValue: createAdviserPageController.collaboratorRol.text,
+                items: createAdviserPageController.rol
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                validator: (value) => notEmptyFieldValidator(value),
+                prefixIcon: const Icon(Icons.person_outline),
+                onValueChanged: (String? newValue) {
+                  createAdviserPageController.collaboratorRol.text = newValue!;
+                }),
+            CustomInputWidget(
+                controller: createAdviserPageController.collaboratorCellPhone,
+                label: "Teléfono",
+                hintText: "Teléfono",
+                prefixIcon: Icons.person_outline,
+                validator: (value) => notEmptyFieldValidator(value)),
+            CustomInputWidget(
+                controller: createAdviserPageController.collaboratorEmail,
+                label: "Correo",
+                hintText: "Correo",
+                prefixIcon: Icons.person_outline,
+                validator: (value) => emailValidator(value)),
+            CustomInputWidget(
+              controller: createAdviserPageController.collaboratorPhoto,
+              label: "Foto",
+              hintText: "Foto",
+              prefixIcon: Icons.person_outline,
+              validator: (value) => notEmptyFieldValidator(value),
+            ),
+            CustomInputWidget(
+              controller: createAdviserPageController.collaboratorCommission,
+              label: "Comisión",
+              hintText: "Comisión",
+              prefixIcon: Icons.person_outline,
+              validator: (value) => notEmptyFieldValidator(value),
+            ),
+            CustomInputWidget(
+              controller: createAdviserPageController.collaboratorSalesGoal,
+              label: "Meta de ventas",
+              hintText: "Meta de ventas",
+              prefixIcon: Icons.person_outline,
+              validator: (value) => notEmptyFieldValidator(value),
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: CustomButtonWidget(
+                  text: "Atrás".toUpperCase(),
+                  onTap: () async {
+                    EasyLoading.show(status: 'Cargando...');
+                    await Future.delayed(const Duration(milliseconds: 1000),
+                        () async {
+                      EasyLoading.dismiss();
+                    });
+                    setState(() {
+                      activeStep = 0;
+                    });
+                  },
+                )),
+                Expanded(
+                    child: CustomButtonWidget(
+                  text: "Siguiente".toUpperCase(),
+                  onTap: () async {
+                    EasyLoading.show(status: 'Cargando...');
+                    await Future.delayed(const Duration(milliseconds: 1000),
                         () async {
                       EasyLoading.dismiss();
                       Get.back();
                       EasyLoading.showSuccess('Asesor creado exitosamente!');
                     });
-              },
+                  },
+                ))
+              ],
             ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-        ],
+            const SizedBox(
+              height: Dimensions.heightSize,
+            ),
+          ],
+        ),
       ),
     );
   }
