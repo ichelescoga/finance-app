@@ -326,6 +326,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         final result = await _createUser();
                         if (result) {
                           Get.toNamed(RouterPaths.HOME_PAGE);
+                           EasyLoading.showSuccess('Usuario creado exitosamente!');
                         } else {
                           EasyLoading.showToast("Algo Salio mal.");
                         }

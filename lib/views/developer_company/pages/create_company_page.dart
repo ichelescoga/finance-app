@@ -1,10 +1,16 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
+import 'package:developer_company/shared/validations/nit_validation.dart';
 import 'package:developer_company/views/developer_company/controllers/create_company_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/custom_input_widget.dart';
+import 'package:developer_company/widgets/upload_button_widget.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -21,7 +27,10 @@ class CreateCompanyPage extends StatefulWidget {
 
 class _CreateCompanyPageState extends State<CreateCompanyPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  CreateCompanyPageController createCompanyPageController = Get.put(CreateCompanyPageController());
+  final _formKeyDeveloper = GlobalKey<FormState>();
+
+  CreateCompanyPageController createCompanyPageController =
+      Get.put(CreateCompanyPageController());
 
   int activeStep = 0;
   double circleRadius = 20;
@@ -30,7 +39,6 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
     super.initState();
     createCompanyPageController.dateState.text = 'En planos';
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +58,9 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             ),
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Crear empresa',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
@@ -61,7 +69,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -79,7 +88,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                     showLoadingAnimation: false,
                     stepRadius: 15,
                     showStepBorder: false,
-                    lineDotRadius: 2,
+                    lineThickness: 2,
                     steps: [
                       EasyStep(
                         customStep: CircleAvatar(
@@ -87,8 +96,9 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: circleRadius,
-                            backgroundColor:
-                            activeStep >= 0 ? AppColors.mainColor : Colors.white,
+                            backgroundColor: activeStep >= 0
+                                ? AppColors.mainColor
+                                : Colors.white,
                           ),
                         ),
                         title: 'Desarrolladora',
@@ -99,8 +109,9 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: circleRadius,
-                            backgroundColor:
-                            activeStep >= 1 ? AppColors.mainColor : Colors.white,
+                            backgroundColor: activeStep >= 1
+                                ? AppColors.mainColor
+                                : Colors.white,
                           ),
                         ),
                         title: 'Proyecto',
@@ -112,8 +123,9 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: circleRadius,
-                            backgroundColor:
-                            activeStep >= 2 ? AppColors.mainColor : Colors.white,
+                            backgroundColor: activeStep >= 2
+                                ? AppColors.mainColor
+                                : Colors.white,
                           ),
                         ),
                         title: 'Ventas',
@@ -123,17 +135,20 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                         setState(() => activeStep = index),
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-                  activeStep == 0 ? developerWidget(context) : activeStep == 1 ? projectWidget(context) : dateWidget(context)
-
+                  activeStep == 0
+                      ? developerWidget(context)
+                      : activeStep == 1
+                          ? projectWidget(context)
+                          : dateWidget(context)
                 ],
               ),
             ),
           ),
         ),
         onWillPop: () async {
-          if(activeStep == 0){
+          if (activeStep == 0) {
             Get.back(closeOverlays: true);
-          }else if(activeStep >= 1){
+          } else if (activeStep >= 1) {
             activeStep -= 1;
             setState(() {});
           }
@@ -141,15 +156,147 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
         });
   }
 
-  Widget developerWidget(BuildContext context){
+  //? STEPS
+
+  Widget developerWidget(BuildContext context) {
     Responsive responsive = Responsive.of(context);
     return Padding(
       padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-      child:  Column(
+      child: Form(
+        key: _formKeyDeveloper,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomInputWidget(
+              controller: createCompanyPageController.developerName,
+              label: "Desarrollador",
+              hintText: "Desarrollador",
+              prefixIcon: Icons.person_outline,
+              keyboardType: TextInputType.name,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return Strings.pleaseFillOutTheField;
+                } else {
+                  return null;
+                }
+              },
+            ),
+            CustomInputWidget(
+                controller: createCompanyPageController.developerNit,
+                label: "NIT",
+                hintText: "NIT",
+                prefixIcon: Icons.person_outline,
+                keyboardType: TextInputType.text,
+                validator: (String? value) => nitValidation(value)),
+            CustomInputWidget(
+              controller: createCompanyPageController.developerAddress,
+              label: "Dirección",
+              hintText: "Dirección",
+              prefixIcon: Icons.person_outline,
+              keyboardType: TextInputType.text,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return Strings.pleaseFillOutTheField;
+                } else {
+                  return null;
+                }
+              },
+            ),
+            CustomInputWidget(
+              controller: createCompanyPageController.developerContact,
+              label: "Contacto",
+              hintText: "Contacto",
+              prefixIcon: Icons.person_outline,
+              keyboardType: TextInputType.text,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return Strings.pleaseFillOutTheField;
+                } else {
+                  return null;
+                }
+              },
+            ),
+            CustomInputWidget(
+              controller: createCompanyPageController.developerContactPhone,
+              label: "Teléfono de contacto",
+              hintText: "Teléfono de contacto",
+              prefixIcon: Icons.person_outline,
+              keyboardType: TextInputType.text,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return Strings.pleaseFillOutTheField;
+                } else {
+                  return null;
+                }
+              },
+            ),
+            CustomInputWidget(
+              controller: createCompanyPageController.developerSalesManager,
+              label: "Gerente de ventas",
+              hintText: "Gerente de ventas",
+              prefixIcon: Icons.person_outline,
+              keyboardType: TextInputType.text,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return Strings.pleaseFillOutTheField;
+                } else {
+                  return null;
+                }
+              },
+            ),
+            CustomInputWidget(
+              controller: createCompanyPageController.developerPhone,
+              label: "Teléfono",
+              hintText: "Teléfono",
+              prefixIcon: Icons.person_outline,
+              keyboardType: TextInputType.text,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return Strings.pleaseFillOutTheField;
+                } else {
+                  return null;
+                }
+              },
+            ),
+            ImageUploaderButton(
+              onImageSelected: (value) => {},
+            ),
+            CustomButtonWidget(
+                text: "Siguiente".toUpperCase(),
+                onTap: () async {
+                  if (_formKeyDeveloper.currentState!.validate()) {
+                    print("😉 PASS VALIDATIONS");
+                  } else {
+                    EasyLoading.showError('Por favor valide campos.');
+                  }
+                }),
+            const SizedBox(
+              height: Dimensions.heightSize,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget projectWidget(BuildContext context) {
+    Responsive responsive = Responsive.of(context);
+    return Padding(
+      padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Obx(() => Center(
+                child: createCompanyPageController.filePath.value.isNotEmpty
+                    ? Image.file(
+                        File(createCompanyPageController.filePath.value))
+                    : const Text('Seleccione un logo por favor.'),
+              )),
+          const SizedBox(
+            height: Dimensions.heightSize * 2,
+          ),
           const Text(
-            "Desarrollador",
+            "Nombre proyecto",
             style: TextStyle(color: Colors.black),
           ),
           const SizedBox(
@@ -167,9 +314,9 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               }
             },
             decoration: InputDecoration(
-              hintText: "Desarrollador",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              hintText: "Nombre proyecto",
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -185,27 +332,79 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             height: Dimensions.heightSize,
           ),
           const Text(
-            "NIT",
+            "Departamento",
             style: TextStyle(color: Colors.black),
           ),
           const SizedBox(
             height: Dimensions.heightSize * 0.5,
           ),
-          TextFormField(
+          DropdownButtonFormField<String>(
             style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
+            value: createCompanyPageController.departmentSelected,
+            items: createCompanyPageController.departments
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              createCompanyPageController.departmentSelected = newValue!;
+            },
             validator: (String? value) {
-              if (value!.isEmpty) {
+              if (value == null || value.isEmpty) {
                 return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
               }
+              return null;
             },
             decoration: InputDecoration(
-              hintText: "NIT",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              hintText: "Departamento",
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              labelStyle: CustomStyle.textStyle,
+              filled: true,
+              fillColor: AppColors.lightColor,
+              hintStyle: CustomStyle.textStyle,
+              focusedBorder: CustomStyle.focusBorder,
+              enabledBorder: CustomStyle.focusErrorBorder,
+              focusedErrorBorder: CustomStyle.focusErrorBorder,
+              errorBorder: CustomStyle.focusErrorBorder,
+              prefixIcon: const Icon(Icons.person_outline),
+            ),
+          ),
+          const SizedBox(
+            height: Dimensions.heightSize,
+          ),
+          const Text(
+            "Municipio",
+            style: TextStyle(color: Colors.black),
+          ),
+          const SizedBox(
+            height: Dimensions.heightSize * 0.5,
+          ),
+          DropdownButtonFormField<String>(
+            style: CustomStyle.textStyle,
+            value: createCompanyPageController.selectedMunicipality,
+            items: createCompanyPageController.municipalities
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              createCompanyPageController.selectedMunicipality = newValue!;
+            },
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return Strings.pleaseFillOutTheField;
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              hintText: "Municipio",
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -240,406 +439,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             },
             decoration: InputDecoration(
               hintText: "Dirección",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Contacto",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Contacto",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Teléfono de contacto",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Teléfono de contacto",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Gerente de ventas",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Gerente de ventas",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Telefono",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Telefono",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          GestureDetector(
-            child: Container(
-              height: 50.0,
-              width: Get.width,
-              decoration: const BoxDecoration(
-                  color: AppColors.mainColor,
-                  borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius))),
-              child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Logo",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Dimensions.largeTextSize,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 5,),
-                      Icon(
-                        Icons.upload,
-                        color: Colors.white,
-                      )
-                    ],
-                  )),
-            ),
-            onTap: () async {
-              final picker = ImagePicker();
-              final pickedFile = await picker.getImage(source: ImageSource.gallery);
-              if (pickedFile != null) {
-                createCompanyPageController.filePath.value = pickedFile.path;
-                createCompanyPageController.update();
-              } else {
-                print('No image selected.');
-              }
-            },
-          ),
-          const SizedBox(height: Dimensions.heightSize),
-          Obx(() => Center(
-            child: createCompanyPageController.filePath.value.isNotEmpty
-                ? Image.file(File(createCompanyPageController.filePath.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
-          const SizedBox(height: Dimensions.heightSize),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Dimensions.marginSize, right: Dimensions.marginSize),
-            child: GestureDetector(
-              child: Container(
-                height: 50.0,
-                width: Get.width,
-                decoration: const BoxDecoration(
-                    color: AppColors.mainColor,
-                    borderRadius:
-                    BorderRadius.all(Radius.circular(Dimensions.radius))),
-                child: Center(
-                  child: Text(
-                    "Siguiente".toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: Dimensions.largeTextSize,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              onTap: () async {
-                EasyLoading.show(status: 'Cargando...');
-                await Future.delayed(const Duration(milliseconds: 100),
-                        () async {
-                      EasyLoading.dismiss();
-                      activeStep = 1;
-                      setState(() {});
-                });
-              },
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-        ],
-      ),
-    );
-  }
-  Widget projectWidget(BuildContext context){
-    Responsive responsive = Responsive.of(context);
-    return Padding(
-      padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-      child:  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Obx(() => Center(
-            child: createCompanyPageController.filePath.value.isNotEmpty
-                ? Image.file(File(createCompanyPageController.filePath.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
-          const SizedBox(
-            height: Dimensions.heightSize * 2,
-          ),
-          const Text(
-            "Nombre proyecto",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Nombre proyecto",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Departamento",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          DropdownButtonFormField<String>(
-            style: CustomStyle.textStyle,
-            value: createCompanyPageController.departmentSelected,
-            items: createCompanyPageController.departments.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              createCompanyPageController.departmentSelected = newValue!;
-            },
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              hintText: "Departamento",
-              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Municipio",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          DropdownButtonFormField<String>(
-            style: CustomStyle.textStyle,
-            value: createCompanyPageController.selectedMunicipality,
-            items: createCompanyPageController.municipalities.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              createCompanyPageController.selectedMunicipality = newValue!;
-            },
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              hintText: "Municipio",
-              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-              labelStyle: CustomStyle.textStyle,
-              filled: true,
-              fillColor: AppColors.lightColor,
-              hintStyle: CustomStyle.textStyle,
-              focusedBorder: CustomStyle.focusBorder,
-              enabledBorder: CustomStyle.focusErrorBorder,
-              focusedErrorBorder: CustomStyle.focusErrorBorder,
-              errorBorder: CustomStyle.focusErrorBorder,
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize,
-          ),
-          const Text(
-            "Direccion",
-            style: TextStyle(color: Colors.black),
-          ),
-          const SizedBox(
-            height: Dimensions.heightSize * 0.5,
-          ),
-          TextFormField(
-            style: CustomStyle.textStyle,
-            controller: createCompanyPageController.developerName,
-            keyboardType: TextInputType.name,
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return Strings.pleaseFillOutTheField;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              hintText: "Direccion",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -664,7 +465,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
           DropdownButtonFormField<String>(
             style: CustomStyle.textStyle,
             value: createCompanyPageController.selectedProperty,
-            items: createCompanyPageController.propertyTypes.map<DropdownMenuItem<String>>((String value) {
+            items: createCompanyPageController.propertyTypes
+                .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
@@ -681,7 +483,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             },
             decoration: InputDecoration(
               hintText: "Tipo de proyecto",
-              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -714,13 +517,17 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 return null;
               }
             },
-            onChanged: (value){
-              createCompanyPageController.dateCostTotal.text = (num.parse(createCompanyPageController.dateCostUnity.text) * num.parse(createCompanyPageController.projectUnityOnSale.text)).toString();
+            onChanged: (value) {
+              createCompanyPageController.dateCostTotal.text = (num.parse(
+                          createCompanyPageController.dateCostUnity.text) *
+                      num.parse(
+                          createCompanyPageController.projectUnityOnSale.text))
+                  .toString();
             },
             decoration: InputDecoration(
               hintText: "Cantidad de unidades en venta",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -742,47 +549,52 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               decoration: const BoxDecoration(
                   color: AppColors.mainColor,
                   borderRadius:
-                  BorderRadius.all(Radius.circular(Dimensions.radius))),
+                      BorderRadius.all(Radius.circular(Dimensions.radius))),
               child: Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Logo proyecto",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Dimensions.largeTextSize,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 5,),
-                      Icon(
-                        Icons.upload,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Logo proyecto",
+                    style: TextStyle(
                         color: Colors.white,
-                      )
-                    ],)
-              ),
+                        fontSize: Dimensions.largeTextSize,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  const Icon(
+                    Icons.upload,
+                    color: Colors.white,
+                  )
+                ],
+              )),
             ),
             onTap: () async {
               final picker = ImagePicker();
-              final pickedFile = await picker.getImage(source: ImageSource.gallery);
+              final pickedFile =
+                  await picker.getImage(source: ImageSource.gallery);
               if (pickedFile != null) {
-                createCompanyPageController.projectFilePath.value = pickedFile.path;
+                createCompanyPageController.projectFilePath.value =
+                    pickedFile.path;
                 createCompanyPageController.update();
               } else {
-                print('No image selected.');
+                //! print('No image selected.');
               }
             },
           ),
           const SizedBox(height: Dimensions.heightSize),
           Obx(() => Center(
-            child: createCompanyPageController.projectFilePath.value.isNotEmpty
-                ? Image.file(File(createCompanyPageController.projectFilePath.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
+                child: createCompanyPageController
+                        .projectFilePath.value.isNotEmpty
+                    ? Image.file(
+                        File(createCompanyPageController.projectFilePath.value))
+                    : const Text('Seleccione un logo por favor.'),
+              )),
           const SizedBox(
             height: Dimensions.heightSize,
           ),
-
           Padding(
             padding: const EdgeInsets.only(
                 left: Dimensions.marginSize, right: Dimensions.marginSize),
@@ -793,7 +605,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 decoration: const BoxDecoration(
                     color: AppColors.mainColor,
                     borderRadius:
-                    BorderRadius.all(Radius.circular(Dimensions.radius))),
+                        BorderRadius.all(Radius.circular(Dimensions.radius))),
                 child: Center(
                   child: Text(
                     "Siguiente".toUpperCase(),
@@ -807,11 +619,11 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               onTap: () async {
                 EasyLoading.show(status: 'Cargando...');
                 await Future.delayed(const Duration(milliseconds: 100),
-                        () async {
-                      EasyLoading.dismiss();
-                      activeStep = 2;
-                      setState(() {});
-                    });
+                    () async {
+                  EasyLoading.dismiss();
+                  activeStep = 2;
+                  setState(() {});
+                });
               },
             ),
           ),
@@ -822,26 +634,30 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
       ),
     );
   }
-  Widget dateWidget(BuildContext context){
+
+  Widget dateWidget(BuildContext context) {
     Responsive responsive = Responsive.of(context);
     return Padding(
       padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-      child:  Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Obx(() => Center(
-            child: createCompanyPageController.filePath.value.isNotEmpty
-                ? Image.file(File(createCompanyPageController.filePath.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
+                child: createCompanyPageController.filePath.value.isNotEmpty
+                    ? Image.file(
+                        File(createCompanyPageController.filePath.value))
+                    : const Text('Seleccione un logo por favor.'),
+              )),
           const SizedBox(
             height: Dimensions.heightSize * 2,
           ),
           Obx(() => Center(
-            child: createCompanyPageController.projectFilePath.value.isNotEmpty
-                ? Image.file(File(createCompanyPageController.projectFilePath.value))
-                : Text('Seleccione un logo por favor.'),
-          )),
+                child: createCompanyPageController
+                        .projectFilePath.value.isNotEmpty
+                    ? Image.file(
+                        File(createCompanyPageController.projectFilePath.value))
+                    : const Text('Seleccione un logo por favor.'),
+              )),
           const SizedBox(
             height: Dimensions.heightSize * 2,
           ),
@@ -877,7 +693,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 },
                 decoration: InputDecoration(
                   hintText: "Fecha de inicio de venta",
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
                   labelStyle: CustomStyle.textStyle,
                   filled: true,
                   fillColor: AppColors.lightColor,
@@ -926,7 +743,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 },
                 decoration: InputDecoration(
                   hintText: "Fecha final de de venta",
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
                   labelStyle: CustomStyle.textStyle,
                   filled: true,
                   fillColor: AppColors.lightColor,
@@ -961,13 +779,17 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 return null;
               }
             },
-            onChanged: (value){
-              createCompanyPageController.dateCostTotal.text = (num.parse(createCompanyPageController.dateCostUnity.text) * num.parse(createCompanyPageController.projectUnityOnSale.text)).toString();
+            onChanged: (value) {
+              createCompanyPageController.dateCostTotal.text = (num.parse(
+                          createCompanyPageController.dateCostUnity.text) *
+                      num.parse(
+                          createCompanyPageController.projectUnityOnSale.text))
+                  .toString();
             },
             decoration: InputDecoration(
               hintText: "Costo promedio por unidad",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -1003,8 +825,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             enabled: false,
             decoration: InputDecoration(
               hintText: "Costo total de venta",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -1038,8 +860,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             },
             decoration: InputDecoration(
               hintText: "Estado del proyecto",
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               labelStyle: CustomStyle.textStyle,
               filled: true,
               fillColor: AppColors.lightColor,
@@ -1054,10 +876,10 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 createCompanyPageController.dateState.text = newValue!;
               });
             },
-            items: <DropdownMenuItem<String>>[
+            items: const <DropdownMenuItem<String>>[
               DropdownMenuItem(
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.design_services),
                     SizedBox(width: 10),
                     Text("En planos"),
@@ -1067,7 +889,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               ),
               DropdownMenuItem(
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.construction),
                     SizedBox(width: 10),
                     Text("En construcción"),
@@ -1077,7 +899,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               ),
               DropdownMenuItem(
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.check_circle_outline),
                     SizedBox(width: 10),
                     Text("100% construido"),
@@ -1097,35 +919,37 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               decoration: const BoxDecoration(
                   color: AppColors.mainColor,
                   borderRadius:
-                  BorderRadius.all(Radius.circular(Dimensions.radius))),
+                      BorderRadius.all(Radius.circular(Dimensions.radius))),
               child: Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Mapa",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Dimensions.largeTextSize,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 5,),
-                      Icon(
-                        Icons.upload,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Mapa",
+                    style: TextStyle(
                         color: Colors.white,
-                      )
-                    ],)
-              ),
+                        fontSize: Dimensions.largeTextSize,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  const Icon(
+                    Icons.upload,
+                    color: Colors.white,
+                  )
+                ],
+              )),
             ),
             onTap: () async {
               final picker = ImagePicker();
-              final pickedFile = await picker.getImage(source: ImageSource.gallery);
+              final pickedFile =
+                  await picker.getImage(source: ImageSource.gallery);
               if (pickedFile != null) {
                 createCompanyPageController.mapFilePath.value = pickedFile.path;
                 createCompanyPageController.update();
-
               } else {
-                print('No image selected.');
+                //! print('No image selected.');
               }
             },
           ),
@@ -1133,10 +957,11 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             height: Dimensions.heightSize,
           ),
           Obx(() => Center(
-            child: createCompanyPageController.mapFilePath.value.isNotEmpty
-                ? Image.file(File(createCompanyPageController.mapFilePath.value))
-                : Text('Seleccione un mapa por favor.'),
-          )),
+                child: createCompanyPageController.mapFilePath.value.isNotEmpty
+                    ? Image.file(
+                        File(createCompanyPageController.mapFilePath.value))
+                    : const Text('Seleccione un mapa por favor.'),
+              )),
           const SizedBox(
             height: Dimensions.heightSize,
           ),
@@ -1150,7 +975,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 decoration: const BoxDecoration(
                     color: AppColors.mainColor,
                     borderRadius:
-                    BorderRadius.all(Radius.circular(Dimensions.radius))),
+                        BorderRadius.all(Radius.circular(Dimensions.radius))),
                 child: Center(
                   child: Text(
                     "Terminar".toUpperCase(),
@@ -1164,11 +989,11 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
               onTap: () async {
                 EasyLoading.show(status: 'Cargando...');
                 await Future.delayed(const Duration(milliseconds: 1000),
-                        () async {
-                      EasyLoading.dismiss();
-                      Get.back();
-                      EasyLoading.showSuccess('Empresa creada exitosamente!');
-                    });
+                    () async {
+                  EasyLoading.dismiss();
+                  Get.back();
+                  EasyLoading.showSuccess('Empresa creada exitosamente!');
+                });
               },
             ),
           ),

@@ -5,8 +5,9 @@ import 'package:get/get.dart';
 class CreateCompanyPageController extends BaseController{
   TextEditingController developerName = TextEditingController();
   TextEditingController developerNit = TextEditingController();
-  TextEditingController developerLegalRepresentative = TextEditingController();
-  TextEditingController developerDPI = TextEditingController();
+  TextEditingController developerAddress = TextEditingController();
+  TextEditingController developerContact = TextEditingController();
+  TextEditingController developerContactPhone = TextEditingController();
   TextEditingController developerSalesManager = TextEditingController();
   TextEditingController developerPhone = TextEditingController();
 

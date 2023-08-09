@@ -33,4 +33,7 @@ class Strings {
   static String ifYouHaveNoAccount = 'Aun no tienes una cuenta? ';
   static String ifYouHaveAccount = 'Ya tienes una cuenta? ';
   static String sendCode = 'Enviar OTP';
+
+  static String nitShouldBeGraterThan6 = 'El nit debe de ser mayor a 7 caracteres.';
+
 }
