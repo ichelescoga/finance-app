@@ -5,7 +5,7 @@ dynamic nitValidation(String? value) {
     return null;
   } else if (value.isEmpty) {
     return Strings.pleaseFillOutTheField;
-  } else if (value.length > 6) {
+  } else if (value.length <= 6) {
     return Strings.nitShouldBeGraterThan6;
   } else {
     return null;
