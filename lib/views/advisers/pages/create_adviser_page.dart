@@ -329,13 +329,17 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                     child: CustomButtonWidget(
                   text: "Siguiente".toUpperCase(),
                   onTap: () async {
-                    EasyLoading.show(status: 'Cargando...');
-                    await Future.delayed(const Duration(milliseconds: 1000),
-                        () async {
-                      EasyLoading.dismiss();
-                      Get.back();
-                      EasyLoading.showSuccess('Asesor creado exitosamente!');
-                    });
+                    if (_formKeyCollaborator.currentState!.validate()) {
+                      EasyLoading.show(status: 'Cargando...');
+                      await Future.delayed(const Duration(milliseconds: 1000),
+                          () async {
+                        EasyLoading.dismiss();
+                        Get.back();
+                        EasyLoading.showSuccess('Asesor creado exitosamente!');
+                      });
+                    } else {
+                      EasyLoading.showError('Por favor valide campos.');
+                    }
                   },
                 ))
               ],
