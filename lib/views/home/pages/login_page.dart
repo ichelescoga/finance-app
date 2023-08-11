@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:developer_company/data/implementations/user_repository_impl.dart';
 import 'package:developer_company/data/models/user_model.dart';
 import 'package:developer_company/data/providers/user_provider.dart';
 import 'package:developer_company/data/repositories/user_repository.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
+import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/views/home/controllers/login_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
@@ -33,12 +36,22 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  final httpAdapter = HttpAdapter();
+
   Future<bool> _loginUser(ProviderContainer container) async {
     try {
-      User user = await userRepository.loginUser(
-          loginPageController.emailController.value.text,
-          loginPageController.passwordController.value.text);
+      final response = await httpAdapter.postApi("orders/v1/signin", {
+        "email": loginPageController.emailController.value.text,
+        "password": loginPageController.passwordController.value.text
+      }, {});
 
+      if (response.statusCode != 200) return false;
+
+      final responseData = json.decode(response.body) as Map<String, dynamic>;
+      final token = responseData['token'] as String?;
+      if (token == null) return false;
+
+      User user = await userRepository.loginUser(token);
       container.read(userProvider.notifier).setUser(user);
       return true;
     } catch (e) {
@@ -196,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Center(
                           child: Text(
                             Strings.signInAccount.toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: Dimensions.largeTextSize,
                                 fontWeight: FontWeight.bold),

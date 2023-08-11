@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
                   right: Dimensions.marginSize * 2),
               child: Text(
                 Strings.appName,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: Dimensions.largeTextSize * 1.5,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
                   child: Center(
                     child: Text(
                       Strings.signIn.toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: Dimensions.extraLargeTextSize,
                           color: Colors.grey,
                           fontWeight: FontWeight.bold),
@@ -95,7 +95,7 @@ class HomePage extends StatelessWidget {
                   child: Center(
                     child: Text(
                       Strings.signUp.toUpperCase(),
-                      style: TextStyle(
+                      style:const TextStyle(
                           fontSize: Dimensions.extraLargeTextSize,
                           color: AppColors.mainColor,
                           fontWeight: FontWeight.bold),
