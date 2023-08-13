@@ -11,7 +11,7 @@ class UserCreation {
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
+      'nombre': name,
       'password': password,
       'email': email,
     };

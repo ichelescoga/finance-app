@@ -5,6 +5,7 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/appBarIcons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,16 +18,18 @@ class UnitQuoteDetailPage extends StatefulWidget {
 
 class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  UnitDetailPageController unitDetailPageController = Get.put(UnitDetailPageController());
+  UnitDetailPageController unitDetailPageController =
+      Get.put(UnitDetailPageController());
   bool _isAguinaldoSwitched = false;
   bool _isBonoSwitched = false;
+  final Map<String, dynamic> arguments = Get.arguments;
 
   @override
   void initState() {
     super.initState();
     unitDetailPageController.startController();
+    print(arguments);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -35,32 +38,15 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         child: Scaffold(
           key: scaffoldKey,
           backgroundColor: AppColors.BACKGROUND,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            elevation: 0.25,
-            backgroundColor: AppColors.BACKGROUND,
-            leading: Image.asset(
-              'assets/logo_test.png',
-            ),
-            title: Text(
-              'Cotización',
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            actions: <Widget>[
-              Image.asset(
-                'assets/logo_test.png',
-                width: responsive.wp(20),
-              ),
-            ],
+          appBar: CustomAppBarTwoImages(
+            leftImage: 'assets/logo_test.png',
+            rightImage: 'assets/logo_test.png',
           ),
-            body: SingleChildScrollView(
+          body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -304,7 +290,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                   ),
                   const SizedBox(height: Dimensions.heightSize),
                   SwitchListTile(
-                    title:  Text(
+                    title: Text(
                       'Aguinaldo',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -318,7 +304,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                   ),
                   const SizedBox(height: Dimensions.heightSize),
                   SwitchListTile(
-                    title:  Text(
+                    title: Text(
                       'Bono 14',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -335,142 +321,147 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                     child: Text(
                       "Programación de pagos",
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: responsive.dp(2),
-                        fontWeight: FontWeight.w600
-                      ),
+                          color: Colors.black,
+                          fontSize: responsive.dp(2),
+                          fontWeight: FontWeight.w600),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-                Center(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      showCheckboxColumn: false,
-                      headingRowHeight: responsive.hp(6),
-                      headingRowColor: MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
-                      columns: const <DataColumn>[
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Mes',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
+                  Center(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        showCheckboxColumn: false,
+                        headingRowHeight: responsive.hp(6),
+                        headingRowColor: MaterialStateProperty.all<Color>(
+                            AppColors.secondaryMainColor),
+                        columns: const <DataColumn>[
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Mes',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
                               ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Interes',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Interes',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
                               ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Capital',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Capital',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
                               ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Cuota',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Cuota',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
                               ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Saldo',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
+                          DataColumn(
+                            label: Expanded(
+                              child: Text(
+                                'Saldo',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
                               ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
                             ),
                           ),
-                        ),
-                      ],
-                      rows: List.generate(8, (index) {
-                        return DataRow(
-                          cells: [
-                            DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text('Mes ${index + 1 }'),
-                            )),
-                            DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text('${1 + index}'),
-                            )),
-                            DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text('${1 + index}'),
-                            )),
-                            DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text('${1 + index}'),
-                            )),
-                            DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text('${1 + index}'),
-                            )),
-                          ],
-                          color: index % 2 == 0
-                              ? MaterialStateProperty.all<Color>(AppColors.lightColor)
-                              : MaterialStateProperty.all<Color>(AppColors.lightSecondaryColor),
-                        );
-                      }),
+                        ],
+                        rows: List.generate(8, (index) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Container(
+                                width: (Get.width / 5) - 10,
+                                child: Text('Mes ${index + 1}'),
+                              )),
+                              DataCell(Container(
+                                width: (Get.width / 5) - 10,
+                                child: Text('${1 + index}'),
+                              )),
+                              DataCell(Container(
+                                width: (Get.width / 5) - 10,
+                                child: Text('${1 + index}'),
+                              )),
+                              DataCell(Container(
+                                width: (Get.width / 5) - 10,
+                                child: Text('${1 + index}'),
+                              )),
+                              DataCell(Container(
+                                width: (Get.width / 5) - 10,
+                                child: Text('${1 + index}'),
+                              )),
+                            ],
+                            color: index % 2 == 0
+                                ? MaterialStateProperty.all<Color>(
+                                    AppColors.lightColor)
+                                : MaterialStateProperty.all<Color>(
+                                    AppColors.lightSecondaryColor),
+                          );
+                        }),
+                      ),
                     ),
                   ),
-                ),
                   const SizedBox(height: Dimensions.heightSize),
                   const SizedBox(height: Dimensions.heightSize),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly, // center the buttons
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceEvenly, // center the buttons
                     children: <Widget>[
                       GestureDetector(
                         child: Container(
                           height: 50.0,
-                          width: Get.width / 2.4, // assuming you want to divide the screen width equally between buttons
+                          width: Get.width /
+                              2.4, // assuming you want to divide the screen width equally between buttons
                           decoration: const BoxDecoration(
                               color: AppColors.mainColor,
-                              borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius))),
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(Dimensions.radius))),
                           child: Center(
                             child: Text(
                               "Aplicar a credito",
@@ -488,10 +479,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                       GestureDetector(
                         child: Container(
                           height: 50.0,
-                          width: Get.width / 2.4, // assuming you want to divide the screen width equally between buttons
+                          width: Get.width /
+                              2.4, // assuming you want to divide the screen width equally between buttons
                           decoration: const BoxDecoration(
                               color: AppColors.mainColor,
-                              borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius))),
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(Dimensions.radius))),
                           child: Center(
                             child: Text(
                               "Regresar",
@@ -509,7 +502,6 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                     ],
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-
                 ],
               ),
             ),

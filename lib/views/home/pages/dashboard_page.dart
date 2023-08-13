@@ -309,7 +309,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       ),
                       onTap: () {
-                        Get.toNamed(RouterPaths.QUOTE_CONSULT_PAGE);
+                        Get.toNamed(RouterPaths.QUOTE_UNIT_STATUS_PAGE);
                       },
                     ),
                   ),

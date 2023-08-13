@@ -1,3 +1,4 @@
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
@@ -17,15 +18,16 @@ class UnitDetailPage extends StatefulWidget {
 
 class _UnitDetailPageState extends State<UnitDetailPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  UnitDetailPageController unitDetailPageController = Get.put(UnitDetailPageController());
+  UnitDetailPageController unitDetailPageController =
+      Get.put(UnitDetailPageController());
 
   @override
   void initState() {
     super.initState();
     unitDetailPageController.startController();
   }
-  String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
+  String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +41,9 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
             centerTitle: true,
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Detalle de unidad',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
@@ -50,9 +52,11 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const SizedBox(height: Dimensions.heightSize),
                   const Text(
@@ -167,7 +171,8 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                   DataTable(
                     showCheckboxColumn: false,
                     headingRowHeight: responsive.hp(6),
-                    headingRowColor: MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
+                    headingRowColor: MaterialStateProperty.all<Color>(
+                        AppColors.secondaryMainColor),
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Expanded(
@@ -178,7 +183,6 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                               fontSize: 17,
                               color: Colors.white,
                               overflow: TextOverflow.ellipsis,
-
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 2,
@@ -194,7 +198,6 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                               fontSize: 17,
                               color: Colors.white,
                               overflow: TextOverflow.ellipsis,
-
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 2,
@@ -210,7 +213,6 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                               fontSize: 17,
                               color: Colors.white,
                               overflow: TextOverflow.ellipsis,
-
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 2,
@@ -218,136 +220,145 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                         ),
                       ),
                     ],
-                    rows: List.generate(2, (index) {
+                    rows: List.generate(4, (index) {
                       return DataRow(
-                          onSelectChanged: (value){
-
+                          onSelectChanged: (value) {
+                            print("$value ${index + 1}");
+                            Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                                arguments: {
+                                  'isEditing': true,
+                                  'idQuote': index + 1,
+                                  'anotherParamList': [1, 2, 3, 4, 5],
+                                  'paramObject': {"key": "name", 'key2': "name2"}
+                                });
                           },
                           cells: [
                             DataCell(Container(
-                              width: (Get.width/5),
+                              width: (Get.width / 5),
                               child: Text('$formattedDate'),
                             )),
                             DataCell(Container(
-                              width: (Get.width/5) - 20,
+                              width: (Get.width / 5) - 20,
                               child: Text(''),
                             )),
                             DataCell(Container(
-                              width: (Get.width/5) - 20,
-                              child: Text(''),
-                            )),
-                          ],
-                          color: index % 2 == 0 ? MaterialStateProperty.all<Color>(AppColors.lightColor) : MaterialStateProperty.all<Color>(AppColors.lightSecondaryColor)
-
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "Historial por ofertas de banco",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      showCheckboxColumn: false,
-                      headingRowHeight: 50,
-                      headingRowColor:
-                      MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
-                      columns: const <DataColumn>[
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Fecha',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Ejecutivo banco',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Monto prestamo',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'Tasa',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                      ],
-                      rows: List.generate(2, (index) {
-                        return DataRow(
-                          onSelectChanged: (value) {},
-                          cells: [
-                            DataCell(Container(
-                              width: 100,
-                              child: Text('$formattedDate'),
-                            )),
-                            DataCell(Container(
-                              width: 100,
-                              child: Text(''),
-                            )),
-                            DataCell(Container(
-                              width: 100,
-                              child: Text(''),
-                            )),
-                            DataCell(Container(
-                              width: 100,
+                              width: (Get.width / 5) - 20,
                               child: Text(''),
                             )),
                           ],
                           color: index % 2 == 0
-                              ? MaterialStateProperty.all<Color>(AppColors.lightColor)
+                              ? MaterialStateProperty.all<Color>(
+                                  AppColors.lightColor)
                               : MaterialStateProperty.all<Color>(
-                              AppColors.lightSecondaryColor),
-                        );
-                      }),
-                    ),
+                                  AppColors.lightSecondaryColor));
+                    }),
                   ),
+                  // const SizedBox(height: Dimensions.heightSize),
+                  // const Text(
+                  //   "Historial por ofertas de banco",
+                  //   style: TextStyle(color: Colors.black),
+                  // ),
+                  // const SizedBox(
+                  //   height: Dimensions.heightSize * 0.5,
+                  // ),
+                  // SingleChildScrollView(
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: DataTable(
+                  //     showCheckboxColumn: false,
+                  //     headingRowHeight: 50,
+                  //     headingRowColor:
+                  //     MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
+                  //     columns: const <DataColumn>[
+                  //       DataColumn(
+                  //         label: Expanded(
+                  //           child: Text(
+                  //             'Fecha',
+                  //             style: TextStyle(
+                  //               fontWeight: FontWeight.w600,
+                  //               fontSize: 17,
+                  //               color: Colors.white,
+                  //               overflow: TextOverflow.ellipsis,
+                  //             ),
+                  //             textAlign: TextAlign.center,
+                  //             maxLines: 2,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       DataColumn(
+                  //         label: Expanded(
+                  //           child: Text(
+                  //             'Ejecutivo banco',
+                  //             style: TextStyle(
+                  //               fontWeight: FontWeight.w600,
+                  //               fontSize: 17,
+                  //               color: Colors.white,
+                  //               overflow: TextOverflow.ellipsis,
+                  //             ),
+                  //             textAlign: TextAlign.center,
+                  //             maxLines: 2,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       DataColumn(
+                  //         label: Expanded(
+                  //           child: Text(
+                  //             'Monto prestamo',
+                  //             style: TextStyle(
+                  //               fontWeight: FontWeight.w600,
+                  //               fontSize: 17,
+                  //               color: Colors.white,
+                  //               overflow: TextOverflow.ellipsis,
+                  //             ),
+                  //             textAlign: TextAlign.center,
+                  //             maxLines: 2,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       DataColumn(
+                  //         label: Expanded(
+                  //           child: Text(
+                  //             'Tasa',
+                  //             style: TextStyle(
+                  //               fontWeight: FontWeight.w600,
+                  //               fontSize: 17,
+                  //               color: Colors.white,
+                  //               overflow: TextOverflow.ellipsis,
+                  //             ),
+                  //             textAlign: TextAlign.center,
+                  //             maxLines: 2,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //     rows: List.generate(2, (index) {
+                  //       return DataRow(
+                  //         onSelectChanged: (value) {},
+                  //         cells: [
+                  //           DataCell(Container(
+                  //             width: 100,
+                  //             child: Text('$formattedDate'),
+                  //           )),
+                  //           DataCell(Container(
+                  //             width: 100,
+                  //             child: Text(''),
+                  //           )),
+                  //           DataCell(Container(
+                  //             width: 100,
+                  //             child: Text(''),
+                  //           )),
+                  //           DataCell(Container(
+                  //             width: 100,
+                  //             child: Text(''),
+                  //           )),
+                  //         ],
+                  //         color: index % 2 == 0
+                  //             ? MaterialStateProperty.all<Color>(AppColors.lightColor)
+                  //             : MaterialStateProperty.all<Color>(
+                  //             AppColors.lightSecondaryColor),
+                  //       );
+                  //     }),
+                  //   ),
+                  // ),
                   const SizedBox(height: Dimensions.heightSize),
                   const SizedBox(height: Dimensions.heightSize),
                   GestureDetector(
@@ -356,9 +367,9 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
-                      child: Center(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
+                      child: const Center(
                         child: Text(
                           "Regresar",
                           style: TextStyle(
@@ -372,8 +383,6 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                       Get.back(closeOverlays: true);
                     },
                   ),
-                  const SizedBox(height: Dimensions.heightSize),
-
                 ],
               ),
             ),

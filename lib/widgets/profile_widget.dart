@@ -14,8 +14,6 @@ class ProfileWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     User? user = ref.watch(userProvider);
-    
-    print(user?.name);
 
     return DrawerHeader(
       decoration: const BoxDecoration(
