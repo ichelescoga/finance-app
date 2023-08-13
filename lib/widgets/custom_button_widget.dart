@@ -23,8 +23,8 @@ class CustomButtonWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              text.toUpperCase(),
-              style: TextStyle(
+              text,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: Dimensions.largeTextSize,
                 fontWeight: FontWeight.bold,

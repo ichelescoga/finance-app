@@ -13,6 +13,7 @@ import 'package:developer_company/views/client/pages/client_dashboard_page.dart'
 import 'package:developer_company/views/client/pages/client_documents_page.dart';
 import 'package:developer_company/views/client/pages/client_offer_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/credit_application_page.dart';
+import 'package:developer_company/views/credit_request/pages/credit_schedule_payments_page.dart';
 import 'package:developer_company/views/credit_request/pages/credit_user_application_page.dart';
 import 'package:developer_company/views/credit_request/pages/unit_payment_schedule_page.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_detail_page.dart';
@@ -62,6 +63,7 @@ class GetRoutes{
       GetPage(name: RouterPaths.CLIENT_DOCUMENTS_PAGE, page: () => const ClientDocumentsPage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_ADVANCE_PAGE, page: () => const ClientCreditAdvancePage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_DETAIL_PAGE, page: () => const ClientCreditDetailPage()),
+      GetPage(name: RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE, page: () => const CreditSchedulePaymentsPage()),
     ];
   }
 }

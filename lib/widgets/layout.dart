@@ -1,17 +1,19 @@
 import "package:developer_company/shared/resources/colors.dart";
+import "package:developer_company/shared/utils/responsive.dart";
 import "package:developer_company/widgets/sidebar_widget.dart";
 import "package:flutter/material.dart";
 import "package:get/get.dart";
 
 class Layout extends StatefulWidget {
-  final String title;
   final Widget child;
   final List<Map<String, dynamic>> sideBarList;
+  final PreferredSizeWidget appBar;
+
   const Layout(
       {Key? key,
-      required this.title,
       required this.sideBarList,
-      required this.child})
+      required this.child,
+      required this.appBar})
       : super(key: key);
 
   @override
@@ -23,39 +25,23 @@ class _LayoutState extends State<Layout> {
 
   @override
   Widget build(BuildContext context) {
+    Responsive responsive = Responsive.of(context);
+    
     return WillPopScope(
         child: Scaffold(
           key: scaffoldKey,
           backgroundColor: AppColors.BACKGROUND,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.menu, color: Colors.black87),
-              onPressed: () {
-                if (scaffoldKey.currentState!.isDrawerOpen) {
-                  scaffoldKey.currentState!.openEndDrawer();
-                } else {
-                  scaffoldKey.currentState!.openDrawer();
-                }
-              },
-            ),
-            actions: [createIconTopProfile()],
-            elevation: 0.25,
-            backgroundColor: AppColors.BACKGROUND,
-            title: Text(
-              widget.title,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
+          appBar: widget.appBar,
           drawer: SideBarWidget(
               listTiles: widget.sideBarList,
               onPressedProfile: () => Get.back()),
           body: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(), child: widget.child),
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: responsive.wp(5), right: responsive.wp(5)),
+                child: widget.child,
+              )),
         ),
         onWillPop: () async {
           Get.back(closeOverlays: true);

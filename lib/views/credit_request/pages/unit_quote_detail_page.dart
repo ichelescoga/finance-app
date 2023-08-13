@@ -5,7 +5,8 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
-import 'package:developer_company/widgets/appBarIcons.dart';
+import 'package:developer_company/widgets/app_bar_two_images.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -316,189 +317,23 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                     },
                     activeColor: AppColors.secondaryMainColor,
                   ),
-                  const SizedBox(height: Dimensions.heightSize * 3),
-                  Center(
-                    child: Text(
-                      "Programación de pagos",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: responsive.dp(2),
-                          fontWeight: FontWeight.w600),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                   const SizedBox(height: Dimensions.heightSize),
-                  Center(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        showCheckboxColumn: false,
-                        headingRowHeight: responsive.hp(6),
-                        headingRowColor: MaterialStateProperty.all<Color>(
-                            AppColors.secondaryMainColor),
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Mes',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Interes',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Capital',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Cuota',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Saldo',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows: List.generate(8, (index) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Container(
-                                width: (Get.width / 5) - 10,
-                                child: Text('Mes ${index + 1}'),
-                              )),
-                              DataCell(Container(
-                                width: (Get.width / 5) - 10,
-                                child: Text('${1 + index}'),
-                              )),
-                              DataCell(Container(
-                                width: (Get.width / 5) - 10,
-                                child: Text('${1 + index}'),
-                              )),
-                              DataCell(Container(
-                                width: (Get.width / 5) - 10,
-                                child: Text('${1 + index}'),
-                              )),
-                              DataCell(Container(
-                                width: (Get.width / 5) - 10,
-                                child: Text('${1 + index}'),
-                              )),
-                            ],
-                            color: index % 2 == 0
-                                ? MaterialStateProperty.all<Color>(
-                                    AppColors.lightColor)
-                                : MaterialStateProperty.all<Color>(
-                                    AppColors.lightSecondaryColor),
-                          );
-                        }),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const SizedBox(height: Dimensions.heightSize),
-                  Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceEvenly, // center the buttons
+                  Column(
                     children: <Widget>[
-                      GestureDetector(
-                        child: Container(
-                          height: 50.0,
-                          width: Get.width /
-                              2.4, // assuming you want to divide the screen width equally between buttons
-                          decoration: const BoxDecoration(
-                              color: AppColors.mainColor,
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(Dimensions.radius))),
-                          child: Center(
-                            child: Text(
-                              "Aplicar a credito",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: Dimensions.largeTextSize,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
+                      CustomButtonWidget(
+                        text: "Programación de pagos",
                         onTap: () {
-                          Get.toNamed(RouterPaths.CREDIT_USER_APPLICATION_PAGE);
+                          Get.toNamed(
+                              RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE);
                         },
                       ),
-                      GestureDetector(
-                        child: Container(
-                          height: 50.0,
-                          width: Get.width /
-                              2.4, // assuming you want to divide the screen width equally between buttons
-                          decoration: const BoxDecoration(
-                              color: AppColors.mainColor,
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(Dimensions.radius))),
-                          child: Center(
-                            child: Text(
-                              "Regresar",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: Dimensions.largeTextSize,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
+                      const SizedBox(height: Dimensions.heightSize),
+                      CustomButtonWidget(
+                        text: "Regresar",
                         onTap: () {
                           Get.back(closeOverlays: true);
                         },
-                      ),
+                      )
                     ],
                   ),
                   const SizedBox(height: Dimensions.heightSize),

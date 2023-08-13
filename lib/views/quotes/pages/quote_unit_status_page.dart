@@ -3,6 +3,7 @@ import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -66,147 +67,144 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
+
     return Layout(
-        title: "Consulta de Cotizaciones",
+        appBar: const CustomAppBarSideBar(title: "Consulta de Cotizaciones"),
         sideBarList: sideBarList,
-        child: Padding(
-          padding:
-              EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: Dimensions.heightSize),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: items
-                    .map(
-                      (item) => GestureDetector(
-                        onTap: () {
-                          selectItem(items.indexOf(item));
-                          quoteConsultPageController.update();
-                          itemSelected = item;
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: item.isSelected
-                                ? AppColors.softMainColor
-                                : AppColors.secondaryMainColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                item.icon,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: Dimensions.heightSize),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: items
+                  .map(
+                    (item) => GestureDetector(
+                      onTap: () {
+                        selectItem(items.indexOf(item));
+                        quoteConsultPageController.update();
+                        itemSelected = item;
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: item.isSelected
+                              ? AppColors.softMainColor
+                              : AppColors.secondaryMainColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              item.icon,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              item.title,
+                              style: const TextStyle(
                                 color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                item.title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-              const SizedBox(height: Dimensions.heightSize),
-              const Text(
-                "Estado de unidad",
-                style: TextStyle(color: Colors.black),
-              ),
-              const SizedBox(
-                height: Dimensions.heightSize * 0.5,
-              ),
-              const SizedBox(height: Dimensions.heightSize),
-              Center(
-                child: DataTable(
-                  showCheckboxColumn: false,
-                  headingRowHeight: responsive.hp(6),
-                  headingRowColor: MaterialStateProperty.all<Color>(
-                      AppColors.secondaryMainColor),
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'Unidad',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17,
-                            color: Colors.white,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'Estado',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17,
-                            color: Colors.white,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: Dimensions.heightSize),
+            const Text(
+              "Estado de unidad",
+              style: TextStyle(color: Colors.black),
+            ),
+            const SizedBox(
+              height: Dimensions.heightSize * 0.5,
+            ),
+            const SizedBox(height: Dimensions.heightSize),
+            Center(
+              child: DataTable(
+                showCheckboxColumn: false,
+                headingRowHeight: responsive.hp(6),
+                headingRowColor: MaterialStateProperty.all<Color>(
+                    AppColors.secondaryMainColor),
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Unidad',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
                     ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'Precio de venta',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17,
-                            color: Colors.white,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Estado',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
                     ),
-                  ],
-                  rows: List.generate(8, (index) {
-                    return DataRow(
-                        onSelectChanged: (value) {
-                          print('Unidad ${index + 1}');
-                          Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE);
-                        },
-                        cells: [
-                          DataCell(Container(
-                            width: (Get.width / 5) - 10,
-                            child: Text('Unidad ${index + 1}'),
-                          )),
-                          DataCell(Container(
-                            width: (Get.width / 5) - 10,
-                            child: Text(''),
-                          )),
-                          DataCell(Container(
-                            width: (Get.width / 5) - 10,
-                            child: Text(''),
-                          )),
-                        ],
-                        color: index % 2 == 0
-                            ? MaterialStateProperty.all<Color>(
-                                AppColors.lightColor)
-                            : MaterialStateProperty.all<Color>(
-                                AppColors.lightSecondaryColor));
-                  }),
-                ),
-              )
-            ],
-          ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Precio de venta',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                      ),
+                    ),
+                  ),
+                ],
+                rows: List.generate(8, (index) {
+                  return DataRow(
+                      onSelectChanged: (value) {
+                        print('Unidad ${index + 1}');
+                        Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE);
+                      },
+                      cells: [
+                        DataCell(Container(
+                          width: (Get.width / 5) - 10,
+                          child: Text('Unidad ${index + 1}'),
+                        )),
+                        DataCell(Container(
+                          width: (Get.width / 5) - 10,
+                          child: Text(''),
+                        )),
+                        DataCell(Container(
+                          width: (Get.width / 5) - 10,
+                          child: Text(''),
+                        )),
+                      ],
+                      color: index % 2 == 0
+                          ? MaterialStateProperty.all<Color>(
+                              AppColors.lightColor)
+                          : MaterialStateProperty.all<Color>(
+                              AppColors.lightSecondaryColor));
+                }),
+              ),
+            )
+          ],
         ));
   }
 
