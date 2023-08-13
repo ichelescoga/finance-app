@@ -63,7 +63,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
     Responsive responsive = Responsive.of(context);
     return Layout(
       sideBarList: sideBarList,
-      appBar: const CustomAppBarSideBar(title: "Cotizacion Unidad"),
+      appBar: const CustomAppBarSideBar(title: "Cotización Unidad"),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -124,8 +124,14 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
               rows: List.generate(8, (index) {
                 return DataRow(
                     onSelectChanged: (value) {
-                      print('Unidad ${index + 1}');
-                      Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE);
+                      // print('Unidad ${index + 1}');
+                      Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                          arguments: {
+                            'isEditing': true,
+                            'idQuote': index + 1,
+                            'anotherParamList': [1, 2, 3, 4, 5],
+                            'paramObject': {"key": "name", 'key2': "name2"}
+                          });
                     },
                     cells: [
                       DataCell(Container(

@@ -1,11 +1,17 @@
+import 'package:developer_company/data/implementations/company_repository_impl.dart';
+import 'package:developer_company/data/models/company_model.dart';
+import 'package:developer_company/data/providers/company_provider.dart';
+import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class QuoteUnitStatusPage extends StatefulWidget {
@@ -56,10 +62,30 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     });
   }
 
+  final CompanyRepository companyRepository =
+      CompanyRepositoryImpl(CompanyProvider());
+  List<Company> _companies = [];
+  void _fetchCompanies() async {
+    EasyLoading.show(status: "Cargando...");
+
+    try {
+      List<Company> companies = await companyRepository.fetchCompanies();
+      setState(() {
+        _companies = companies;
+      });
+      EasyLoading.dismiss();
+    } catch (e) {
+      // Handle company fetching failure or show error message
+      EasyLoading.dismiss();
+      print('Company fetching failed: $e');
+    }
+  }
+
   late Item itemSelected;
   @override
   void initState() {
     super.initState();
+    _fetchCompanies();
     quoteConsultPageController.startController();
     itemSelected = items.first;
   }
@@ -123,6 +149,11 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
               height: Dimensions.heightSize * 0.5,
             ),
             const SizedBox(height: Dimensions.heightSize),
+            CustomButtonWidget(
+                text: "text",
+                onTap: () {
+                  print(_companies[0].companyId);
+                }),
             Center(
               child: DataTable(
                 showCheckboxColumn: false,

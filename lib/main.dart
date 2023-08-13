@@ -10,10 +10,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'shared/resources/colors.dart';
 
-Future<void> main() async{
+final container = ProviderContainer();
+
+Future<void> main() async {
   await dotenv.load();
   runApp(const ProviderScope(child: MyApp()));
 }
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -23,6 +26,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String mainPage = RouterPaths.HOME_PAGE;
+
+  @override
+  void dispose() {
+    super.dispose();
+    // disposing the globally self managed container.
+    container.dispose();
+  }
 
   @override
   void initState() {
