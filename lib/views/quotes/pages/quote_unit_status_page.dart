@@ -1,14 +1,18 @@
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
+import 'package:developer_company/data/implementations/project__repository_impl.dart';
 import 'package:developer_company/data/models/company_model.dart';
+import 'package:developer_company/data/models/project_model.dart';
 import 'package:developer_company/data/providers/company_provider.dart';
+import 'package:developer_company/data/providers/project_provider.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
+import 'package:developer_company/data/repositories/project_repository.dart';
+import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
-import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,6 +29,13 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   QuoteConsultPageController quoteConsultPageController =
       Get.put(QuoteConsultPageController());
+
+  final CompanyRepository companyRepository =
+      CompanyRepositoryImpl(CompanyProvider());
+
+  final ProjectRepository projectRepository =
+      ProjectRepositoryImpl(ProjectProvider());
+  List<Unit> _projectUnits = [];
 
   final List<Map<String, dynamic>> sideBarList = [
     // {
@@ -62,30 +73,44 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     });
   }
 
-  final CompanyRepository companyRepository =
-      CompanyRepositoryImpl(CompanyProvider());
-  List<Company> _companies = [];
-  void _fetchCompanies() async {
+  Future<int> _fetchCompany() async {
     EasyLoading.show(status: "Cargando...");
-
     try {
       List<Company> companies = await companyRepository.fetchCompanies();
-      setState(() {
-        _companies = companies;
-      });
-      EasyLoading.dismiss();
+      return companies[0].companyId;
     } catch (e) {
-      // Handle company fetching failure or show error message
-      EasyLoading.dismiss();
-      print('Company fetching failed: $e');
+      return 0;
     }
+  }
+
+  void _fetchUnitProjects(int companyId) async {
+    try {
+      List<Project> project =
+          await projectRepository.fetchUnitsByProject(companyId);
+      print(project[0].units);
+      setState(() {
+        _projectUnits = project[0].units;
+      });
+      print(project[0].units[0].unitName);
+    } catch (e) {
+      // Handle project fetching failure or show error message
+      print('Project fetching failed: $e');
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
+  void retrieveData() async {
+    final companyId = await _fetchCompany();
+    print(companyId);
+    _fetchUnitProjects(companyId);
   }
 
   late Item itemSelected;
   @override
   void initState() {
     super.initState();
-    _fetchCompanies();
+    retrieveData();
     quoteConsultPageController.startController();
     itemSelected = items.first;
   }
@@ -149,90 +174,98 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
               height: Dimensions.heightSize * 0.5,
             ),
             const SizedBox(height: Dimensions.heightSize),
-            CustomButtonWidget(
-                text: "text",
-                onTap: () {
-                  print(_companies[0].companyId);
-                }),
             Center(
-              child: DataTable(
-                showCheckboxColumn: false,
-                headingRowHeight: responsive.hp(6),
-                headingRowColor: MaterialStateProperty.all<Color>(
-                    AppColors.secondaryMainColor),
-                columns: const <DataColumn>[
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Unidad',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                    showCheckboxColumn: false,
+                    headingRowHeight: responsive.hp(6),
+                    headingRowColor: MaterialStateProperty.all<Color>(
+                        AppColors.secondaryMainColor),
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Expanded(
+                          child: Text(
+                            'Unidad',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17,
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
                       ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Estado',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
+                      DataColumn(
+                        label: Expanded(
+                          child: Text(
+                            'Estado',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17,
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
                       ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Precio de venta',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
+                      DataColumn(
+                        label: Expanded(
+                          child: Text(
+                            'Precio de venta',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17,
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
                       ),
-                    ),
-                  ),
-                ],
-                rows: List.generate(8, (index) {
-                  return DataRow(
-                      onSelectChanged: (value) {
-                        print('Unidad ${index + 1}');
-                        Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE);
-                      },
-                      cells: [
-                        DataCell(Container(
-                          width: (Get.width / 5) - 10,
-                          child: Text('Unidad ${index + 1}'),
-                        )),
-                        DataCell(Container(
-                          width: (Get.width / 5) - 10,
-                          child: Text(''),
-                        )),
-                        DataCell(Container(
-                          width: (Get.width / 5) - 10,
-                          child: Text(''),
-                        )),
-                      ],
-                      color: index % 2 == 0
-                          ? MaterialStateProperty.all<Color>(
-                              AppColors.lightColor)
-                          : MaterialStateProperty.all<Color>(
-                              AppColors.lightSecondaryColor));
-                }),
+                    ],
+                    rows: _projectUnits
+                        .asMap()
+                        .map((index, element) => MapEntry(
+                            index,
+                            DataRow(
+                              onSelectChanged: (value) {
+                                print(
+                                    'Unidad ${element.unitId} ${element.unitName}');
+
+                                Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
+                                    arguments: {
+                                      'isEditing': true,
+                                      'idQuote': null,
+                                      'projectId': element.projectId
+                                    });
+                              },
+                              cells: [
+                                DataCell(Container(
+                                  constraints:
+                                      BoxConstraints(maxWidth: Get.width / 3),
+                                  child: Text(element.unitName),
+                                )),
+                                DataCell(Container(
+                                  child: Text(unitStatus[element.estadoId]!),
+                                )),
+                                DataCell(Container(
+                                  child: Text('Q. ${element.salePrice}'),
+                                )),
+                              ],
+                              color: index % 2 == 0
+                                  ? MaterialStateProperty.all<Color>(
+                                      AppColors.lightColor)
+                                  : MaterialStateProperty.all<Color>(
+                                      AppColors.lightSecondaryColor),
+                            )))
+                        .values
+                        .toList()),
               ),
             )
           ],
