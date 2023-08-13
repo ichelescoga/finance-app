@@ -1,6 +1,9 @@
 import "package:developer_company/shared/resources/colors.dart";
+import "package:developer_company/shared/resources/dimensions.dart";
+import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/shared/utils/responsive.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
+import "package:developer_company/widgets/custom_button_widget.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:get/get.dart";
@@ -15,23 +18,47 @@ class CreditSchedulePaymentsPage extends StatefulWidget {
 
 class _CreditSchedulePaymentsPageState
     extends State<CreditSchedulePaymentsPage> {
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController
+          .animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 2),
+        curve: Curves.easeInOut,
+      )
+          .then((_) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(seconds: 2),
+          curve: Curves.easeInOut,
+        );
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
 
-    @override
-    void initState() {
-      super.initState();
-      print("SHOULD BE RETRIEVE PAYMENTS CALC");
-    }
-
     return Layout(
-      sideBarList: [],
+      sideBarList: const [],
       appBar: const CustomAppBarTitle(title: "Programación de Pagos"),
       child: Column(children: [
         Center(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
+            controller:
+                _scrollController, // Add this line to use the ScrollController
             child: DataTable(
               showCheckboxColumn: false,
               headingRowHeight: responsive.hp(6),
@@ -147,6 +174,28 @@ class _CreditSchedulePaymentsPageState
             ),
           ),
         ),
+        const SizedBox(height: Dimensions.heightSize),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: CustomButtonWidget(
+                text: "Aplicar a crédito",
+                onTap: () {
+                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE);
+                },
+              ),
+            ),
+            Expanded(
+              child: CustomButtonWidget(
+                text: "Regresar",
+                onTap: () {
+                  Get.back(closeOverlays: true);
+                },
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: Dimensions.heightSize),
       ]),
     );
   }

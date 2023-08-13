@@ -6,14 +6,15 @@ import "package:get/get.dart";
 
 class Layout extends StatefulWidget {
   final Widget child;
-  final List<Map<String, dynamic>> sideBarList;
   final PreferredSizeWidget appBar;
+  final List<Map<String, dynamic>> sideBarList;
 
   const Layout(
       {Key? key,
       required this.sideBarList,
+      required this.appBar,
       required this.child,
-      required this.appBar})
+      })
       : super(key: key);
 
   @override
