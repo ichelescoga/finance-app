@@ -84,9 +84,6 @@ class LogoUploadWidget extends StatelessWidget {
                     color: AppColors.redColor,
                     fontSize: Dimensions.smallTextSize),
               ),
-              const SizedBox(
-                height: Dimensions.heightSize,
-              ),
             ],
           );
         });

@@ -29,7 +29,7 @@ class HttpAdapter {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print(e);
+      // print(e);
       throw Exception('Something went wrong');
     }
   }
@@ -52,7 +52,30 @@ class HttpAdapter {
 
       return response;
     } catch (e) {
-      print('Error: $e');
+      print('Error POST 😭: $e');
+      throw Exception('Something went wrong');
+    }
+  }
+
+  Future<http.Response> putApi(
+      String url, Object body, Map<String, String>? headersApi) async {
+    try {
+      final user = container.read(userProviderWithoutNotifier);
+
+      final headers = {
+        'Authorization': 'Bearer ${user.jwt}',
+        ...headersApi ?? {},
+      };
+
+      final response = await http.put(
+        Uri.parse("$apiURL/$url"),
+        body: body,
+        headers: headers,
+      );
+
+      return response;
+    } catch (e) {
+      print('Error POST 😭: $e');
       throw Exception('Something went wrong');
     }
   }

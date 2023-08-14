@@ -1,11 +1,19 @@
+import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/shared/validations/dpi_validator.dart';
+import 'package:developer_company/shared/validations/image_button_validator.dart';
+import 'package:developer_company/shared/validations/nit_validation.dart';
+import 'package:developer_company/shared/validations/not_empty.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
-import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/custom_style.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
-import 'package:developer_company/shared/routes/router_paths.dart';
-import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/widgets/app_bar_title.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/custom_input_widget.dart';
+import 'package:developer_company/widgets/date_picker.dart';
+import 'package:developer_company/widgets/layout.dart';
+import 'package:developer_company/widgets/upload_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class ClientQuotePage extends StatefulWidget {
@@ -16,8 +24,10 @@ class ClientQuotePage extends StatefulWidget {
 }
 
 class _ClientQuotePageState extends State<ClientQuotePage> {
+  final GlobalKey<FormState> _formKeyApplyQuote = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  UnitDetailPageController unitDetailPageController = Get.put(UnitDetailPageController());
+  UnitDetailPageController unitDetailPageController =
+      Get.put(UnitDetailPageController());
 
   @override
   void initState() {
@@ -25,329 +35,126 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
     unitDetailPageController.startController();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    Responsive responsive = Responsive.of(context);
-    return WillPopScope(
-        child: Scaffold(
-          key: scaffoldKey,
-          backgroundColor: AppColors.BACKGROUND,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            elevation: 0.25,
-            backgroundColor: AppColors.BACKGROUND,
-            title: Text(
-              'Detalle de cotizacion',
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w800,
-              ),
+    return Layout(
+      sideBarList: const [],
+      appBar: const CustomAppBarTitle(title: 'Detalle de cotización'),
+      child: Form(
+        key: _formKeyApplyQuote,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: Dimensions.heightSize),
+            CustomInputWidget(
+                validator: (value) => notEmptyFieldValidator(value),
+                controller: unitDetailPageController.detailCompany,
+                label: "Empresa",
+                hintText: "Empresa",
+                prefixIcon: Icons.person_outline),
+            CustomInputWidget(
+                validator: (value) => notEmptyFieldValidator(value),
+                controller: unitDetailPageController.detailIncomes,
+                label: "Sueldo",
+                hintText: "Sueldo",
+                prefixIcon: Icons.person_outline),
+            CustomInputWidget(
+                validator: (value) => notEmptyFieldValidator(value),
+                controller: unitDetailPageController.detailKindJob,
+                label: "Puesto",
+                hintText: "Puesto",
+                prefixIcon: Icons.person_outline),
+            CustomDatePicker(
+              controller: unitDetailPageController.detailJobInDate,
+              label: "Fecha Ingreso",
+              hintText: "Fecha Ingreso",
+              prefixIcon: Icons.date_range_outlined,
+              validator: (value) {
+                if (value != null) return null;
+                return "VALIDE CAMPOS";
+              },
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1930),
+              lastDate: DateTime(2100),
             ),
-          ),
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "Empresa",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.unit,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Empresa",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "Sueldo",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.salePrice,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Sueldo",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "Puesto",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.unitStatus,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Puesto",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "Fecha ingreso",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.quoteHistory,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Fecha ingreso",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "Fecha de nacimiento",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.bankHistory,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Fecha de nacimiento",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "DPI",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.bankHistory,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "DPI",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const Text(
-                    "NIT",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: Dimensions.heightSize * 0.5,
-                  ),
-                  TextFormField(
-                    style: CustomStyle.textStyle,
-                    controller: unitDetailPageController.bankHistory,
-                    keyboardType: TextInputType.name,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return Strings.pleaseFillOutTheField;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "NIT",
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      labelStyle: CustomStyle.textStyle,
-                      filled: true,
-                      fillColor: AppColors.lightColor,
-                      hintStyle: CustomStyle.textStyle,
-                      focusedBorder: CustomStyle.focusBorder,
-                      enabledBorder: CustomStyle.focusErrorBorder,
-                      focusedErrorBorder: CustomStyle.focusErrorBorder,
-                      errorBorder: CustomStyle.focusErrorBorder,
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  GestureDetector(
-                    child: Container(
-                      height: 50.0,
-                      width: Get.width,
-                      decoration: const BoxDecoration(
-                          color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
-                      child: Center(
-                        child: Text(
-                          "DPI (Enfrente)",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Dimensions.largeTextSize,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Get.toNamed(RouterPaths.UNIT_PAYMENT_SCHEDULE_PAGE);
-                    },
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  GestureDetector(
-                    child: Container(
-                      height: 50.0,
-                      width: Get.width,
-                      decoration: const BoxDecoration(
-                          color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
-                      child: Center(
-                        child: Text(
-                          "DPI (Reverso)",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Dimensions.largeTextSize,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Get.toNamed(RouterPaths.UNIT_PAYMENT_SCHEDULE_PAGE);
-                    },
-                  ),
-                  const SizedBox(height: Dimensions.heightSize),
-                  const SizedBox(height: Dimensions.heightSize),
+            CustomDatePicker(
+              controller: unitDetailPageController.detailBirthday,
+              label: "Fecha de nacimiento",
+              hintText: "Fecha de nacimiento",
+              prefixIcon: Icons.date_range_outlined,
+              validator: (value) {
+                if (value != null) return null;
+                return "VALIDE CAMPOS";
+              },
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1930),
+              lastDate: DateTime(2100),
+            ),
+            CustomInputWidget(
+                validator: (value) {
+                  final isValidDpi = dpiValidator(value);
+                  if (!isValidDpi) {
+                    return Strings.notValidDPI;
+                  }
+                  return null;
+                },
+                controller: unitDetailPageController.detailDpi,
+                label: "DPI",
+                hintText: "DPI",
+                prefixIcon: Icons.person_outline),
+            CustomInputWidget(
+                validator: (value) => nitValidation(value),
+                controller: unitDetailPageController.detailNit,
+                label: "NIT",
+                hintText: "NIT",
+                prefixIcon: Icons.person_outline),
+            const SizedBox(height: Dimensions.heightSize),
+            LogoUploadWidget(
+                developerLogoController: unitDetailPageController.frontDpi,
+                text: "DPI (Frente)",
+                validator: (value) => imageButtonValidator(value)),
+            LogoUploadWidget(
+                developerLogoController: unitDetailPageController.reverseDpi,
+                text: "DPI (Reverso)",
+                validator: (value) => imageButtonValidator(value)),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButtonWidget(
+                      text: "Aplicar a crédito",
+                      onTap: () {
+                        if (_formKeyApplyQuote.currentState!.validate()) {
+                          try {
+                            // SHOULD BE PUT EP TO APPLY UNIT QUOTE;
+                            EasyLoading.showToast(Strings.loading);
+                            // print("PASSED 😉");
+                            Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+                            unitDetailPageController.cleanController();
+                          } catch (e) {
+                            // print(e);
+                          } finally {
+                            EasyLoading.dismiss();
+                          }
 
-                ],
-              ),
+                          //! should be apply to credit in EP;
+                        } else {
+                          EasyLoading.showError(Strings.pleaseVerifyInputs);
+                        }
+                      }),
+                ),
+                Expanded(
+                  child: CustomButtonWidget(
+                      text: Strings.goBack,
+                      onTap: () {
+                        Get.back(closeOverlays: true);
+                      }),
+                )
+              ],
             ),
-          ),
+            const SizedBox(height: Dimensions.heightSize * 3),
+          ],
         ),
-        onWillPop: () async {
-          Get.back(closeOverlays: true);
-          return false;
-        });
+      ),
+    );
   }
 }

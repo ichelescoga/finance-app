@@ -95,21 +95,25 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     } catch (e) {
       // Handle project fetching failure or show error message
       print('Project fetching failed: $e');
-    } finally {
-      EasyLoading.dismiss();
     }
   }
 
   void retrieveData() async {
-    final companyId = await _fetchCompany();
-    print(companyId);
-    _fetchUnitProjects(companyId);
+    try {
+      EasyLoading.show(status: "Cargando");
+      final companyId = await _fetchCompany();
+      print(companyId);
+      _fetchUnitProjects(companyId);
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   late Item itemSelected;
   @override
   void initState() {
     super.initState();
+
     retrieveData();
     quoteConsultPageController.startController();
     itemSelected = items.first;
@@ -235,14 +239,14 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                             index,
                             DataRow(
                               onSelectChanged: (value) {
-                                print(
-                                    'Unidad ${element.unitId} ${element.unitName}');
-
                                 Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
                                     arguments: {
-                                      'isEditing': true,
+                                      'isEditing': false,
                                       'idQuote': null,
-                                      'projectId': element.projectId
+                                      'projectId': element.projectId,
+                                      'unitName': element.unitName,
+                                      'unitStatus': element.estadoId,
+                                      'salePrice': element.salePrice
                                     });
                               },
                               cells: [

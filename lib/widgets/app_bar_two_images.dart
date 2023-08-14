@@ -1,11 +1,14 @@
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppBarTwoImages extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBarTwoImages extends StatelessWidget
+    implements PreferredSizeWidget {
   final String leftImage;
   final String rightImage;
+  final String title;
 
-  CustomAppBarTwoImages({ required this.leftImage, required this.rightImage});
+  CustomAppBarTwoImages(
+      {required this.leftImage, required this.rightImage, required this.title});
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
@@ -20,9 +23,9 @@ class CustomAppBarTwoImages extends StatelessWidget implements PreferredSizeWidg
       leading: Image.asset(
         leftImage, // Use the provided leading image
       ),
-      title: const Text(
-        'Cotización',
-        style: TextStyle(
+      title: Text(
+        title,
+        style: const TextStyle(
           color: Colors.black87,
           fontWeight: FontWeight.w800,
         ),

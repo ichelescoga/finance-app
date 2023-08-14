@@ -88,7 +88,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
       setState(() {
         _projectUnits = project[0].units;
       });
-      print(project[0].units[0].unitName);
+      // print(project[0].units[0].unitName);
     } catch (e) {
       // Handle project fetching failure or show error message
       // print('Project fetching failed: $e');
@@ -97,8 +97,9 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
 
   void retrieveData() async {
     try {
+      EasyLoading.show(status: "Cargando");
       final companyId = await _fetchCompany();
-      retrieveData();
+      print(companyId);
       _fetchUnitProjects(companyId);
     } finally {
       EasyLoading.dismiss();
@@ -107,7 +108,6 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
 
   @override
   void initState() {
-    EasyLoading.show(status: "Cargando...");
     super.initState();
     retrieveData();
   }
@@ -188,7 +188,11 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                   arguments: {
                                     'isEditing': false,
                                     'idQuote': null,
-                                    'projectId': element.projectId
+                                    'projectId': element.projectId,
+                                    'unitName': element.unitName,
+                                    'unitStatus': element.estadoId,
+                                    'salePrice': element.salePrice,
+                                    'unitId': element.unitId
                                   });
                             },
                             cells: [

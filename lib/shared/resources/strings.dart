@@ -36,4 +36,9 @@ class Strings {
 
   static String nitShouldBeGraterThan6 = 'El nit debe de ser mayor a 7 caracteres.';
 
+  static String pleaseVerifyInputs = 'Por favor valide campos';
+  
+  static String goBack = 'Regresar';
+  static String notValidDPI = 'DPI no valido.';
+
 }
