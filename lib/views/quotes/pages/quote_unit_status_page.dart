@@ -244,9 +244,11 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                                       'isEditing': false,
                                       'idQuote': null,
                                       'projectId': element.projectId,
+                                      'unitId': element.unitId,
                                       'unitName': element.unitName,
                                       'unitStatus': element.estadoId,
-                                      'salePrice': element.salePrice
+                                      'salePrice': element.salePrice,
+                                      'finalSellPrice': element.salePrice
                                     });
                               },
                               cells: [

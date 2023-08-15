@@ -8,6 +8,7 @@ import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
+import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
@@ -97,7 +98,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
 
   void retrieveData() async {
     try {
-      EasyLoading.show(status: "Cargando");
+      EasyLoading.showToast(Strings.loading);
       final companyId = await _fetchCompany();
       print(companyId);
       _fetchUnitProjects(companyId);

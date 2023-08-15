@@ -32,7 +32,9 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   @override
   void initState() {
     super.initState();
-    unitDetailPageController.startController();
+    Future.delayed(Duration.zero, () {
+      unitDetailPageController.startController();
+    });
   }
 
   @override

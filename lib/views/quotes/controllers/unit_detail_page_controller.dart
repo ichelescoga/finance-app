@@ -32,6 +32,22 @@ class UnitDetailPageController extends BaseController {
   RxString frontDpi = ''.obs;
   RxString reverseDpi = ''.obs;
 
+  void updateController(
+    String? argsDiscount,
+    String? argsClientName,
+    String? argsClientPhone,
+    String? argsEmail,
+    String? argsStartMoney,
+    String? argsPaymentMonths,
+  ) {
+    discount.text = argsDiscount ?? "";
+    clientName.text = argsClientName ?? "";
+    clientPhone.text = argsClientPhone ?? "";
+    email.text = argsEmail ?? "";
+    startMoney.text = argsStartMoney ?? "";
+    paymentMonths.text = argsPaymentMonths ?? "";
+  }
+
   void cleanController() {
     detailCompany.clear();
     detailIncomes.clear();

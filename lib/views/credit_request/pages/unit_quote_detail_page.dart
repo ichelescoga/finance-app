@@ -39,7 +39,10 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   final Map<String, dynamic> arguments = Get.arguments;
 
   String calculateFinalSellPrice(value) {
-    if(value == null) return unitDetailPageController.finalSellPrice.text = unitDetailPageController.salePrice.text;
+    if (value == null) {
+      return unitDetailPageController.finalSellPrice.text =
+          unitDetailPageController.salePrice.text;
+    }
     final salePrice = double.tryParse(arguments["salePrice"]);
     final discountPercentage = int.tryParse(value);
     if (discountPercentage != null && !percentageValidator(value)) {
@@ -56,10 +59,36 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
+      quoteId = arguments["unitId"];
+
+      if (quoteId != null) {
+        final discount = arguments['discount'].toString();
+        final clientName = arguments['clientName'].toString();
+        final clientPhone = arguments['clientPhone'].toString();
+        final email = arguments['email'].toString();
+        final startMoney = arguments['startMoney'].toString();
+        final paymentMonths = arguments['paymentMonths'].toString();
+
+        unitDetailPageController.updateController(
+          discount,
+          clientName,
+          clientPhone,
+          email,
+          startMoney,
+          paymentMonths,
+        );
+        setState(() {
+          _isPayedTotal = arguments["cashPrice"] == 1 ? true : false;
+          _isAguinaldoSwitched = arguments["aguinaldo"] == 1 ? true : false;
+          _isBonoSwitched = arguments["bonusCatorce"] == 1 ? true : false;
+        });
+      }
+
       unitDetailPageController.discount.text = "0";
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.salePrice.text = arguments["salePrice"];
-      unitDetailPageController.finalSellPrice.text = arguments["salePrice"];
+      unitDetailPageController.finalSellPrice.text =
+          arguments["finalSellPrice"];
       _quoteEdit = arguments["unitStatus"] != 4;
     });
   }

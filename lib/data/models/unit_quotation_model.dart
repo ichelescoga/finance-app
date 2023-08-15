@@ -1,26 +1,28 @@
 // models/unit_quotation_model.dart
+import 'package:intl/intl.dart';
+
 class Quotation {
-  final int quotationId;
-  final int detailAdvisorId;
-  final int estadoId;
-  final int planFinancieroId; // This could be nullable
-  final int clientId; // This could be nullable
-  final String date;
-  final String dateTime;
-  final String monthlyIncome;
-  final String downPayment;
-  final int termMonths;
-  final int startMonth;
-  final int startYear;
-  final int endMonth;
-  final int endYear;
-  final int discount;
-  final String saleDiscount;
-  final int cashPrice;
-  final int aguinaldo;
-  final int bonusCatorce;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final int? quotationId;
+  final int? detailAdvisorId;
+  final int? estadoId;
+  final int? planFinancieroId; // This could be nullable
+  final int? clientId; // This could be nullable
+  final String? date;
+  final String? dateTime;
+  final String? monthlyIncome;
+  final String? downPayment;
+  final int? termMonths;
+  final int? startMonth;
+  final int? startYear;
+  final int? endMonth;
+  final int? endYear;
+  final int? discount;
+  final String? saleDiscount;
+  final int? cashPrice;
+  final int? aguinaldo;
+  final int? bonusCatorce;
+  final String? createdAt;
+  final String? updatedAt;
 
   Quotation({
     required this.quotationId,
@@ -55,7 +57,8 @@ class Quotation {
       clientId: json['Id_cliente'],
       date: json['Fecha'],
       dateTime: json['Fecha_hora'],
-      monthlyIncome: json['Ingreso_mensual'],
+      monthlyIncome:
+          json['Ingreso_mensual'] == null ? json['Ingreso_mensual'] : "0",
       downPayment: json['Enganche'],
       termMonths: json['Meses_plazo'],
       startMonth: json['Mes_inicio'],
@@ -67,8 +70,10 @@ class Quotation {
       cashPrice: json['Precio_contado'],
       aguinaldo: json['Aguinaldo'],
       bonusCatorce: json['Bono_catorce'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt:
+          DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
+      updatedAt:
+          DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
     );
   }
 }
@@ -77,8 +82,8 @@ class UnitQuotation {
   final int unitQuotationId;
   final int quotationId;
   final int unitId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   final Quotation quotation;
 
   UnitQuotation({
@@ -95,8 +100,8 @@ class UnitQuotation {
       unitQuotationId: json['Id_unidad_cotizacion'],
       quotationId: json['Id_cotizacion'],
       unitId: json['Id_unidad'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
+      updatedAt: DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
       quotation: Quotation.fromJson(json['Id_cotizacion_COTIZACION']),
     );
   }
