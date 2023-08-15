@@ -34,13 +34,15 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
       Get.put(UnitDetailPageController());
   final Map<String, dynamic> arguments = Get.arguments;
   bool isEditMode = true;
+  bool isFirstTime = true;
+  String? _applicationId;
 
   LoanApplicationRepository loanApplicationRepository =
       LoanApplicationRepositoryImpl(LoanApplicationProvider());
 
-  Future<void> fetchLoanApplication() async {
+  Future<void> _fetchLoanApplication() async {
     try {
-      String loanApplicationId = arguments["quoteId"];
+      String loanApplicationId = arguments["quoteId"].toString();
 
       LoanApplication? loanApplicationResponse = await loanApplicationRepository
           .fetchLoanApplication(loanApplicationId);
@@ -48,9 +50,23 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
       if (loanApplicationResponse != null) {
         setState(() {
           isEditMode = loanApplicationResponse.estado != 4; // Vendida
+          isFirstTime = false;
         });
-        // SHOULD BE FILL
-        // IF ESTATUS IS Vendido only SHOW
+
+        _applicationId = loanApplicationResponse.idAplicacion;
+        unitDetailPageController.detailCompany.text =
+            loanApplicationResponse.empresa;
+        unitDetailPageController.detailIncomes.text =
+            loanApplicationResponse.sueldo;
+        unitDetailPageController.detailKindJob.text = "";
+        unitDetailPageController.detailJobInDate.text =
+            loanApplicationResponse.fechaIngreso;
+        unitDetailPageController.detailDpi.text = loanApplicationResponse.dpi;
+        unitDetailPageController.detailNit.text = loanApplicationResponse.nit;
+
+        setState(() {
+          isEditMode = loanApplicationResponse.estado != 4;
+        });
       }
     } catch (e) {
       print('Failed to fetch loan application: $e');
@@ -62,6 +78,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
     super.initState();
     Future.delayed(Duration.zero, () {
       unitDetailPageController.startController();
+      _fetchLoanApplication();
     });
   }
 
@@ -149,11 +166,11 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
             LogoUploadWidget(
                 developerLogoController: unitDetailPageController.frontDpi,
                 text: "DPI (Frente)",
-                validator: (value) => imageButtonValidator(value)),
+                validator: (value) => null),
             LogoUploadWidget(
                 developerLogoController: unitDetailPageController.reverseDpi,
                 text: "DPI (Reverso)",
-                validator: (value) => imageButtonValidator(value)),
+                validator: (value) => null),
             Row(
               children: [
                 Expanded(
@@ -162,41 +179,39 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                       onTap: () async {
                         if (_formKeyApplyQuote.currentState!.validate()) {
                           LoanApplication loanApplication = LoanApplication(
-                            idCotizacion: 5,
-                            idCliente: null,
+                            idCotizacion: arguments['quoteId'].toString(),
                             fotoDpiEnfrente: "linkFoto",
                             fotoDpiReverso: "linkFoto",
                             estado: 1,
-                            idDetalleFiador: null,
-                            empresa: "EmpresaX",
-                            sueldo: 5000,
-                            fechaIngreso: "2020-01-28",
-                            dpi: 1254874512,
-                            nit: 23658945,
+                            empresa:
+                                unitDetailPageController.detailCompany.text,
+                            sueldo: unitDetailPageController.detailIncomes.text,
+                            fechaIngreso:
+                                unitDetailPageController.detailJobInDate.text,
+                            dpi: unitDetailPageController.detailDpi.text,
+                            nit: unitDetailPageController.detailNit.text,
                           );
+
                           try {
-                            //? SHOULD BE PUT EP TO APPLY UNIT QUOTE;
                             EasyLoading.showToast(Strings.loading);
-                            final successApplication =
-                                await loanApplicationRepository
-                                    .submitLoanApplication(loanApplication);
-
-                            if (successApplication) {
-                              EasyLoading.showSuccess(
-                                  "Aplicación a crédito exitosa.");
-
-                              Get.toNamed(RouterPaths.DASHBOARD_PAGE);
-                              unitDetailPageController.cleanController();
-                              return;
+                            if (isFirstTime) {
+                              await loanApplicationRepository
+                                  .submitLoanApplication(loanApplication);
+                            } else {
+                              await loanApplicationRepository
+                                  .updateLoanApplication(loanApplication,
+                                      _applicationId.toString());
                             }
-                            EasyLoading.showError(Strings.pleaseVerifyInputs);
+
+                            unitDetailPageController.cleanController();
+                            EasyLoading.showSuccess(
+                                "Aplicación a crédito exitosa.");
+                            Get.toNamed(RouterPaths.DASHBOARD_PAGE);
                           } catch (e) {
                             EasyLoading.showError(Strings.pleaseVerifyInputs);
                           } finally {
                             EasyLoading.dismiss();
                           }
-
-                          //! should be apply to credit in EP;
                         } else {
                           EasyLoading.showError(Strings.pleaseVerifyInputs);
                         }

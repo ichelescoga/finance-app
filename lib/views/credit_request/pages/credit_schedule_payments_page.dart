@@ -19,8 +19,9 @@ class CreditSchedulePaymentsPage extends StatefulWidget {
 class _CreditSchedulePaymentsPageState
     extends State<CreditSchedulePaymentsPage> {
   final _scrollController = ScrollController();
+  final Map<String, dynamic> arguments = Get.arguments;
 
-  final arguments = Get.arguments;
+//? SHOULD BE PROCESS SCHEDULE PAYMENT
 
   @override
   void initState() {
@@ -59,8 +60,7 @@ class _CreditSchedulePaymentsPageState
         Center(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            controller:
-                _scrollController, // Add this line to use the ScrollController
+            controller: _scrollController,
             child: DataTable(
               showCheckboxColumn: false,
               headingRowHeight: responsive.hp(6),
@@ -183,13 +183,9 @@ class _CreditSchedulePaymentsPageState
               child: CustomButtonWidget(
                 text: "Aplicar a crédito",
                 onTap: () {
-                  print(Get.arguments);
-
-                  if (Get.arguments == null) return;
-
-                  print(Get.arguments["quoteId"]);
-                  // Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE
-                  //    );
+                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE, arguments: {
+                    'quoteId': arguments['quoteId']
+                  });
                 },
               ),
             ),

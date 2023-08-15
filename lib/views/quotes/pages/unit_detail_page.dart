@@ -25,7 +25,8 @@ class UnitDetailPage extends StatefulWidget {
 }
 
 class _UnitDetailPageState extends State<UnitDetailPage> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final Map<String, dynamic> arguments = Get.arguments;
 
   UnitDetailPageController unitDetailPageController =
@@ -36,20 +37,24 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
   List<UnitQuotation> _unitQuotations = [];
 
   void _fetchUnitQuotations() async {
-    print(arguments["unitId"]);
     EasyLoading.showToast(Strings.loading);
     try {
       List<UnitQuotation> unitQuotations = await unitQuotationRepository
           .fetchUnitQuotationsForQuotation(arguments["unitId"]);
 
-      print(unitQuotations);
       setState(() {
         _unitQuotations = unitQuotations;
       });
-    } catch (e) {
-      print(e);
     } finally {
       EasyLoading.dismiss();
+    }
+  }
+
+  void handleFetchQuoteHistory(isFetchQuote) async {
+    if (isFetchQuote != null && isFetchQuote is bool) {
+      if (isFetchQuote) {
+        _fetchUnitQuotations();
+      }
     }
   }
 
@@ -73,7 +78,7 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
     Responsive responsive = Responsive.of(context);
     return Layout(
       sideBarList: const [],
-      appBar:const CustomAppBarTitle(title: "Detalle de unidad"),
+      appBar: const CustomAppBarTitle(title: "Detalle de unidad"),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -161,37 +166,29 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                   .map((index, element) => MapEntry(
                       index,
                       DataRow(
-                          onSelectChanged: (value) {
-
-                              // 'isEditing': false,
-                              //         'idQuote': null,
-                              //         'projectId': element.projectId,
-                              //         'unitId': element.unitId,
-                              //         'unitName': element.unitName,
-                              //         'unitStatus': element.estadoId,
-                              //         'salePrice': element.salePrice,
-                              //         'finalSellPrice': element.salePrice
-                            Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                          onSelectChanged: (value) async {
+                            // 'isEditing': false,
+                            //         'idQuote': null,
+                            //         'projectId': element.projectId,
+                            //         'unitId': element.unitId,
+                            //         'unitName': element.unitName,
+                            //         'unitStatus': element.estadoId,
+                            //         'salePrice': element.salePrice,
+                            //         'finalSellPrice': element.salePrice
+                            final isFetchQuote = await Get.toNamed(
+                                RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
                                 arguments: {
                                   'isEditing': true,
-                                  "unitName": unitDetailPageController.unit.text,
+                                  "unitName":
+                                      unitDetailPageController.unit.text,
                                   'unitStatus': arguments["unitStatus"],
                                   'salePrice': arguments["salePrice"],
-                                  'finalSellPrice': element.quotation.saleDiscount,
-                                  
+                                  'finalSellPrice':
+                                      element.quotation.saleDiscount,
                                   'quoteId': element.quotationId,
                                   'unitId': element.unitId,
-                                  'discount': element.quotation.discount,
-                                  'clientName': "",
-                                  'clientPhone': "",
-                                  'email': "",
-                                  'startMoney': element.quotation.downPayment,
-                                  'paymentMonths': element.quotation.termMonths,
-                                  'cashPrice': element.quotation.cashPrice ,
-                                  'aguinaldo': element.quotation.aguinaldo ,
-                                  'bonusCatorce': element.quotation.bonusCatorce ,
-                                  
                                 });
+                            handleFetchQuoteHistory(isFetchQuote);
                           },
                           cells: [
                             DataCell(Container(
@@ -200,11 +197,13 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                             )),
                             DataCell(Container(
                               width: (Get.width / 5) - 20,
-                              child: Text(element.quotation.detailAdvisorId.toString()),
+                              child: Text(
+                                  element.quotation.detailAdvisorId.toString()),
                             )),
                             DataCell(Container(
                               width: (Get.width / 5) - 20,
-                              child: Text(element.quotation.saleDiscount.toString()),
+                              child: Text(
+                                  element.quotation.saleDiscount.toString()),
                             )),
                           ],
                           color: index % 2 == 0

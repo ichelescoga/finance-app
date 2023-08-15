@@ -242,7 +242,6 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                                 Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
                                     arguments: {
                                       'isEditing': false,
-                                      'idQuote': null,
                                       'projectId': element.projectId,
                                       'unitId': element.unitId,
                                       'unitName': element.unitName,

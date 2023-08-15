@@ -34,16 +34,16 @@ class UnitDetailPageController extends BaseController {
 
   void updateController(
     String? argsDiscount,
-    String? argsClientName,
-    String? argsClientPhone,
-    String? argsEmail,
+    // String? argsClientName,
+    // String? argsClientPhone,
+    // String? argsEmail,
     String? argsStartMoney,
     String? argsPaymentMonths,
   ) {
-    discount.text = argsDiscount ?? "";
-    clientName.text = argsClientName ?? "";
-    clientPhone.text = argsClientPhone ?? "";
-    email.text = argsEmail ?? "";
+    discount.text = argsDiscount ?? "0";
+    // clientName.text = argsClientName ?? "";
+    // clientPhone.text = argsClientPhone ?? "";
+    // email.text = argsEmail ?? "";
     startMoney.text = argsStartMoney ?? "";
     paymentMonths.text = argsPaymentMonths ?? "";
   }

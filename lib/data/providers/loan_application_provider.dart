@@ -14,10 +14,19 @@ class LoanApplicationProvider {
 
     return response.statusCode == 200;
   }
+  
+  Future<bool> updateLoanApplication(LoanApplication loanApplication, String applicationId) async {
+    final response = await httpAdapter.putApi(
+        "orders/v1/actualizarCredito/$applicationId", jsonEncode(loanApplication.toJson()), {
+      'Content-Type': 'application/json',
+    });
+
+    return response.statusCode == 200;
+  }
 
   Future<LoanApplication?> fetchLoanApplication(String applicationId) async {
     final response = await httpAdapter
-        .getApi("orders/v1/cotizacionsUnidad/$applicationId", {});
+        .getApi("orders/v1/credito/$applicationId", {});
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);

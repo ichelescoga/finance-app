@@ -62,8 +62,8 @@ class GetRoutes{
       GetPage(name: RouterPaths.CLIENT_OFFER_DETAIL_PAGE, page: () => const ClientOfferDetailPage()),
       GetPage(name: RouterPaths.CLIENT_DOCUMENTS_PAGE, page: () => const ClientDocumentsPage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_ADVANCE_PAGE, page: () => const ClientCreditAdvancePage()),
-      GetPage(name: RouterPaths.CLIENT_CREDIT_DETAIL_PAGE, page: () => const ClientCreditDetailPage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE, page: () => const CreditSchedulePaymentsPage()),
+      GetPage(name: RouterPaths.CLIENT_CREDIT_DETAIL_PAGE, page: () => const ClientCreditDetailPage()),
     ];
   }
 }

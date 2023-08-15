@@ -1,17 +1,19 @@
 class LoanApplication {
-  final int idCotizacion;
+  final String? idAplicacion;
+  final String idCotizacion;
   final int? idCliente;
   final String fotoDpiEnfrente;
   final String fotoDpiReverso;
   final int estado;
   final int? idDetalleFiador;
   final String empresa;
-  final double sueldo;
+  final String sueldo;
   final String fechaIngreso;
-  final int dpi;
-  final int nit;
+  final String dpi;
+  final String nit;
 
   LoanApplication({
+    this.idAplicacion,
     required this.idCotizacion,
     this.idCliente,
     required this.fotoDpiEnfrente,
@@ -43,15 +45,15 @@ class LoanApplication {
 
   factory LoanApplication.fromJson(Map<String, dynamic> json) {
     return LoanApplication(
-        idCotizacion: json['idCotizacion'],
-        fotoDpiEnfrente: json['fotoDpiEnfrente'],
-        fotoDpiReverso: json['fotoDpiReverso'],
-        estado: json['estado'],
-        empresa: json['empresa'],
-        sueldo: json['sueldo'],
-        fechaIngreso: json['fechaIngreso'],
-        dpi: json['dpi'],
-        nit: json['nit']);
+        idAplicacion: json['Id_aplicacion'].toString(),
+        idCotizacion: json['Id_cotizacion'].toString(),
+        fotoDpiEnfrente: json['Foto_DPI_enfrente'],
+        fotoDpiReverso: json['Foto_DPI_reverso'],
+        estado: json['Estado'],
+        empresa: json['Empresa'],
+        sueldo: double.tryParse(json['Sueldo'])?.toStringAsFixed(2).toString() ?? "0",
+        fechaIngreso: json['Fecha_ingreso'],
+        dpi: json['DPI'],
+        nit: json['NIT']);
   }
-
 }

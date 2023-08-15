@@ -13,6 +13,13 @@ class LoanApplicationRepositoryImpl implements LoanApplicationRepository {
   }
 
   @override
+  Future<bool> updateLoanApplication(LoanApplication loanApplication, String applicationId) async {
+    return await loanApplicationProvider.updateLoanApplication(loanApplication, applicationId);
+  }
+    
+
+
+  @override
   Future<LoanApplication?> fetchLoanApplication(String applicationId) async {
     return await loanApplicationProvider.fetchLoanApplication(applicationId);
   }

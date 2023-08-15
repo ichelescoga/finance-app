@@ -59,7 +59,7 @@ class Quotation {
       dateTime: json['Fecha_hora'],
       monthlyIncome:
           json['Ingreso_mensual'] == null ? json['Ingreso_mensual'] : "0",
-      downPayment: json['Enganche'],
+      downPayment: double.tryParse(json['Enganche'])?.toStringAsFixed(2).toString(),
       termMonths: json['Meses_plazo'],
       startMonth: json['Mes_inicio'],
       startYear: json['Anio_inicio'],

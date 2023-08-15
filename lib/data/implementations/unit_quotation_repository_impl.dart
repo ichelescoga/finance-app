@@ -11,4 +11,9 @@ class UnitQuotationRepositoryImpl implements UnitQuotationRepository {
   Future<List<UnitQuotation>> fetchUnitQuotationsForQuotation(int quotationId) async {
     return await unitQuotationProvider.fetchUnitQuotationsForQuotation(quotationId);
   }
+
+  @override
+  Future<Quotation?> fetchQuotationById(String quoteId) async {
+    return await unitQuotationProvider.fetchQuotationById(quoteId);
+  }
 }

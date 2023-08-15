@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:developer_company/data/implementations/unit_quotation_repository_impl.dart';
+import 'package:developer_company/data/models/unit_quotation_model.dart';
+import 'package:developer_company/data/providers/unit_quotation_provider.dart';
+import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
@@ -34,6 +38,11 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   bool _isPayedTotal = false;
   bool _quoteEdit = true;
   int? quoteId;
+  Quotation? quoteInfo;
+  bool isFetchQuote = false;
+
+  final UnitQuotationRepository unitQuotationRepository =
+      UnitQuotationRepositoryImpl(UnitQuotationProvider());
 
   final Map<String, dynamic> arguments = Get.arguments;
 
@@ -57,42 +66,38 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   Future<void> start() async {
     quoteId = arguments["quoteId"];
 
-    if (quoteId != null) {
-      final discount = arguments['discount'].toString();
-      final clientName = arguments['clientName'].toString();
-      final clientPhone = arguments['clientPhone'].toString();
-      final email = arguments['email'].toString();
-      final startMoney = arguments['startMoney'].toString();
-      final paymentMonths = arguments['paymentMonths'].toString();
-
-      unitDetailPageController.updateController(
-        discount,
-        clientName,
-        clientPhone,
-        email,
-        startMoney,
-        paymentMonths,
-      );
-      setState(() {
-        _isPayedTotal = arguments["cashPrice"] == 1 ? true : false;
-        _isAguinaldoSwitched = arguments["aguinaldo"] == 1 ? true : false;
-        _isBonoSwitched = arguments["bonusCatorce"] == 1 ? true : false;
-      });
+    try {
+      EasyLoading.show(status: Strings.loading);
+      if (quoteId != null) {
+        quoteInfo = await unitQuotationRepository
+            .fetchQuotationById(quoteId.toString());
+        unitDetailPageController.updateController(
+          quoteInfo?.discount.toString(),
+          quoteInfo?.downPayment.toString(),
+          quoteInfo?.termMonths.toString(),
+        );
+        setState(() {
+          _isPayedTotal = quoteInfo?.cashPrice == 1 ? true : false;
+          _isAguinaldoSwitched = quoteInfo?.aguinaldo == 1 ? true : false;
+          _isBonoSwitched = quoteInfo?.bonusCatorce == 1 ? true : false;
+        });
+      }
+      _quoteEdit = arguments["unitStatus"] != 4;
+      unitDetailPageController.unit.text = arguments["unitName"];
+      unitDetailPageController.salePrice.text = arguments["salePrice"];
+      unitDetailPageController.finalSellPrice.text =
+          arguments["finalSellPrice"].toString();
+    } finally {
+      EasyLoading.dismiss();
     }
-    unitDetailPageController.discount.text = arguments['discount'].toString();
-    unitDetailPageController.unit.text = arguments["unitName"];
-    unitDetailPageController.salePrice.text = arguments["salePrice"];
-    unitDetailPageController.finalSellPrice.text =
-        arguments["finalSellPrice"].toString();
-    _quoteEdit = arguments["unitStatus"] != 4;
   }
 
   @override
   void initState() {
     super.initState();
-    // Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, () {
       start();
-    // });
+    });
   }
 
   @override
@@ -283,12 +288,13 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                               "orders/v1/actualizarCotizacion/$quoteId",
                               body, {});
                         }
-
+                        setState(() {
+                          isFetchQuote = true;
+                        });
                         //? SHOULD BE GET PAYMENT SCHEDULE
-
-                        Get.toNamed(
+                        await Get.toNamed(
                             RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
-                            parameters: {'quoteId': "quoteId.toString()"});
+                            arguments: {'quoteId': quoteId});
                       } catch (e) {
                         print(e);
                         EasyLoading.showError(Strings.pleaseVerifyInputs);
@@ -304,7 +310,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 CustomButtonWidget(
                   text: "Regresar",
                   onTap: () {
-                    Get.back(closeOverlays: true);
+                    Get.back(closeOverlays: true, result: isFetchQuote);
+                    isFetchQuote = false;
                   },
                 )
               ],
