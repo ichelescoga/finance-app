@@ -1,3 +1,7 @@
+import 'package:developer_company/data/implementations/loan_application_repository_impl.dart';
+import 'package:developer_company/data/models/loan_application_model.dart';
+import 'package:developer_company/data/providers/loan_application_provider.dart';
+import 'package:developer_company/data/repositories/loan_application_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/validations/dpi_validator.dart';
 import 'package:developer_company/shared/validations/image_button_validator.dart';
@@ -28,6 +32,30 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   UnitDetailPageController unitDetailPageController =
       Get.put(UnitDetailPageController());
+  final Map<String, dynamic> arguments = Get.arguments;
+  bool isEditMode = true;
+
+  LoanApplicationRepository loanApplicationRepository =
+      LoanApplicationRepositoryImpl(LoanApplicationProvider());
+
+  Future<void> fetchLoanApplication() async {
+    try {
+      String loanApplicationId = arguments["quoteId"];
+
+      LoanApplication? loanApplicationResponse = await loanApplicationRepository
+          .fetchLoanApplication(loanApplicationId);
+
+      if (loanApplicationResponse != null) {
+        setState(() {
+          isEditMode = loanApplicationResponse.estado != 4; // Vendida
+        });
+        // SHOULD BE FILL
+        // IF ESTATUS IS Vendido only SHOW
+      }
+    } catch (e) {
+      print('Failed to fetch loan application: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -49,24 +77,28 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
           children: [
             const SizedBox(height: Dimensions.heightSize),
             CustomInputWidget(
+                enabled: isEditMode,
                 validator: (value) => notEmptyFieldValidator(value),
                 controller: unitDetailPageController.detailCompany,
                 label: "Empresa",
                 hintText: "Empresa",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
+                enabled: isEditMode,
                 validator: (value) => notEmptyFieldValidator(value),
                 controller: unitDetailPageController.detailIncomes,
                 label: "Sueldo",
                 hintText: "Sueldo",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
+                enabled: isEditMode,
                 validator: (value) => notEmptyFieldValidator(value),
                 controller: unitDetailPageController.detailKindJob,
                 label: "Puesto",
                 hintText: "Puesto",
                 prefixIcon: Icons.person_outline),
             CustomDatePicker(
+              enabled: isEditMode,
               controller: unitDetailPageController.detailJobInDate,
               label: "Fecha Ingreso",
               hintText: "Fecha Ingreso",
@@ -80,6 +112,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
               lastDate: DateTime(2100),
             ),
             CustomDatePicker(
+              enabled: isEditMode,
               controller: unitDetailPageController.detailBirthday,
               label: "Fecha de nacimiento",
               hintText: "Fecha de nacimiento",
@@ -93,6 +126,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
               lastDate: DateTime(2100),
             ),
             CustomInputWidget(
+                enabled: isEditMode,
                 validator: (value) {
                   final isValidDpi = dpiValidator(value);
                   if (!isValidDpi) {
@@ -105,6 +139,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 hintText: "DPI",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
+                enabled: isEditMode,
                 validator: (value) => nitValidation(value),
                 controller: unitDetailPageController.detailNit,
                 label: "NIT",
@@ -124,16 +159,39 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 Expanded(
                   child: CustomButtonWidget(
                       text: "Aplicar a crédito",
-                      onTap: () {
+                      onTap: () async {
                         if (_formKeyApplyQuote.currentState!.validate()) {
+                          LoanApplication loanApplication = LoanApplication(
+                            idCotizacion: 5,
+                            idCliente: null,
+                            fotoDpiEnfrente: "linkFoto",
+                            fotoDpiReverso: "linkFoto",
+                            estado: 1,
+                            idDetalleFiador: null,
+                            empresa: "EmpresaX",
+                            sueldo: 5000,
+                            fechaIngreso: "2020-01-28",
+                            dpi: 1254874512,
+                            nit: 23658945,
+                          );
                           try {
-                            // SHOULD BE PUT EP TO APPLY UNIT QUOTE;
+                            //? SHOULD BE PUT EP TO APPLY UNIT QUOTE;
                             EasyLoading.showToast(Strings.loading);
-                            // print("PASSED 😉");
-                            Get.toNamed(RouterPaths.DASHBOARD_PAGE);
-                            unitDetailPageController.cleanController();
+                            final successApplication =
+                                await loanApplicationRepository
+                                    .submitLoanApplication(loanApplication);
+
+                            if (successApplication) {
+                              EasyLoading.showSuccess(
+                                  "Aplicación a crédito exitosa.");
+
+                              Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+                              unitDetailPageController.cleanController();
+                              return;
+                            }
+                            EasyLoading.showError(Strings.pleaseVerifyInputs);
                           } catch (e) {
-                            // print(e);
+                            EasyLoading.showError(Strings.pleaseVerifyInputs);
                           } finally {
                             EasyLoading.dismiss();
                           }

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
-import 'package:developer_company/shared/validations/email_validator.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
 import 'package:developer_company/shared/validations/percentage_validator.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
@@ -55,42 +54,45 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
     }
   }
 
+  Future<void> start() async {
+    quoteId = arguments["quoteId"];
+
+    if (quoteId != null) {
+      final discount = arguments['discount'].toString();
+      final clientName = arguments['clientName'].toString();
+      final clientPhone = arguments['clientPhone'].toString();
+      final email = arguments['email'].toString();
+      final startMoney = arguments['startMoney'].toString();
+      final paymentMonths = arguments['paymentMonths'].toString();
+
+      unitDetailPageController.updateController(
+        discount,
+        clientName,
+        clientPhone,
+        email,
+        startMoney,
+        paymentMonths,
+      );
+      setState(() {
+        _isPayedTotal = arguments["cashPrice"] == 1 ? true : false;
+        _isAguinaldoSwitched = arguments["aguinaldo"] == 1 ? true : false;
+        _isBonoSwitched = arguments["bonusCatorce"] == 1 ? true : false;
+      });
+    }
+    unitDetailPageController.discount.text = arguments['discount'].toString();
+    unitDetailPageController.unit.text = arguments["unitName"];
+    unitDetailPageController.salePrice.text = arguments["salePrice"];
+    unitDetailPageController.finalSellPrice.text =
+        arguments["finalSellPrice"].toString();
+    _quoteEdit = arguments["unitStatus"] != 4;
+  }
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      quoteId = arguments["unitId"];
-
-      if (quoteId != null) {
-        final discount = arguments['discount'].toString();
-        final clientName = arguments['clientName'].toString();
-        final clientPhone = arguments['clientPhone'].toString();
-        final email = arguments['email'].toString();
-        final startMoney = arguments['startMoney'].toString();
-        final paymentMonths = arguments['paymentMonths'].toString();
-
-        unitDetailPageController.updateController(
-          discount,
-          clientName,
-          clientPhone,
-          email,
-          startMoney,
-          paymentMonths,
-        );
-        setState(() {
-          _isPayedTotal = arguments["cashPrice"] == 1 ? true : false;
-          _isAguinaldoSwitched = arguments["aguinaldo"] == 1 ? true : false;
-          _isBonoSwitched = arguments["bonusCatorce"] == 1 ? true : false;
-        });
-      }
-
-      unitDetailPageController.discount.text = "0";
-      unitDetailPageController.unit.text = arguments["unitName"];
-      unitDetailPageController.salePrice.text = arguments["salePrice"];
-      unitDetailPageController.finalSellPrice.text =
-          arguments["finalSellPrice"];
-      _quoteEdit = arguments["unitStatus"] != 4;
-    });
+    // Future.delayed(Duration.zero, () {
+      start();
+    // });
   }
 
   @override
@@ -148,21 +150,21 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 hintText: "Precio con descuento",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => notEmptyFieldValidator(value),
+                validator: (value) => null,
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.clientName,
                 label: "Nombre de Cliente",
                 hintText: "Nombre de Cliente",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => notEmptyFieldValidator(value),
+                validator: (value) => null,
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.clientPhone,
                 label: "Teléfono",
                 hintText: "Teléfono",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => emailValidator(value),
+                validator: (value) => null,
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.email,
                 label: "Correo",
@@ -282,8 +284,11 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                               body, {});
                         }
 
+                        //? SHOULD BE GET PAYMENT SCHEDULE
+
                         Get.toNamed(
-                            RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE);
+                            RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
+                            parameters: {'quoteId': "quoteId.toString()"});
                       } catch (e) {
                         print(e);
                         EasyLoading.showError(Strings.pleaseVerifyInputs);

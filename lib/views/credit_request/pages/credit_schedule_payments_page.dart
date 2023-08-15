@@ -6,7 +6,7 @@ import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
-import "package:get/get.dart";
+import 'package:get/get.dart';
 
 class CreditSchedulePaymentsPage extends StatefulWidget {
   const CreditSchedulePaymentsPage({Key? key}) : super(key: key);
@@ -18,7 +18,9 @@ class CreditSchedulePaymentsPage extends StatefulWidget {
 
 class _CreditSchedulePaymentsPageState
     extends State<CreditSchedulePaymentsPage> {
-  ScrollController _scrollController = ScrollController();
+  final _scrollController = ScrollController();
+
+  final arguments = Get.arguments;
 
   @override
   void initState() {
@@ -181,7 +183,13 @@ class _CreditSchedulePaymentsPageState
               child: CustomButtonWidget(
                 text: "Aplicar a crédito",
                 onTap: () {
-                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE);
+                  print(Get.arguments);
+
+                  if (Get.arguments == null) return;
+
+                  print(Get.arguments["quoteId"]);
+                  // Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE
+                  //    );
                 },
               ),
             ),

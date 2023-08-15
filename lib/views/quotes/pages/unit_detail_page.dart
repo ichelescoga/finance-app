@@ -178,9 +178,10 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                                   'unitStatus': arguments["unitStatus"],
                                   'salePrice': arguments["salePrice"],
                                   'finalSellPrice': element.quotation.saleDiscount,
-
+                                  
+                                  'quoteId': element.quotationId,
                                   'unitId': element.unitId,
-                                  'discount': element.quotation.discount ,
+                                  'discount': element.quotation.discount,
                                   'clientName': "",
                                   'clientPhone': "",
                                   'email': "",

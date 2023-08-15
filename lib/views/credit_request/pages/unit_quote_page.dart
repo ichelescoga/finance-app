@@ -193,6 +193,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                     'unitName': element.unitName,
                                     'unitStatus': element.estadoId,
                                     'salePrice': element.salePrice,
+                                    'finalSellPrice': element.salePrice,
                                     'unitId': element.unitId
                                   });
                             },

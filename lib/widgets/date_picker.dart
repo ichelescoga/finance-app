@@ -16,6 +16,7 @@ class CustomDatePicker extends StatefulWidget {
   final TextInputType keyboardType;
   final ValueChanged<String>? onChange; // Optional onChange callback
   final VoidCallback? onTap; // Optional onChange callback
+  final bool enabled;
 
   const CustomDatePicker(
       {Key? key,
@@ -29,7 +30,8 @@ class CustomDatePicker extends StatefulWidget {
       this.keyboardType = TextInputType.text,
       this.validator,
       this.onChange,
-      this.onTap})
+      this.onTap,
+      this.enabled = true})
       : super(key: key);
 
   @override
@@ -72,6 +74,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         ),
         TextFormField(
           onTap: () async {
+            if (!widget.enabled) return;
+
             final DateTime? picked = await showDatePicker(
               context: context,
               initialDate: _selectedDate,
