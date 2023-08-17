@@ -5,6 +5,9 @@ import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/permission_level.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/AuthorizationWrapper.dart';
+import 'package:developer_company/widgets/admin_permission_modal.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/generic_modal.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -99,7 +102,7 @@ class _DashboardPageState extends State<DashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: responsive.hp(2)),
+                                    SizedBox(height: responsive.hp(2)),
                   AuthorizationWrapper(
                     requestAction: PermissionLevel.dashboardAddDevelopmentCard,
                     child: Container(
@@ -540,6 +543,20 @@ class _DashboardPageState extends State<DashboardPage> {
           Get.overlayContext?.findRootAncestorStateOfType<NavigatorState>();
 
           return false;
+        });
+  }
+
+  _showDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return PermissionAdminModal(
+            alertHeight: 180,
+            alertWidth: 200,
+            onTapFunction: () {
+              print("PASSED VALIDATIONS AND LOGIN ADMIN USER 😉");
+            },
+          );
         });
   }
 

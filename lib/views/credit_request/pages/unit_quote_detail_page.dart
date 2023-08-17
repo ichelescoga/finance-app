@@ -12,6 +12,7 @@ import 'package:developer_company/views/quotes/controllers/unit_detail_page_cont
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/widgets/admin_permission_modal.dart';
 import 'package:developer_company/widgets/app_bar_two_images.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
@@ -38,6 +39,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   bool _isPayedTotal = false;
   bool _quoteEdit = true;
   int? quoteId;
+  bool _canEditDiscount = false;
   Quotation? quoteInfo;
   bool isFetchQuote = false;
 
@@ -127,8 +129,15 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 hintText: "precio de venta",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
+                enabled: _quoteEdit,
+                readOnly: !_canEditDiscount,
+                onTapOutside: (p0) {
+                  setState(() {
+                    _canEditDiscount = false;
+                  });
+                },
                 onTap: () {
-                  //! should be ask for administrator;
+                  _showPermissionDialog(context);
                 },
                 onChange: (value) {
                   unitDetailPageController.finalSellPrice.text =
@@ -142,11 +151,10 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                   }
                   return null;
                 },
-                enabled: _quoteEdit,
                 controller: unitDetailPageController.discount,
                 label: "Descuento",
                 hintText: "Descuento",
-                prefixIcon: Icons.person_outline),
+                prefixIcon: Icons.percent),
             CustomInputWidget(
                 validator: (value) => notEmptyFieldValidator(value),
                 enabled: false,
@@ -321,5 +329,21 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         ),
       ),
     );
+  }
+
+  _showPermissionDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return PermissionAdminModal(
+            alertHeight: 180,
+            alertWidth: 200,
+            onTapFunction: () {
+              setState(() {
+                _canEditDiscount = true;
+              });
+            },
+          );
+        });
   }
 }

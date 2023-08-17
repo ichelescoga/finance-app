@@ -8,11 +8,15 @@ class CustomInputWidget extends StatelessWidget {
   final String label;
   final String hintText;
   final IconData prefixIcon;
+  final Widget? suffixIcon;
   final TextInputType keyboardType;
   final bool enabled;
+  final bool readOnly;
+  final bool obscureText;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChange; // Optional onChange callback
   final VoidCallback? onTap; // Optional onChange callback
+  final Function(PointerDownEvent)? onTapOutside; // Optional onChange callback
 
   const CustomInputWidget(
       {Key? key,
@@ -22,9 +26,13 @@ class CustomInputWidget extends StatelessWidget {
       required this.prefixIcon,
       this.keyboardType = TextInputType.text,
       this.validator,
+      this.readOnly = false,
       this.enabled = true,
+      this.obscureText = false,
       this.onChange,
-      this.onTap
+      this.onTap,
+      this.onTapOutside,
+      this.suffixIcon
       })
       : super(key: key);
 
@@ -42,6 +50,9 @@ class CustomInputWidget extends StatelessWidget {
               0.5, // You should replace this with the actual value
         ),
         TextFormField(
+          readOnly: readOnly,
+          onTapOutside: onTapOutside,
+          obscureText: obscureText,
           onTap: onTap,
           onChanged: onChange,
           enabled: enabled,
@@ -63,6 +74,8 @@ class CustomInputWidget extends StatelessWidget {
             focusedErrorBorder: CustomStyle.focusErrorBorder,
             errorBorder: CustomStyle.focusErrorBorder,
             prefixIcon: Icon(prefixIcon),
+            suffixIcon: suffixIcon,
+            
           ),
         ),
         const SizedBox(
