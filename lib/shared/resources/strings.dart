@@ -45,4 +45,9 @@ class Strings {
 
   static String termInMonthsMax = 'Por favor verifique que su plazo en meses no sea mayor a';
   static String termInMonthsMin = 'Por favor verifique que su plazo en meses no sea menor a';
+
+  static String incomesMax = 'Por favor verifique que el sueldo sea mayor a ';
+  static String incomesMin = 'Por favor verifique que el sueldo sea menor a';
+  static String kindOfJob = "Verifique que el puesto tenga mas de dos letras.";
+  
 }

@@ -4,9 +4,12 @@ import 'package:developer_company/data/providers/loan_application_provider.dart'
 import 'package:developer_company/data/repositories/loan_application_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/validations/dpi_validator.dart';
+import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
+import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
 // import 'package:developer_company/shared/validations/image_button_validator.dart';
 import 'package:developer_company/shared/validations/nit_validation.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
+import 'package:developer_company/shared/validations/string_length_validator.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
@@ -36,6 +39,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   bool isEditMode = true;
   bool isFirstTime = true;
   String? _applicationId;
+  int actualYear = DateTime.now().year;
 
   LoanApplicationRepository loanApplicationRepository =
       LoanApplicationRepositoryImpl(LoanApplicationProvider());
@@ -102,14 +106,24 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
                 enabled: isEditMode,
-                validator: (value) => notEmptyFieldValidator(value),
+                validator: (value) {
+                  final isValidMinMonths = graterThanNumberValidator(value, 1);
+                  final isValidMaxMonths = lowerThanNumberValidator(value, 150000);
+                  if (!isValidMinMonths) return '${Strings.incomesMax} 0.0';
+
+                  if (isValidMaxMonths) return null;
+                  return '${Strings.incomesMin} 150,000.00';
+                },
                 controller: unitDetailPageController.detailIncomes,
                 label: "Sueldo",
                 hintText: "Sueldo",
+                keyboardType: TextInputType.number,
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
                 enabled: isEditMode,
-                validator: (value) => notEmptyFieldValidator(value),
+                validator: (value) => stringLengthValidator(value, 2, 8)
+                    ? null
+                    : Strings.kindOfJob,
                 controller: unitDetailPageController.detailKindJob,
                 label: "Puesto",
                 hintText: "Puesto",
@@ -125,8 +139,8 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 return "VALIDE CAMPOS";
               },
               initialDate: DateTime.now(),
-              firstDate: DateTime(1930),
-              lastDate: DateTime(2100),
+              firstDate: DateTime(actualYear - 80),
+              lastDate: DateTime(actualYear),
             ),
             CustomDatePicker(
               enabled: isEditMode,
@@ -139,8 +153,8 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 return "VALIDE CAMPOS";
               },
               initialDate: DateTime.now(),
-              firstDate: DateTime(1930),
-              lastDate: DateTime(2100),
+              firstDate: DateTime(actualYear - 100),
+              lastDate: DateTime(actualYear),
             ),
             CustomInputWidget(
                 enabled: isEditMode,
@@ -154,6 +168,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 controller: unitDetailPageController.detailDpi,
                 label: "DPI",
                 hintText: "DPI",
+                keyboardType: TextInputType.number,
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
                 enabled: isEditMode,

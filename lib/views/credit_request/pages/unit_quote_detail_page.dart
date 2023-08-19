@@ -14,7 +14,7 @@ import 'package:developer_company/shared/validations/email_validator.dart';
 import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
 import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
-import 'package:developer_company/shared/validations/number_length_validator.dart';
+import 'package:developer_company/shared/validations/string_length_validator.dart';
 import 'package:developer_company/shared/validations/percentage_validator.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -182,7 +182,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 hintText: "Nombre de Cliente",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => numberLengthValidator(value, 8, 8)
+                validator: (value) => stringLengthValidator(value, 8, 8)
                     ? null
                     : '${Strings.numberPhoneNotValid}, dígitos ${value?.length}',
                 enabled: _quoteEdit,
