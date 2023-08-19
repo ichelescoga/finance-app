@@ -34,11 +34,15 @@ class Strings {
   static String ifYouHaveAccount = 'Ya tienes una cuenta? ';
   static String sendCode = 'Enviar OTP';
 
-  static String nitShouldBeGraterThan6 = 'El nit debe de ser mayor a 7 caracteres.';
-
-  static String pleaseVerifyInputs = 'Por favor valide campos';
-  
   static String goBack = 'Regresar';
   static String notValidDPI = 'DPI no valido.';
+  static String numberPhoneNotValid = 'Numero de teléfono no valido';
 
+  // validators
+  static String nitShouldBeGraterThan6 =
+      'El nit debe de ser mayor a 7 caracteres.';
+  static String pleaseVerifyInputs = 'Por favor valide campos';
+
+  static String termInMonthsMax = 'Por favor verifique que su plazo en meses no sea mayor a';
+  static String termInMonthsMin = 'Por favor verifique que su plazo en meses no sea menor a';
 }

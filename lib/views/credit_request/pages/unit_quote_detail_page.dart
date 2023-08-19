@@ -10,7 +10,11 @@ import 'package:developer_company/data/repositories/loan_simulation_repository.d
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
+import 'package:developer_company/shared/validations/email_validator.dart';
+import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
+import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
+import 'package:developer_company/shared/validations/number_length_validator.dart';
 import 'package:developer_company/shared/validations/percentage_validator.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -24,7 +28,6 @@ import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-
 
 class UnitQuoteDetailPage extends StatefulWidget {
   const UnitQuoteDetailPage({Key? key}) : super(key: key);
@@ -162,6 +165,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 controller: unitDetailPageController.discount,
                 label: "Descuento",
                 hintText: "Descuento",
+                keyboardType: TextInputType.number,
                 prefixIcon: Icons.percent),
             CustomInputWidget(
                 validator: (value) => notEmptyFieldValidator(value),
@@ -171,21 +175,24 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 hintText: "Precio con descuento",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => null,
+                validator: (value) => notEmptyFieldValidator(value),
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.clientName,
                 label: "Nombre de Cliente",
                 hintText: "Nombre de Cliente",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => null,
+                validator: (value) => numberLengthValidator(value, 8, 8)
+                    ? null
+                    : '${Strings.numberPhoneNotValid}, dígitos ${value?.length}',
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.clientPhone,
                 label: "Teléfono",
                 hintText: "Teléfono",
+                keyboardType: TextInputType.phone,
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => null,
+                validator: (value) => emailValidator(value),
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.email,
                 label: "Correo",
@@ -197,41 +204,23 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 controller: unitDetailPageController.startMoney,
                 label: "Enganche",
                 hintText: "Enganche",
+                keyboardType: TextInputType.number,
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => notEmptyFieldValidator(value),
+                validator: (value) {
+                  final isValidMinMonths = graterThanNumberValidator(value, 1);
+                  final isValidMaxMonths = lowerThanNumberValidator(value, 240);
+                  if(!isValidMinMonths) return '${Strings.termInMonthsMin} 0';
+                  
+                  if (isValidMaxMonths) return null;
+                  return '${Strings.termInMonthsMax} 240';
+                },
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.paymentMonths,
                 label: "Plazo en meses",
                 hintText: "Plazo en meses",
+                keyboardType: TextInputType.number,
                 prefixIcon: Icons.person_outline),
-            // SwitchListTile(
-            //   title: const Text(
-            //     'Aguinaldo',
-            //     style: TextStyle(color: Colors.black),
-            //   ),
-            //   value: _isAguinaldoSwitched,
-            //   onChanged: (bool value) {
-            //     setState(() {
-            //       _isAguinaldoSwitched = value;
-            //     });
-            //   },
-            //   activeColor: AppColors.secondaryMainColor,
-            // ),
-            // const SizedBox(height: Dimensions.heightSize),
-            // SwitchListTile(
-            //   title: const Text(
-            //     'Bono 14',
-            //     style: TextStyle(color: Colors.black),
-            //   ),
-            //   value: _isBonoSwitched,
-            //   onChanged: (bool value) {
-            //     setState(() {
-            //       _isBonoSwitched = value;
-            //     });
-            //   },
-            //   activeColor: AppColors.secondaryMainColor,
-            // ),
             SwitchListTile(
               title: const Text(
                 'Precio al contado',
