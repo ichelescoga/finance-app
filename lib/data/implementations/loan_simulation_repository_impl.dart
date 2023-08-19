@@ -8,7 +8,7 @@ class LoanSimulationRepositoryImpl implements LoanSimulationRepository {
   LoanSimulationRepositoryImpl(this.loanSimulationProvider);
 
   @override
-  Future<List<LoanSimulationResponse>> simulateLoan(
+  Future<List<LoanSimulationResponse?>> simulateLoan(
       LoanSimulationRequest request) async {
     return await loanSimulationProvider.simulateLoan(request);
   }

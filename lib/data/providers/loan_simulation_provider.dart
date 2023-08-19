@@ -6,10 +6,12 @@ import 'package:developer_company/shared/utils/http_adapter.dart';
 class LoanSimulationProvider {
   final httpAdapter = HttpAdapter();
 
-  Future<List<LoanSimulationResponse>> simulateLoan(
+  Future<List<LoanSimulationResponse?>> simulateLoan(
       LoanSimulationRequest request) async {
-    final response =
-        await httpAdapter.postApi("simulate", request.toJson(), {});
+    final finalBody = json.encode(request.toJson());
+
+    final response = await httpAdapter.postApi("account/v1/pmtCalculate",
+        finalBody, {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);

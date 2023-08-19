@@ -239,11 +239,14 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                             index,
                             DataRow(
                               onSelectChanged: (value) {
+                                print("projectId ${element.projectId}");
+                                print("unitId ${element.unitId}");
+                                                                
                                 Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
                                     arguments: {
                                       'isEditing': false,
-                                      'projectId': element.projectId,
-                                      'unitId': element.unitId,
+                                      'projectId': "${element.projectId}",
+                                      'unitId': '${element.unitId}',
                                       'unitName': element.unitName,
                                       'unitStatus': element.estadoId,
                                       'salePrice': element.salePrice,

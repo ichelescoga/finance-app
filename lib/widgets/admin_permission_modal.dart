@@ -103,7 +103,7 @@ class _PermissionAdminModalState extends State<PermissionAdminModal> {
                   if (_formKeyAdminPermission.currentState!.validate()) {
                     final resultOfPermission = await validateUser();
                     if (resultOfPermission &&
-                        controllerUser.text.contains("pablo@mailinator.com")) {
+                        controllerUser.text.contains("admin@mailinator.com")) {
                       Navigator.of(context).pop();
                       widget.onTapFunction?.call();
                     } else {

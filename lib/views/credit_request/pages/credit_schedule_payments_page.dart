@@ -1,3 +1,4 @@
+import "package:developer_company/data/models/loan_simulation_model.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
@@ -21,11 +22,18 @@ class _CreditSchedulePaymentsPageState
   final _scrollController = ScrollController();
   final Map<String, dynamic> arguments = Get.arguments;
 
-//? SHOULD BE PROCESS SCHEDULE PAYMENT
+  List<LoanSimulationResponse> simulation = [];
+  
+  void loadListOfSimulation() {
+    setState(() {
+      simulation = arguments['simulationSchedule'];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    loadListOfSimulation();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController
           .animateTo(
@@ -62,118 +70,130 @@ class _CreditSchedulePaymentsPageState
             scrollDirection: Axis.horizontal,
             controller: _scrollController,
             child: DataTable(
-              showCheckboxColumn: false,
-              headingRowHeight: responsive.hp(6),
-              headingRowColor: MaterialStateProperty.all<Color>(
-                  AppColors.secondaryMainColor),
-              columns: const <DataColumn>[
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Mes',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                showCheckboxColumn: false,
+                headingRowHeight: responsive.hp(6),
+                headingRowColor: MaterialStateProperty.all<Color>(
+                    AppColors.secondaryMainColor),
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Mes',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Interes',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Interés',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Capital',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Capital',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Cuota',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Cuota',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Saldo',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Saldo',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-              ],
-              rows: List.generate(8, (index) {
-                return DataRow(
-                  cells: [
-                    DataCell(Container(
-                      width: (Get.width / 5) - 10,
-                      child: Text('Mes ${index + 1}'),
-                    )),
-                    DataCell(Container(
-                      width: (Get.width / 5) - 10,
-                      child: Text('${1 + index}'),
-                    )),
-                    DataCell(Container(
-                      width: (Get.width / 5) - 10,
-                      child: Text('${1 + index}'),
-                    )),
-                    DataCell(Container(
-                      width: (Get.width / 5) - 10,
-                      child: Text('${1 + index}'),
-                    )),
-                    DataCell(Container(
-                      width: (Get.width / 5) - 10,
-                      child: Text('${1 + index}'),
-                    )),
-                  ],
-                  color: index % 2 == 0
-                      ? MaterialStateProperty.all<Color>(AppColors.lightColor)
-                      : MaterialStateProperty.all<Color>(
-                          AppColors.lightSecondaryColor),
-                );
-              }),
-            ),
+                ],
+                rows: simulation
+                    .asMap()
+                    .map((index, element) => MapEntry(
+                        index,
+                        DataRow(
+                          cells: [
+                            DataCell(Container(
+                              width: (Get.width / 5) - 10,
+                              child: Text('Mes ${index + 1}'),
+                            )),
+                            DataCell(Container(
+                              width: (Get.width / 5) - 10,
+                              child: Text(double.tryParse(
+                                      element.monthlyInterest.toString())!
+                                  .toStringAsFixed(2)),
+                            )),
+                            DataCell(Container(
+                              width: (Get.width / 5) - 10,
+                              child: Text(double.tryParse(
+                                      element.monthlyCapitalPayment.toString())!
+                                  .toStringAsFixed(2)),
+                            )),
+                            DataCell(Container(
+                              width: (Get.width / 5) - 10,
+                              child: Text(double.tryParse(
+                                      element.monthlyTotalPayment.toString())!
+                                  .toStringAsFixed(2)),
+                            )),
+                            DataCell(Container(
+                              width: (Get.width / 5) - 10,
+                              child: Text(double.tryParse(
+                                      element.creditTotalBalance.toString())!
+                                  .toStringAsFixed(2)),
+                            )),
+                          ],
+                          color: index % 2 == 0
+                              ? MaterialStateProperty.all<Color>(
+                                  AppColors.lightColor)
+                              : MaterialStateProperty.all<Color>(
+                                  AppColors.lightSecondaryColor),
+                        )))
+                    .values
+                    .toList()),
           ),
         ),
         const SizedBox(height: Dimensions.heightSize),
@@ -183,9 +203,8 @@ class _CreditSchedulePaymentsPageState
               child: CustomButtonWidget(
                 text: "Aplicar a crédito",
                 onTap: () {
-                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE, arguments: {
-                    'quoteId': arguments['quoteId']
-                  });
+                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE,
+                      arguments: {'quoteId': arguments['quoteId']});
                 },
               ),
             ),

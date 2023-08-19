@@ -20,7 +20,7 @@ class UnitDetailPageController extends BaseController {
   TextEditingController email = TextEditingController();
   TextEditingController startMoney = TextEditingController();
   TextEditingController priceWithDiscount = TextEditingController();
-  TextEditingController discount = TextEditingController();
+  TextEditingController discount = TextEditingController(text: "0");
   TextEditingController bankHistory = TextEditingController();
   TextEditingController paymentMonths = TextEditingController();
   TextEditingController unitStatus = TextEditingController();

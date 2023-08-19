@@ -30,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final UserRepository userRepository = UserRepositoryImpl(UserProvider());
   bool successLogin = true;
+  String badLogin = "usuario o contraseña invalida";
 
   @override
   void initState() {
@@ -55,6 +56,9 @@ class _LoginPageState extends State<LoginPage> {
       container.read(userProvider.notifier).setUser(user);
       return true;
     } catch (e) {
+      setState(() {
+        badLogin = e.toString();
+      });
       return false;
     }
   }
@@ -95,8 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   !successLogin
-                      ? const Text(
-                          'Nombre o contraseña invalida',
+                      ? Text(
+                          badLogin,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

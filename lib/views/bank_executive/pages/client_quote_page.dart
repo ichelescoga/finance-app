@@ -49,7 +49,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
 
       if (loanApplicationResponse != null) {
         setState(() {
-          isEditMode = loanApplicationResponse.estado != 4; // Vendida
+          isEditMode = loanApplicationResponse.estado != 3; // Vendida
           isFirstTime = false;
         });
 
@@ -65,7 +65,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
         unitDetailPageController.detailNit.text = loanApplicationResponse.nit;
 
         setState(() {
-          isEditMode = loanApplicationResponse.estado != 4;
+          isEditMode = loanApplicationResponse.estado != 3;
         });
       }
     } catch (e) {

@@ -1,14 +1,12 @@
 class LoanSimulationRequest {
-  final double annualInterest;
-  final double annualPayments;
-  final double totalCreditValue;
-  final double cashPrice;
+  final dynamic annualInterest;
+  final dynamic annualPayments;
+  final dynamic totalCreditValue;
 
   LoanSimulationRequest({
     required this.annualInterest,
     required this.annualPayments,
     required this.totalCreditValue,
-    required this.cashPrice,
   });
 
   Map<String, dynamic> toJson() {
@@ -16,7 +14,7 @@ class LoanSimulationRequest {
       "annualInterest": annualInterest,
       "annualPayments": annualPayments,
       "totalCreditValue": totalCreditValue,
-      "cash_price": cashPrice,
+      "cash_price": 1
     };
   }
 }
@@ -24,10 +22,10 @@ class LoanSimulationRequest {
 class LoanSimulationResponse {
   final int iteration;
   final String month;
-  final double monthlyInterest;
-  final double monthlyCapitalPayment;
-  final double monthlyTotalPayment;
-  final double creditTotalBalance;
+  final dynamic monthlyInterest;
+  final dynamic monthlyCapitalPayment;
+  final dynamic monthlyTotalPayment;
+  final dynamic creditTotalBalance;
 
   LoanSimulationResponse({
     required this.iteration,
@@ -39,9 +37,10 @@ class LoanSimulationResponse {
   });
 
   factory LoanSimulationResponse.fromJson(Map<String, dynamic> json) {
+    
     return LoanSimulationResponse(
       iteration: json['iteration'],
-      month: json['month'],
+      month: json['month'].toString(),
       monthlyInterest: json['monthlyInterest'],
       monthlyCapitalPayment: json['monthlyCapitalPayment'],
       monthlyTotalPayment: json['monthlyTotalPayment'],

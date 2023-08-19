@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:developer_company/data/implementations/loan_simulation_repository_impl.dart';
 import 'package:developer_company/data/implementations/unit_quotation_repository_impl.dart';
+import 'package:developer_company/data/models/loan_simulation_model.dart';
 import 'package:developer_company/data/models/unit_quotation_model.dart';
+import 'package:developer_company/data/providers/loan_simulation_provider.dart';
 import 'package:developer_company/data/providers/unit_quotation_provider.dart';
+import 'package:developer_company/data/repositories/loan_simulation_repository.dart';
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
@@ -20,6 +24,7 @@ import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import "package:http/http.dart" as http;
 
 class UnitQuoteDetailPage extends StatefulWidget {
   const UnitQuoteDetailPage({Key? key}) : super(key: key);
@@ -45,6 +50,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
   final UnitQuotationRepository unitQuotationRepository =
       UnitQuotationRepositoryImpl(UnitQuotationProvider());
+
+  LoanSimulationRepository loanSimulationRepository =
+      LoanSimulationRepositoryImpl(LoanSimulationProvider());
 
   final Map<String, dynamic> arguments = Get.arguments;
 
@@ -84,7 +92,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
           _isBonoSwitched = quoteInfo?.bonusCatorce == 1 ? true : false;
         });
       }
-      _quoteEdit = arguments["unitStatus"] != 4;
+      _quoteEdit = arguments["unitStatus"] != 3;
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.salePrice.text = arguments["salePrice"];
       unitDetailPageController.finalSellPrice.text =
@@ -197,33 +205,33 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 label: "Plazo en meses",
                 hintText: "Plazo en meses",
                 prefixIcon: Icons.person_outline),
-            SwitchListTile(
-              title: const Text(
-                'Aguinaldo',
-                style: TextStyle(color: Colors.black),
-              ),
-              value: _isAguinaldoSwitched,
-              onChanged: (bool value) {
-                setState(() {
-                  _isAguinaldoSwitched = value;
-                });
-              },
-              activeColor: AppColors.secondaryMainColor,
-            ),
-            const SizedBox(height: Dimensions.heightSize),
-            SwitchListTile(
-              title: const Text(
-                'Bono 14',
-                style: TextStyle(color: Colors.black),
-              ),
-              value: _isBonoSwitched,
-              onChanged: (bool value) {
-                setState(() {
-                  _isBonoSwitched = value;
-                });
-              },
-              activeColor: AppColors.secondaryMainColor,
-            ),
+            // SwitchListTile(
+            //   title: const Text(
+            //     'Aguinaldo',
+            //     style: TextStyle(color: Colors.black),
+            //   ),
+            //   value: _isAguinaldoSwitched,
+            //   onChanged: (bool value) {
+            //     setState(() {
+            //       _isAguinaldoSwitched = value;
+            //     });
+            //   },
+            //   activeColor: AppColors.secondaryMainColor,
+            // ),
+            // const SizedBox(height: Dimensions.heightSize),
+            // SwitchListTile(
+            //   title: const Text(
+            //     'Bono 14',
+            //     style: TextStyle(color: Colors.black),
+            //   ),
+            //   value: _isBonoSwitched,
+            //   onChanged: (bool value) {
+            //     setState(() {
+            //       _isBonoSwitched = value;
+            //     });
+            //   },
+            //   activeColor: AppColors.secondaryMainColor,
+            // ),
             SwitchListTile(
               title: const Text(
                 'Precio al contado',
@@ -260,6 +268,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                           unitDetailPageController.discount.text);
 
                       final body = {
+                        "idPlanFinanciero": null,
                         "anioInicio": "2023",
                         "anioFin": (2023 + yearOfEnd).toString(),
                         "ventaDescuento": finalSellPrice,
@@ -268,17 +277,32 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                         "mesInicio": currentMonth.toString(),
                         "mesFin": monthOfEnd.toString(),
                         "descuento": unitDetailPageController.discount.text,
-                        "precioContado": _isAguinaldoSwitched ? "1" : "0",
+                        "precioContado": _isPayedTotal ? "1" : "0",
                         "aguinaldo": _isBonoSwitched ? "1" : "0",
-                        "bonoCatorce": _isPayedTotal ? "1" : "0",
+                        "bonoCatorce": _isAguinaldoSwitched ? "1" : "0",
                         "idUnidad": unitId.toString(),
+                        "ingresoMensual": "0",
+                        "cliente": {
+                          "primerNombre":
+                              unitDetailPageController.clientName.text,
+                          "fechaNacimiento": "",
+                          "oficio": "",
+                          "nit": "",
+                          "dpi": "",
+                          "telefono": unitDetailPageController.clientPhone.text,
+                          "correo": unitDetailPageController.email.text,
+                          "idNacionalidad": "1"
+                        }
                       };
                       try {
                         EasyLoading.showToast(Strings.loading);
                         if (quoteId == null) {
                           //CREATE QUOTE FIRST TIME
-                          final response = await httpAdapter
-                              .postApi("orders/v1/createCotizacion", body, {});
+
+                          final response = await httpAdapter.postApi(
+                              "orders/v1/createCotizacion",
+                              json.encode(body),
+                              {'Content-Type': 'application/json'});
 
                           final responseData = json.decode(response.body)
                               as Map<String, dynamic>;
@@ -294,15 +318,41 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                           //EDIT QUOTE
                           await httpAdapter.putApi(
                               "orders/v1/actualizarCotizacion/$quoteId",
-                              body, {});
+                              json.encode(body), {});
                         }
                         setState(() {
                           isFetchQuote = true;
                         });
                         //? SHOULD BE GET PAYMENT SCHEDULE
-                        await Get.toNamed(
+
+                        final anualPayments = double.tryParse(
+                                unitDetailPageController.paymentMonths.text)! /
+                            12;
+                        double creditValue = double.tryParse(
+                            unitDetailPageController.finalSellPrice.text)!;
+
+                        LoanSimulationRequest loanSimulationRequest =
+                            LoanSimulationRequest(
+                                annualInterest: 6.2,
+                                annualPayments: anualPayments,
+                                totalCreditValue: creditValue);
+
+                        List<LoanSimulationResponse?> simulation =
+                            await loanSimulationRepository
+                                .simulateLoan(loanSimulationRequest);
+
+                        if (simulation.contains(null)) {
+                          simulation = [];
+                        }
+
+                        print(simulation);
+
+                        await await Get.toNamed(
                             RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
-                            arguments: {'quoteId': quoteId});
+                            arguments: {
+                              'quoteId': quoteId,
+                              'simulationSchedule': simulation
+                            });
                       } catch (e) {
                         print(e);
                         EasyLoading.showError(Strings.pleaseVerifyInputs);

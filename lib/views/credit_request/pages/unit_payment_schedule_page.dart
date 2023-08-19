@@ -8,7 +8,8 @@ class UnitPaymentSchedulePage extends StatefulWidget {
   const UnitPaymentSchedulePage({Key? key}) : super(key: key);
 
   @override
-  State<UnitPaymentSchedulePage> createState() => _UnitPaymentSchedulePageState();
+  State<UnitPaymentSchedulePage> createState() =>
+      _UnitPaymentSchedulePageState();
 }
 
 class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
@@ -18,7 +19,6 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +32,9 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
             centerTitle: true,
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
-            title: Text(
+            title: const Text(
               'Programación de pagos',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,
               ),
@@ -43,7 +43,8 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
           body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.only(left: responsive.wp(5), right: responsive.wp(5)),
+              padding: EdgeInsets.only(
+                  left: responsive.wp(5), right: responsive.wp(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -52,7 +53,8 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                     child: DataTable(
                       showCheckboxColumn: false,
                       headingRowHeight: responsive.hp(6),
-                      headingRowColor: MaterialStateProperty.all<Color>(AppColors.secondaryMainColor),
+                      headingRowColor: MaterialStateProperty.all<Color>(
+                          AppColors.secondaryMainColor),
                       columns: const <DataColumn>[
                         DataColumn(
                           label: Expanded(
@@ -63,7 +65,6 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -79,7 +80,6 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -95,7 +95,6 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                                 fontSize: 17,
                                 color: Colors.white,
                                 overflow: TextOverflow.ellipsis,
-
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
@@ -107,21 +106,23 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                         return DataRow(
                             cells: [
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
-                                child: Text('Mes ${index + 1 }'),
+                                width: (Get.width / 5) - 10,
+                                child: Text('Mes ${index + 1}'),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                               DataCell(Container(
-                                width: (Get.width/5) - 10,
+                                width: (Get.width / 5) - 10,
                                 child: Text(''),
                               )),
                             ],
-                            color: index % 2 == 0 ? MaterialStateProperty.all<Color>(AppColors.lightColor) : MaterialStateProperty.all<Color>(AppColors.lightSecondaryColor)
-
-                        );
+                            color: index % 2 == 0
+                                ? MaterialStateProperty.all<Color>(
+                                    AppColors.lightColor)
+                                : MaterialStateProperty.all<Color>(
+                                    AppColors.lightSecondaryColor));
                       }),
                     ),
                   ),
@@ -133,8 +134,8 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                       width: Get.width,
                       decoration: const BoxDecoration(
                           color: AppColors.mainColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(Dimensions.radius))),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Dimensions.radius))),
                       child: Center(
                         child: Text(
                           "Regresar",
@@ -150,7 +151,6 @@ class _UnitPaymentSchedulePageState extends State<UnitPaymentSchedulePage> {
                     },
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-
                 ],
               ),
             ),

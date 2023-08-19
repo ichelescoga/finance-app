@@ -25,7 +25,6 @@ class UnitDetailPage extends StatefulWidget {
 }
 
 class _UnitDetailPageState extends State<UnitDetailPage> {
-
   // final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final Map<String, dynamic> arguments = Get.arguments;
 
@@ -40,11 +39,13 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
     EasyLoading.showToast(Strings.loading);
     try {
       List<UnitQuotation> unitQuotations = await unitQuotationRepository
-          .fetchUnitQuotationsForQuotation(arguments["unitId"]);
+          .fetchUnitQuotationsForQuotation(int.parse(arguments["unitId"]));
 
       setState(() {
         _unitQuotations = unitQuotations;
       });
+    } catch (e) {
+      print(e);
     } finally {
       EasyLoading.dismiss();
     }
