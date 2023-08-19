@@ -24,7 +24,7 @@ import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import "package:http/http.dart" as http;
+
 
 class UnitQuoteDetailPage extends StatefulWidget {
   const UnitQuoteDetailPage({Key? key}) : super(key: key);
