@@ -59,6 +59,21 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
   final Map<String, dynamic> arguments = Get.arguments;
 
+  void _handleBalanceToFinance() {
+    try {
+      double finalSellPrice =
+          double.parse(unitDetailPageController.finalSellPrice.text);
+      double startMoney =
+          double.parse(unitDetailPageController.startMoney.text);
+
+      unitDetailPageController.balanceToFinance.text =
+          (finalSellPrice - startMoney).toString();
+    } catch (e) {
+      unitDetailPageController.balanceToFinance.text =
+          unitDetailPageController.finalSellPrice.text;
+    }
+  }
+
   String calculateFinalSellPrice(value) {
     if (value == null) {
       return unitDetailPageController.finalSellPrice.text =
@@ -115,6 +130,10 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    unitDetailPageController.finalSellPrice
+        .addListener(_handleBalanceToFinance);
+    unitDetailPageController.startMoney.addListener(_handleBalanceToFinance);
+
     return Layout(
       sideBarList: const [],
       appBar: CustomAppBarTwoImages(
@@ -158,7 +177,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                   if (value == "0") return null;
                   final percentageIsValid = percentageValidator(value);
                   if (!percentageIsValid) {
-                    return "Valor debe de ser entre 0 y 100";
+                    return "Valor debe de ser entre 0 y 25";
                   }
                   return null;
                 },
@@ -199,7 +218,17 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 hintText: "Correo",
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
-                validator: (value) => notEmptyFieldValidator(value),
+                validator: (value) {
+                  final isValidMinMonths = graterThanNumberValidator(value, 1);
+                  double priceWithDiscount = double.parse(
+                      unitDetailPageController.finalSellPrice.text);
+                  final isValidMaxMonths =
+                      double.parse(value!) <= priceWithDiscount;
+
+                  if (!isValidMinMonths) return 'El Enganche debe ser mayor 0';
+                  if (isValidMaxMonths) return null;
+                  return 'El Enganche debe ser menor a ${unitDetailPageController.finalSellPrice.text}';
+                },
                 enabled: _quoteEdit,
                 controller: unitDetailPageController.startMoney,
                 label: "Enganche",
@@ -207,11 +236,18 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 keyboardType: TextInputType.number,
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
+                onChange: (value) {
+                  final termMonths = int.tryParse(value);
+                  if (termMonths! > 12) {
+                    setState(() {
+                      _isPayedTotal = false;
+                    });
+                  }
+                },
                 validator: (value) {
                   final isValidMinMonths = graterThanNumberValidator(value, 1);
                   final isValidMaxMonths = lowerThanNumberValidator(value, 240);
-                  if(!isValidMinMonths) return '${Strings.termInMonthsMin} 0';
-                  
+                  if (!isValidMinMonths) return '${Strings.termInMonthsMin} 0';
                   if (isValidMaxMonths) return null;
                   return '${Strings.termInMonthsMax} 240';
                 },
@@ -221,16 +257,24 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                 hintText: "Plazo en meses",
                 keyboardType: TextInputType.number,
                 prefixIcon: Icons.person_outline),
+            CustomInputWidget(
+                enabled: false,
+                controller: unitDetailPageController.balanceToFinance,
+                label: "Saldo a financiar",
+                hintText: "Saldo a financiar",
+                prefixIcon: Icons.monetization_on),
             SwitchListTile(
-              title: const Text(
-                'Precio al contado',
-                style: TextStyle(color: Colors.black),
-              ),
+              title: const Text('Precio al contado',
+                  style: TextStyle(color: Colors.black)),
               value: _isPayedTotal,
               onChanged: (bool value) {
-                setState(() {
-                  _isPayedTotal = value;
-                });
+                final termMonths =
+                    int.tryParse(unitDetailPageController.paymentMonths.text)!;
+                if (termMonths <= 12) {
+                  setState(() {
+                    _isPayedTotal = value;
+                  });
+                }
               },
               activeColor: AppColors.secondaryMainColor,
             ),
@@ -305,9 +349,13 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                           }
                         } else {
                           //EDIT QUOTE
-                          await httpAdapter.putApi(
+                          final result = await httpAdapter.putApi(
                               "orders/v1/actualizarCotizacion/$quoteId",
                               json.encode(body), {});
+
+                          print(result);
+                          print(result);
+                          print(result);
                         }
                         setState(() {
                           isFetchQuote = true;

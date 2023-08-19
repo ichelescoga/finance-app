@@ -1,12 +1,34 @@
 import "package:developer_company/global_state/providers/user_provider_state.dart";
 
 import "package:developer_company/main.dart";
+import "package:developer_company/shared/resources/strings.dart";
+import "package:developer_company/shared/routes/router_paths.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
+import "package:flutter_easyloading/flutter_easyloading.dart";
+import "package:get/get.dart";
 
 import "package:http/http.dart" as http;
 
-class HttpAdapter {
+class HttpAdapter extends http.BaseClient {
   String apiURL = dotenv.env["API_URL"] ?? "";
+  final http.Client _inner = http.Client();
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    return _inner.send(request);
+  }
+
+  http.Response _handleResponse(http.Response response) {
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      return response;
+    } else if (response.statusCode == 403) {
+      Get.toNamed(RouterPaths.HOME_PAGE);
+      EasyLoading.showInfo(Strings.sessionExpired);
+      throw Exception('Login Expired');
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
   Future<http.Response> getApi(
       String url, Map<String, String>? headersApi) async {
@@ -23,13 +45,9 @@ class HttpAdapter {
         headers: headers,
       );
 
-      if (response.statusCode == 200 || response.statusCode == 202) {
-        return response;
-      } else {
-        throw Exception('Failed to load data');
-      }
+      return _handleResponse(response);
     } catch (e) {
-      // print(e);
+      print('Error GET 🗃️😭: $e');
       throw Exception('Something went wrong');
     }
   }
@@ -50,9 +68,9 @@ class HttpAdapter {
         headers: headers,
       );
 
-      return response;
+      return _handleResponse(response);
     } catch (e) {
-      print('Error POST 😭: $e');
+      print('Error POST ☝️😭: $e');
       throw Exception('Something went wrong');
     }
   }
@@ -73,9 +91,9 @@ class HttpAdapter {
         headers: headers,
       );
 
-      return response;
+      return _handleResponse(response);
     } catch (e) {
-      print('Error POST 😭: $e');
+      print('Error POST 🤖😭: $e');
       throw Exception('Something went wrong');
     }
   }

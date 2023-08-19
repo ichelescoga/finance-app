@@ -24,6 +24,7 @@ class UnitDetailPageController extends BaseController {
   TextEditingController bankHistory = TextEditingController();
   TextEditingController paymentMonths = TextEditingController();
   TextEditingController unitStatus = TextEditingController();
+  TextEditingController balanceToFinance = TextEditingController();
 
   bool unitCheck = false;
   bool clientCheck = false;

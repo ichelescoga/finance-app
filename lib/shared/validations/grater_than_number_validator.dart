@@ -1,7 +1,7 @@
 bool graterThanNumberValidator(String? value, int number) {
   try {
     if (value == null) return false;
-    return int.parse(value) >= number;
+    return double.parse(value) >= number;
   } catch (e) {
     return false;
   }

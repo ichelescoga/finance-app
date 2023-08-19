@@ -37,6 +37,7 @@ class Strings {
   static String goBack = 'Regresar';
   static String notValidDPI = 'DPI no valido.';
   static String numberPhoneNotValid = 'Numero de teléfono no valido';
+  static String sessionExpired = 'Sesión Expirada.';
 
   // validators
   static String nitShouldBeGraterThan6 =
