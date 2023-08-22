@@ -124,7 +124,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 prefixIcon: Icons.person_outline),
             CustomInputWidget(
                 enabled: isEditMode,
-                validator: (value) => stringLengthValidator(value, 2, 8)
+                validator: (value) => stringLengthValidator(value, 2, 50)
                     ? null
                     : Strings.kindOfJob,
                 controller: unitDetailPageController.detailKindJob,
@@ -208,7 +208,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                             idCotizacion: arguments['quoteId'].toString(),
                             fotoDpiEnfrente: "linkFoto",
                             fotoDpiReverso: "linkFoto",
-                            estado: 1,
+                            estado: 2, //Estado inicializada
                             empresa:
                                 unitDetailPageController.detailCompany.text,
                             sueldo: unitDetailPageController.detailIncomes.text,
