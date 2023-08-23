@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -302,7 +301,7 @@ class _CreditUserApplicationPageState extends State<CreditUserApplicationPage> {
                       final picker = ImagePicker();
                       final pickedFile = await picker.getImage(source: ImageSource.camera);
                       if (pickedFile != null) {
-                        unitDetailPageController.frontDpi.value = pickedFile.path;
+                        // unitDetailPageController.frontDpi.value = pickedFile.path;
                         unitDetailPageController.update();
                       } else {
                         print('No image selected.');
@@ -310,11 +309,11 @@ class _CreditUserApplicationPageState extends State<CreditUserApplicationPage> {
                     },
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-                  Obx(
-                        () => unitDetailPageController.frontDpi.value.isEmpty
-                        ? Container()
-                        : Image.file(File(unitDetailPageController.frontDpi.value)),
-                  ),
+                  // Obx(
+                  //       () => unitDetailPageController.frontDpi.value.isEmpty
+                  //       ? Container()
+                  //       : Image.file(File(unitDetailPageController.frontDpi.value)),
+                  // ),
                   const SizedBox(height: Dimensions.heightSize),
                   GestureDetector(
                     child: Container(
@@ -346,7 +345,7 @@ class _CreditUserApplicationPageState extends State<CreditUserApplicationPage> {
                       final picker = ImagePicker();
                       final pickedFile = await picker.getImage(source: ImageSource.camera);
                       if (pickedFile != null) {
-                        unitDetailPageController.reverseDpi.value = pickedFile.path;
+                        // unitDetailPageController.reverseDpi.value = pickedFile.path;
                         unitDetailPageController.update();
                       } else {
                         print('No image selected.');
@@ -354,11 +353,11 @@ class _CreditUserApplicationPageState extends State<CreditUserApplicationPage> {
                     },
                   ),
                   const SizedBox(height: Dimensions.heightSize),
-                  Obx(
-                        () => unitDetailPageController.reverseDpi.value.isEmpty
-                        ? Container()
-                        : Image.file(File(unitDetailPageController.reverseDpi.value)),
-                  ),
+                  // Obx(
+                  //       () => unitDetailPageController.reverseDpi.value.isEmpty
+                  //       ? Container()
+                  //       : Image.file(File(unitDetailPageController.reverseDpi.value)),
+                  // ),
                   const SizedBox(height: Dimensions.heightSize),
                 ],
               ),

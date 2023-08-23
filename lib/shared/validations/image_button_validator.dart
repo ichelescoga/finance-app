@@ -1,6 +1,6 @@
-dynamic imageButtonValidator(value) {
+dynamic imageButtonValidator(value, {String validationText = "Seleccione un logo para Proyecto"}) {
   if (value == null) {
-    return "Seleccione un logo para Proyecto";
+    return validationText;
   }
   return null;
 }

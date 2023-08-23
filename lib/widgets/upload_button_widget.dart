@@ -1,26 +1,40 @@
+import 'dart:convert';
+
+import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-class LogoUploadWidget extends StatelessWidget {
-  final RxString developerLogoController;
+class LogoUploadWidget extends StatefulWidget {
+  final ImageToUpload? uploadImageController;
   final String text;
   final FormFieldValidator<Object>? validator;
 
-  const LogoUploadWidget(
-      {required this.developerLogoController,
-      required this.text,
-      required this.validator});
+  const LogoUploadWidget({
+    this.uploadImageController,
+    required this.text,
+    required this.validator,
+  });
+
+  @override
+  State<LogoUploadWidget> createState() => _LogoUploadWidgetState();
+}
+
+class _LogoUploadWidgetState extends State<LogoUploadWidget> {
+  final RxString controllerImage = "".obs;
 
   @override
   Widget build(BuildContext context) {
+    final String? linkImage = widget.uploadImageController?.link;
+
     return FormField(
-        validator: (value) => validator!(developerLogoController.value.isEmpty
+        validator: (value) => widget.validator!(controllerImage.value.isEmpty
             ? null
-            : developerLogoController.value.isEmpty),
+            : controllerImage.value.isEmpty),
         builder: (state) {
           return Column(
             children: [
@@ -38,7 +52,7 @@ class LogoUploadWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          text,
+                          widget.text,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: Dimensions
@@ -62,22 +76,41 @@ class LogoUploadWidget extends StatelessWidget {
                   final pickedFile =
                       // ignore: deprecated_member_use
                       await picker.getImage(source: ImageSource.gallery);
+
                   if (pickedFile != null) {
-                    developerLogoController.value = pickedFile.path;
+                    controllerImage.value = pickedFile.path;
+                    final imageBytes = await pickedFile.readAsBytes();
+
+                    List<int> compressedBytes =
+                        await FlutterImageCompress.compressWithList(
+                      imageBytes,
+                      minHeight: 400,
+                      minWidth: 600,
+                      quality: 50,
+                    );
+
+                    String base64Image = base64Encode(compressedBytes);
+                    setState(() {
+                      widget.uploadImageController
+                          ?.updateBase64String(base64Image);
+                    });
                   } else {
                     // No image selected.
                   }
                 },
               ),
               const SizedBox(height: Dimensions.heightSize),
-              Obx(
-                () => Center(
-                    child: developerLogoController.value.isNotEmpty
-                        ? Image.file(
-                            File(developerLogoController.value),
-                          )
-                        : null),
-              ),
+              widget.uploadImageController?.needUpdate == false &&
+                      linkImage != null
+                  ? Image.network(linkImage)
+                  : Obx(
+                      () => Center(
+                          child: controllerImage.value.isNotEmpty
+                              ? Image.file(
+                                  File(controllerImage.value),
+                                )
+                              : null),
+                    ),
               Text(
                 state.errorText ?? "",
                 style: const TextStyle(

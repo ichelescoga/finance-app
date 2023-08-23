@@ -1,7 +1,7 @@
-bool lowerThanNumberValidator(String? value, int number) {
+bool lowerThanNumberValidator(String? value, double number) {
   try {
     if (value == null) return false;
-    return int.parse(value) <= number;
+    return double.parse(value) <= number;
   } catch (e) {
     return false;
   }

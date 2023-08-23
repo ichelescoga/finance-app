@@ -103,6 +103,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
           quoteInfo?.discount.toString(),
           quoteInfo?.downPayment.toString(),
           quoteInfo?.termMonths.toString(),
+          quoteInfo?.clientData?.email.toString(),
+          quoteInfo?.clientData?.name.toString(),
+          quoteInfo?.clientData?.phone.toString(),
         );
         setState(() {
           _isPayedTotal = quoteInfo?.cashPrice == 1 ? true : false;
@@ -274,6 +277,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                   setState(() {
                     _isPayedTotal = value;
                   });
+                }else{
+                  EasyLoading.showInfo(Strings.termOfMonthsMin);
                 }
               },
               activeColor: AppColors.secondaryMainColor,
@@ -320,8 +325,6 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                               unitDetailPageController.clientName.text,
                           "fechaNacimiento": "",
                           "oficio": "",
-                          "nit": "",
-                          "dpi": "",
                           "telefono": unitDetailPageController.clientPhone.text,
                           "correo": unitDetailPageController.email.text,
                           "idNacionalidad": "1"
@@ -349,13 +352,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                           }
                         } else {
                           //EDIT QUOTE
-                          final result = await httpAdapter.putApi(
+                          await httpAdapter.putApi(
                               "orders/v1/actualizarCotizacion/$quoteId",
                               json.encode(body), {});
-
-                          print(result);
-                          print(result);
-                          print(result);
                         }
                         setState(() {
                           isFetchQuote = true;

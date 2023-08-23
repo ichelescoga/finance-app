@@ -155,8 +155,6 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                 validator: (value) => notEmptyFieldValidator(value),
                 prefixIcon: Icons.person_outline),
             LogoUploadWidget(
-              developerLogoController:
-                  createAdviserPageController.developerLogo,
               text: "Logo",
               validator: (value) {
                 if (value == null) {
@@ -172,7 +170,6 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                 validator: (value) => notEmptyFieldValidator(value),
                 prefixIcon: Icons.person_outline),
             LogoUploadWidget(
-              developerLogoController: createAdviserPageController.projectLogo,
               text: "Logo",
               validator: (value) {
                 if (value == null) {

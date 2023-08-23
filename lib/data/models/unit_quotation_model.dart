@@ -1,4 +1,7 @@
 // models/unit_quotation_model.dart
+
+
+import 'package:developer_company/data/models/client_model.dart';
 import 'package:intl/intl.dart';
 
 class Quotation {
@@ -23,6 +26,7 @@ class Quotation {
   final int? bonusCatorce;
   final String? createdAt;
   final String? updatedAt;
+  final Client? clientData;
 
   Quotation({
     required this.quotationId,
@@ -46,6 +50,7 @@ class Quotation {
     required this.bonusCatorce,
     required this.createdAt,
     required this.updatedAt,
+    required this.clientData
   });
 
   factory Quotation.fromJson(Map<String, dynamic> json) {
@@ -74,6 +79,7 @@ class Quotation {
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
       updatedAt:
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
+      clientData: json['Id_cliente_CLIENTE'] != null ? Client.fromJson(json['Id_cliente_CLIENTE']) : null,
     );
   }
 }
