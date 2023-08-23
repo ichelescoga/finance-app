@@ -10,20 +10,15 @@ import 'package:developer_company/data/repositories/loan_simulation_repository.d
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
-import 'package:developer_company/shared/validations/email_validator.dart';
-import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
-import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
-import 'package:developer_company/shared/validations/not_empty.dart';
-import 'package:developer_company/shared/validations/string_length_validator.dart';
-import 'package:developer_company/shared/validations/percentage_validator.dart';
+import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
+import 'package:developer_company/views/credit_request/pages/form_quote.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
-import 'package:developer_company/shared/resources/colors.dart';
+
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
-import 'package:developer_company/widgets/admin_permission_modal.dart';
 import 'package:developer_company/widgets/app_bar_two_images.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
-import 'package:developer_company/widgets/custom_input_widget.dart';
+
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -47,7 +42,6 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   bool _isPayedTotal = false;
   bool _quoteEdit = true;
   int? quoteId;
-  bool _canEditDiscount = false;
   Quotation? quoteInfo;
   bool isFetchQuote = false;
 
@@ -71,23 +65,6 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
     } catch (e) {
       unitDetailPageController.balanceToFinance.text =
           unitDetailPageController.finalSellPrice.text;
-    }
-  }
-
-  String calculateFinalSellPrice(value) {
-    if (value == null) {
-      return unitDetailPageController.finalSellPrice.text =
-          unitDetailPageController.salePrice.text;
-    }
-    final salePrice = double.tryParse(arguments["salePrice"]);
-    final discountPercentage = int.tryParse(value);
-    if (discountPercentage != null && !percentageValidator(value)) {
-      return salePrice.toString();
-    } else if (salePrice != null && discountPercentage != null) {
-      final discountAmount = salePrice * (discountPercentage / 100);
-      return (salePrice - discountAmount).toString();
-    } else {
-      return salePrice.toString();
     }
   }
 
@@ -148,142 +125,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: Dimensions.heightSize),
-            CustomInputWidget(
-                enabled: false,
-                controller: unitDetailPageController.unit,
-                label: "Unidad",
-                hintText: "Unidad",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                enabled: false,
-                controller: unitDetailPageController.salePrice,
-                label: "Precio de venta",
-                hintText: "precio de venta",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                enabled: _quoteEdit,
-                readOnly: !_canEditDiscount,
-                onTapOutside: (p0) {
-                  setState(() {
-                    _canEditDiscount = false;
-                  });
-                },
-                onTap: () {
-                  _showPermissionDialog(context);
-                },
-                onChange: (value) {
-                  unitDetailPageController.finalSellPrice.text =
-                      calculateFinalSellPrice(value);
-                },
-                validator: (value) {
-                  if (value == "0") return null;
-                  final percentageIsValid = percentageValidator(value);
-                  if (!percentageIsValid) {
-                    return "Valor debe de ser entre 0 y 25";
-                  }
-                  return null;
-                },
-                controller: unitDetailPageController.discount,
-                label: "Descuento",
-                hintText: "Descuento",
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.percent),
-            CustomInputWidget(
-                validator: (value) => notEmptyFieldValidator(value),
-                enabled: false,
-                controller: unitDetailPageController.finalSellPrice,
-                label: "Precio con descuento",
-                hintText: "Precio con descuento",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                validator: (value) => notEmptyFieldValidator(value),
-                enabled: _quoteEdit,
-                controller: unitDetailPageController.clientName,
-                label: "Nombre de Cliente",
-                hintText: "Nombre de Cliente",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                validator: (value) => stringLengthValidator(value, 8, 8)
-                    ? null
-                    : '${Strings.numberPhoneNotValid}, dígitos ${value?.length}',
-                enabled: _quoteEdit,
-                controller: unitDetailPageController.clientPhone,
-                label: "Teléfono",
-                hintText: "Teléfono",
-                keyboardType: TextInputType.phone,
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                validator: (value) => emailValidator(value),
-                enabled: _quoteEdit,
-                controller: unitDetailPageController.email,
-                label: "Correo",
-                hintText: "Correo",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                validator: (value) {
-                  final isValidMinMonths = graterThanNumberValidator(value, 1);
-                  double priceWithDiscount = double.parse(
-                      unitDetailPageController.finalSellPrice.text);
-                  final isValidMaxMonths =
-                      double.parse(value!) <= priceWithDiscount;
-
-                  if (!isValidMinMonths) return 'El Enganche debe ser mayor 0';
-                  if (isValidMaxMonths) return null;
-                  return 'El Enganche debe ser menor a ${unitDetailPageController.finalSellPrice.text}';
-                },
-                enabled: _quoteEdit,
-                controller: unitDetailPageController.startMoney,
-                label: "Enganche",
-                hintText: "Enganche",
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                onChange: (value) {
-                  final termMonths = int.tryParse(value);
-                  if (termMonths! > 12) {
-                    setState(() {
-                      _isPayedTotal = false;
-                    });
-                  }
-                },
-                validator: (value) {
-                  final isValidMinMonths = graterThanNumberValidator(value, 1);
-                  final isValidMaxMonths = lowerThanNumberValidator(value, 240);
-                  if (!isValidMinMonths) return '${Strings.termInMonthsMin} 0';
-                  if (isValidMaxMonths) return null;
-                  return '${Strings.termInMonthsMax} 240';
-                },
-                enabled: _quoteEdit,
-                controller: unitDetailPageController.paymentMonths,
-                label: "Plazo en meses",
-                hintText: "Plazo en meses",
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                enabled: false,
-                controller: unitDetailPageController.balanceToFinance,
-                label: "Saldo a financiar",
-                hintText: "Saldo a financiar",
-                prefixIcon: Icons.monetization_on),
-            SwitchListTile(
-              title: const Text('Precio al contado',
-                  style: TextStyle(color: Colors.black)),
-              value: _isPayedTotal,
-              onChanged: (bool value) {
-                final termMonths =
-                    int.tryParse(unitDetailPageController.paymentMonths.text)!;
-                if (termMonths <= 12) {
-                  setState(() {
-                    _isPayedTotal = value;
-                  });
-                }else{
-                  EasyLoading.showInfo(Strings.termOfMonthsMin);
-                }
-              },
-              activeColor: AppColors.secondaryMainColor,
-            ),
-            const SizedBox(height: Dimensions.heightSize),
+            FormQuote(salePrice: arguments["salePrice"], quoteEdit: _quoteEdit),
             Column(
               children: <Widget>[
                 CustomButtonWidget(
@@ -302,8 +144,13 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
                       int monthOfEnd = months % year;
 
-                      String finalSellPrice = calculateFinalSellPrice(
-                          unitDetailPageController.discount.text);
+                      // String finalSellPrice = calculateSellPriceDiscount(
+                      //     unitDetailPageController.discount.text);
+
+                      String finalSellPrice = calculateSellPriceDiscount(
+                          unitDetailPageController.discount.text,
+                          unitDetailPageController,
+                          arguments["salePrice"]);
 
                       final body = {
                         "idPlanFinanciero": null,
@@ -415,21 +262,5 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         ),
       ),
     );
-  }
-
-  _showPermissionDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return PermissionAdminModal(
-            alertHeight: 180,
-            alertWidth: 200,
-            onTapFunction: () {
-              setState(() {
-                _canEditDiscount = true;
-              });
-            },
-          );
-        });
   }
 }

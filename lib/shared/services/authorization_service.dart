@@ -16,7 +16,11 @@ class AuthorizationService {
       //   PermissionLevel.dashboardQueryQuoteButton,
       //   PermissionLevel.dashboardAddQuoteButton,
       // ],
-      'ejecutivo': [PermissionLevel.analystCreditByClient, PermissionLevel.dashboardQueryQuoteButton],// Temp until the post of login returns the role;
+      'ejecutivo': [ //! TEMP FOR TEST ONLY< UNTIL LOGIN EP COMES WITH ROLE
+        PermissionLevel.analystCreditByClient,
+        PermissionLevel.dashboardQueryQuoteButton, 
+        PermissionLevel.dashboardAddQuoteButton
+      ], // Temp until the post of login returns the role;
       'analista': [PermissionLevel.analystCreditByClient]
     };
 
