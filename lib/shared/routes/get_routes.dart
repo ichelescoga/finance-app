@@ -1,4 +1,5 @@
 import 'package:developer_company/views/advisers/pages/create_adviser_page.dart';
+import 'package:developer_company/views/analysts/pages/analyst_list_credits.dart';
 import 'package:developer_company/views/bank_executive/pages/bank_client_detail_page.dart';
 import 'package:developer_company/views/bank_executive/pages/bank_executive_client_page.dart';
 import 'package:developer_company/views/bank_executive/pages/bank_executive_page.dart';
@@ -64,6 +65,7 @@ class GetRoutes{
       GetPage(name: RouterPaths.CLIENT_CREDIT_ADVANCE_PAGE, page: () => const ClientCreditAdvancePage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE, page: () => const CreditSchedulePaymentsPage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_DETAIL_PAGE, page: () => const ClientCreditDetailPage()),
+      GetPage(name: RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE, page: () => const AnalystListCredits())
     ];
   }
 }
