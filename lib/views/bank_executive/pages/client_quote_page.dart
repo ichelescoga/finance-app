@@ -7,26 +7,17 @@ import 'package:developer_company/data/providers/upload_image.provider.dart';
 import 'package:developer_company/data/repositories/loan_application_repository.dart';
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
-import 'package:developer_company/shared/validations/days_old_validator.dart';
-import 'package:developer_company/shared/validations/dpi_validator.dart';
-import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
-import 'package:developer_company/shared/validations/image_button_validator.dart';
-import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
 // import 'package:developer_company/shared/validations/image_button_validator.dart';
-import 'package:developer_company/shared/validations/nit_validation.dart';
-import 'package:developer_company/shared/validations/not_empty.dart';
-import 'package:developer_company/shared/validations/string_length_validator.dart';
-import 'package:developer_company/shared/validations/years_old_validator.dart';
 import 'package:developer_company/views/bank_executive/pages/form_detail_client.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
-import 'package:developer_company/widgets/custom_input_widget.dart';
-import 'package:developer_company/widgets/date_picker.dart';
+
+
 import 'package:developer_company/widgets/layout.dart';
-import 'package:developer_company/widgets/upload_button_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';

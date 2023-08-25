@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:developer_company/data/implementations/user_repository_impl.dart';
 import 'package:developer_company/data/models/user_model.dart';
 import 'package:developer_company/data/providers/user_provider.dart';
@@ -41,18 +39,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _loginUser(ProviderContainer container) async {
     try {
-      final response = await httpAdapter.postApi("orders/v1/signin", {
-        "email": loginPageController.emailController.value.text,
-        "password": loginPageController.passwordController.value.text
-      }, {});
+      User user = await userRepository.loginUser(
+          loginPageController.emailController.value.text,
+          loginPageController.passwordController.value.text);
 
-      if (response.statusCode != 200) return false;
-
-      final responseData = json.decode(response.body) as Map<String, dynamic>;
-      final token = responseData['token'] as String?;
-      if (token == null) return false;
-
-      User user = await userRepository.loginUser(token);
       container.read(userProvider.notifier).setUser(user);
       return true;
     } catch (e) {

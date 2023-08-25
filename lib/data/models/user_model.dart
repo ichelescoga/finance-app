@@ -1,3 +1,5 @@
+import 'package:developer_company/shared/utils/role_names.dart';
+
 class User {
   // ! this should be changed
   final String token;
@@ -6,11 +8,12 @@ class User {
 
   User({required this.role, required this.name, required this.token});
 
-  factory User.fromJson(Map<String, dynamic> json, String token) {
+  factory User.fromJson(Map<String, dynamic> json) {
+    final roleName = roleNamesById[json['usuario']["USER_PROFILEs"][0]["Id_rol"]]!;
     return User(
-      token: token,
-      role: "ejecutivo",
-      name: json['body'][0]["Nombre"],
+      token: json['token'],
+      role: roleName,
+      name: json['usuario']["Nombre"],
     );
   }
 }

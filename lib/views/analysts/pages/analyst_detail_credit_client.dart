@@ -4,7 +4,7 @@ import "package:developer_company/data/models/unit_quotation_model.dart";
 import "package:developer_company/data/providers/unit_quotation_provider.dart";
 
 import "package:developer_company/data/repositories/unit_quotation_repository.dart";
-import "package:developer_company/shared/resources/colors.dart";
+
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/views/bank_executive/pages/form_detail_client.dart";

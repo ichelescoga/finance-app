@@ -11,19 +11,16 @@ class AuthorizationService {
 
   bool canPerformAction(String action) {
     final allowedActionsByRole = {
-      'admin': ['all'],
-      // 'ejecutivo': [
-      //   PermissionLevel.dashboardQueryQuoteButton,
-      //   PermissionLevel.dashboardAddQuoteButton,
-      // ],
-      'ejecutivo': [ //! TEMP FOR TEST ONLY< UNTIL LOGIN EP COMES WITH ROLE
-        PermissionLevel.analystCreditByClient,
-        PermissionLevel.dashboardQueryQuoteButton, 
+      'Admin': ['all'],
+      'Ejecutivo': [
+        PermissionLevel.dashboardQueryQuoteButton,
         PermissionLevel.dashboardAddQuoteButton
-      ], // Temp until the post of login returns the role;
-      'analista': [PermissionLevel.analystCreditByClient]
+      ],
+      'Analista': [PermissionLevel.analystCreditByClient]
     };
 
+    if(userRole == "Admin") return true;
+    
     final allowedActions = allowedActionsByRole[userRole];
     return allowedActions != null && allowedActions.contains(action);
   }
