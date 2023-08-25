@@ -19,6 +19,12 @@ class HttpAdapter extends http.BaseClient {
   }
 
   http.Response _handleResponse(http.Response response) {
+    print("🚀 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.body}" );
+    print("🚀 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.contentLength}" );
+    print("🚀 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.statusCode}" );
+    print("🚀 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.request}" );
+// TODO Response always comes with message login expired please implemented here;
+
     if (response.statusCode == 200 || response.statusCode == 202) {
       return response;
     } else if (response.statusCode == 403) {
@@ -70,7 +76,7 @@ class HttpAdapter extends http.BaseClient {
 
       return _handleResponse(response);
     } catch (e) {
-      print('Error POST ☝️😭: $e');
+      print('Error POST $url ☝️😭: $e');
       throw Exception('Something went wrong');
     }
   }

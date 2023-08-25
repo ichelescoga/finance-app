@@ -50,5 +50,10 @@ class Strings {
   static String incomesMax = 'Por favor verifique que el sueldo sea mayor a ';
   static String incomesMin = 'Por favor verifique que el sueldo sea menor a';
   static String kindOfJob = "Verifique que el puesto tenga mas de dos letras.";
+  static String dpiPhotoFrontRequired = "La foto frontal del DPI es necesaria";
+  static String dpiPhotoReverseRequired = "La foto reversa del DPI es necesaria";
+
+
+  static String termOfMonthsMin = "Para activar es necesario que el plazo en meses sea menor a 12";
   
 }

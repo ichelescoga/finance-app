@@ -1,6 +1,6 @@
+import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/shared/controllers/base_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class UnitDetailPageController extends BaseController {
   TextEditingController detailCompany = TextEditingController();
@@ -30,26 +30,40 @@ class UnitDetailPageController extends BaseController {
   bool clientCheck = false;
   bool executiveCheck = false;
 
-  RxString frontDpi = ''.obs;
-  RxString reverseDpi = ''.obs;
+  // RxString frontDpi = ''.obs;
+  // RxString reverseDpi = ''.obs;
+
+  ImageToUpload reverseDpi = ImageToUpload(
+    base64: null,
+    needUpdate: true,
+    link: "",
+  );
+  ImageToUpload frontDpi = ImageToUpload(
+    base64: null,
+    needUpdate: true,
+    link: "",
+  );
 
   void updateController(
     String? argsDiscount,
-    // String? argsClientName,
-    // String? argsClientPhone,
-    // String? argsEmail,
     String? argsStartMoney,
     String? argsPaymentMonths,
+    String? argsEmail,
+    String? argsClientName,
+    String? argsClientPhone,
   ) {
     discount.text = argsDiscount ?? "0";
-    // clientName.text = argsClientName ?? "";
-    // clientPhone.text = argsClientPhone ?? "";
-    // email.text = argsEmail ?? "";
+    clientName.text = argsClientName ?? "";
+    clientPhone.text = argsClientPhone ?? "";
+    email.text = argsEmail ?? "";
     startMoney.text = argsStartMoney ?? "";
     paymentMonths.text = argsPaymentMonths ?? "";
   }
 
   void cleanController() {
+    frontDpi.reset();
+    reverseDpi.reset();
+
     detailCompany.clear();
     detailIncomes.clear();
     detailKindJob.clear();
@@ -74,8 +88,6 @@ class UnitDetailPageController extends BaseController {
     unitCheck = false;
     clientCheck = false;
     executiveCheck = false;
-    frontDpi = "".obs;
-    reverseDpi = "".obs;
   }
 
   void startController() {

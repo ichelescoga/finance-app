@@ -1,11 +1,16 @@
 import 'package:developer_company/data/implementations/loan_application_repository_impl.dart';
+import 'package:developer_company/data/implementations/upload_image_impl.dart';
+import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/data/models/loan_application_model.dart';
 import 'package:developer_company/data/providers/loan_application_provider.dart';
+import 'package:developer_company/data/providers/upload_image.provider.dart';
 import 'package:developer_company/data/repositories/loan_application_repository.dart';
+import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/validations/days_old_validator.dart';
 import 'package:developer_company/shared/validations/dpi_validator.dart';
 import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
+import 'package:developer_company/shared/validations/image_button_validator.dart';
 import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
 // import 'package:developer_company/shared/validations/image_button_validator.dart';
 import 'package:developer_company/shared/validations/nit_validation.dart';
@@ -43,6 +48,9 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   String? _applicationId;
   int actualYear = DateTime.now().year;
 
+  UploadImageRepository uploadImageRepository =
+      UploadImageRepositoryImpl(UploadImageProvider());
+
   LoanApplicationRepository loanApplicationRepository =
       LoanApplicationRepositoryImpl(LoanApplicationProvider());
 
@@ -65,14 +73,16 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
         unitDetailPageController.detailIncomes.text =
             loanApplicationResponse.sueldo;
         unitDetailPageController.detailKindJob.text = "";
+        
         unitDetailPageController.detailJobInDate.text =
             loanApplicationResponse.fechaIngreso;
         unitDetailPageController.detailDpi.text = loanApplicationResponse.dpi;
         unitDetailPageController.detailNit.text = loanApplicationResponse.nit;
 
-        setState(() {
-          isEditMode = loanApplicationResponse.estado != 3;
-        });
+        unitDetailPageController.frontDpi
+            .updateLink(loanApplicationResponse.fotoDpiEnfrente);
+        unitDetailPageController.reverseDpi
+            .updateLink(loanApplicationResponse.fotoDpiReverso);
       }
     } catch (e) {
       print('Failed to fetch loan application: $e');
@@ -112,9 +122,13 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                   final isValidMinMonths = graterThanNumberValidator(value, 1);
                   final isValidMaxMonths =
                       lowerThanNumberValidator(value, 150000);
-                  if (!isValidMinMonths) return '${Strings.incomesMax} 0.0';
+                  if (!isValidMinMonths) {
+                    return '${Strings.incomesMax} 0.0';
+                  }
 
-                  if (isValidMaxMonths) return null;
+                  if (isValidMaxMonths) {
+                    return null;
+                  }
                   return '${Strings.incomesMin} 150,000.00';
                 },
                 controller: unitDetailPageController.detailIncomes,
@@ -190,13 +204,25 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                 prefixIcon: Icons.person_outline),
             const SizedBox(height: Dimensions.heightSize),
             LogoUploadWidget(
-                developerLogoController: unitDetailPageController.frontDpi,
+                uploadImageController: unitDetailPageController.frontDpi,
                 text: "DPI (Frente)",
-                validator: (value) => null),
+                validator: (value) {
+                  if (!unitDetailPageController.frontDpi.needUpdate) {
+                    return null;
+                  }
+                  return imageButtonValidator(value,
+                      validationText: Strings.dpiPhotoFrontRequired);
+                }),
             LogoUploadWidget(
-                developerLogoController: unitDetailPageController.reverseDpi,
+                uploadImageController: unitDetailPageController.reverseDpi,
                 text: "DPI (Reverso)",
-                validator: (value) => null),
+                validator: (value) {
+                  if (!unitDetailPageController.reverseDpi.needUpdate) {
+                    return null;
+                  }
+                  return imageButtonValidator(value,
+                      validationText: Strings.dpiPhotoReverseRequired);
+                }),
             Row(
               children: [
                 Expanded(
@@ -204,10 +230,56 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                       text: "Aplicar a crédito",
                       onTap: () async {
                         if (_formKeyApplyQuote.currentState!.validate()) {
+                          final dpiValue =
+                              unitDetailPageController.detailDpi.text;
+
+                          final quoteId = arguments["quoteId"];
+                          final frontDpiBase64 =
+                              unitDetailPageController.frontDpi.base64;
+                          final needUpdateFrontDpi =
+                              unitDetailPageController.frontDpi.needUpdate;
+
+                          if (frontDpiBase64 != null && needUpdateFrontDpi) {
+                            final UploadImage frontDpiRequestImage =
+                                UploadImage(
+                                    file: frontDpiBase64,
+                                    fileName: "$dpiValue-front-$quoteId",
+                                    transactionType: "frontDpiUpload");
+
+                            ImageToUpload responseImage =
+                                await uploadImageRepository
+                                    .postImage(frontDpiRequestImage);
+                            final link = responseImage.link;
+                            unitDetailPageController.frontDpi.updateLink(link!);
+                          }
+
+                          final reverseDpiBase64 =
+                              unitDetailPageController.reverseDpi.base64;
+                          final needUpdateReverseDpi =
+                              unitDetailPageController.reverseDpi.needUpdate;
+
+                          if (reverseDpiBase64 != null &&
+                              needUpdateReverseDpi) {
+                            final UploadImage reverseDpiRequestImage =
+                                UploadImage(
+                                    file: reverseDpiBase64,
+                                    fileName: "$dpiValue-reverse-$quoteId",
+                                    transactionType: "reverseDpiUpload");
+
+                            ImageToUpload responseImage =
+                                await uploadImageRepository
+                                    .postImage(reverseDpiRequestImage);
+                            final link = responseImage.link;
+                            unitDetailPageController.reverseDpi
+                                .updateLink(link!);
+                          }
+
                           LoanApplication loanApplication = LoanApplication(
                             idCotizacion: arguments['quoteId'].toString(),
-                            fotoDpiEnfrente: "linkFoto",
-                            fotoDpiReverso: "linkFoto",
+                            fotoDpiEnfrente:
+                                unitDetailPageController.frontDpi.link!,
+                            fotoDpiReverso:
+                                unitDetailPageController.reverseDpi.link!,
                             estado: 2, //Estado inicializada
                             empresa:
                                 unitDetailPageController.detailCompany.text,
