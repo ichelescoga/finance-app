@@ -39,8 +39,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
       Get.put(UnitDetailPageController());
   bool _isAguinaldoSwitched = false;
   bool _isBonoSwitched = false;
-  bool _isPayedTotal = false;
-  bool _quoteEdit = true;
+    bool _quoteEdit = true;
   int? quoteId;
   Quotation? quoteInfo;
   bool isFetchQuote = false;
@@ -83,9 +82,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
           quoteInfo?.clientData?.email.toString(),
           quoteInfo?.clientData?.name.toString(),
           quoteInfo?.clientData?.phone.toString(),
+          quoteInfo?.cashPrice == 1 ? true : false
         );
         setState(() {
-          _isPayedTotal = quoteInfo?.cashPrice == 1 ? true : false;
           _isAguinaldoSwitched = quoteInfo?.aguinaldo == 1 ? true : false;
           _isBonoSwitched = quoteInfo?.bonusCatorce == 1 ? true : false;
         });
@@ -162,7 +161,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                         "mesInicio": currentMonth.toString(),
                         "mesFin": monthOfEnd.toString(),
                         "descuento": unitDetailPageController.discount.text,
-                        "precioContado": _isPayedTotal ? "1" : "0",
+                        "precioContado": unitDetailPageController.isPayedTotal ? "1" : "0",
                         "aguinaldo": _isBonoSwitched ? "1" : "0",
                         "bonoCatorce": _isAguinaldoSwitched ? "1" : "0",
                         "idUnidad": unitId.toString(),
@@ -230,7 +229,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
                         print(simulation);
 
-                        await await Get.toNamed(
+                        await Get.toNamed(
                             RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
                             arguments: {
                               'quoteId': quoteId,

@@ -29,6 +29,7 @@ class UnitDetailPageController extends BaseController {
   bool unitCheck = false;
   bool clientCheck = false;
   bool executiveCheck = false;
+  bool isPayedTotal = false;
 
   // RxString frontDpi = ''.obs;
   // RxString reverseDpi = ''.obs;
@@ -45,19 +46,20 @@ class UnitDetailPageController extends BaseController {
   );
 
   void updateController(
-    String? argsDiscount,
-    String? argsStartMoney,
-    String? argsPaymentMonths,
-    String? argsEmail,
-    String? argsClientName,
-    String? argsClientPhone,
-  ) {
+      String? argsDiscount,
+      String? argsStartMoney,
+      String? argsPaymentMonths,
+      String? argsEmail,
+      String? argsClientName,
+      String? argsClientPhone,
+      bool? isPayedTotal) {
     discount.text = argsDiscount ?? "0";
     clientName.text = argsClientName ?? "";
     clientPhone.text = argsClientPhone ?? "";
     email.text = argsEmail ?? "";
     startMoney.text = argsStartMoney ?? "";
     paymentMonths.text = argsPaymentMonths ?? "";
+    isPayedTotal = isPayedTotal ?? false;
   }
 
   void cleanController() {

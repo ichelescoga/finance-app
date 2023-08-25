@@ -1,4 +1,5 @@
 import "package:developer_company/shared/resources/colors.dart";
+import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/data_table.dart";
 import "package:developer_company/widgets/layout.dart";
@@ -98,6 +99,13 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
                     index,
                     DataRow(
                       onSelectChanged: (value) {
+                        print(element);
+                        // Get.toNamed(
+                        //     RouterPaths.ANALYST_DETAIL_CREDIT_CLIENT_PAGE);
+
+                        Get.toNamed(
+                          RouterPaths.ANALYST_DETAIL_CREDIT_PAGE,
+                        );
                         // print(element.month);
                         // print(element.creditTotalBalance);
                       },

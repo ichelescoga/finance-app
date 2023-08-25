@@ -38,7 +38,6 @@ class _FormQuoteState extends State<FormQuote> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   UnitDetailPageController unitDetailPageController =
       Get.put(UnitDetailPageController());
-  bool _isPayedTotal = false;
   bool _canEditDiscount = false;
   int? quoteId;
   
@@ -147,7 +146,7 @@ class _FormQuoteState extends State<FormQuote> {
               final termMonths = int.tryParse(value);
               if (termMonths! > 12) {
                 setState(() {
-                  _isPayedTotal = false;
+                  unitDetailPageController.isPayedTotal = false;
                 });
               }
             },
@@ -173,14 +172,12 @@ class _FormQuoteState extends State<FormQuote> {
         SwitchListTile(
           title: const Text('Precio al contado',
               style: TextStyle(color: Colors.black)),
-          value: _isPayedTotal,
+          value: unitDetailPageController.isPayedTotal,
           onChanged: (bool value) {
             final termMonths =
                 int.tryParse(unitDetailPageController.paymentMonths.text)!;
             if (termMonths <= 12) {
-              setState(() {
-                _isPayedTotal = value;
-              });
+              unitDetailPageController.isPayedTotal = value;
             } else {
               EasyLoading.showInfo(Strings.termOfMonthsMin);
             }
