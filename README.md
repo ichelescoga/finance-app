@@ -14,3 +14,20 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+## change name and bundle ID
+```
+  flutter pub global activate rename
+  flutter pub global run rename --appname "Finance Flow & Marketing"
+  flutter pub global run rename --bundleId com.financeApp.FinanceFlow&Marketing
+  flutter pub global run rename --bundleId com.financeApp.FinanceFlowMarketing
+```
+
+## generate APK
+
+For some reason the compressed package generated for flutter (flutter build apk) doesn't work, so please use the command below.
+```
+flutter build apk --debug
+```
+this generate a app-debug.apk more weightily but works fine.
