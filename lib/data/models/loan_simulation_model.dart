@@ -2,11 +2,12 @@ class LoanSimulationRequest {
   final dynamic annualInterest;
   final dynamic annualPayments;
   final dynamic totalCreditValue;
-
+  final bool cashPrice;
   LoanSimulationRequest({
     required this.annualInterest,
     required this.annualPayments,
     required this.totalCreditValue,
+    required this.cashPrice
   });
 
   Map<String, dynamic> toJson() {
@@ -14,7 +15,7 @@ class LoanSimulationRequest {
       "annualInterest": annualInterest,
       "annualPayments": annualPayments,
       "totalCreditValue": totalCreditValue,
-      "cash_price": 1
+      "precioContado": cashPrice
     };
   }
 }

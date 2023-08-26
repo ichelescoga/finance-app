@@ -31,4 +31,6 @@ class RouterPaths{
   static const String CLIENT_CREDIT_DETAIL_PAGE = '/clientCreditDetailPage';
   static const String CLIENT_CREDIT_ADVANCE_PAGE = '/clientCreditAdvancePage';
   static const String CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE = '/clientCreditSchedulePaymentsPage';
+  static const String ANALYST_CREDITS_BY_CLIENT_PAGE = '/analystCreditByClientPage';
+  static const String ANALYST_DETAIL_CREDIT_PAGE = '/analystDetailCreditPage';
 }

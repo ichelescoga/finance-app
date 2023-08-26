@@ -87,6 +87,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               _handleDateChanged(picked);
             }
           },
+          enabled: widget.enabled,
           onChanged: widget.onChange,
           readOnly: true,
           style: CustomStyle.textStyle,

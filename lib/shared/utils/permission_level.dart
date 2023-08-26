@@ -7,5 +7,7 @@ class PermissionLevel {
   static const String dashboardExecutiveButton = 'dashboard_executive_button';
   static const String dashboardClientButton = 'dashboard_client_button';
   static const String dashboardReport = 'dashboard_report';
+
+  static const String analystCreditByClient = 'analyst_credit_by_client';
   // Add more permission levels as needed
 }

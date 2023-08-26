@@ -8,14 +8,17 @@ class Layout extends StatefulWidget {
   final Widget child;
   final PreferredSizeWidget appBar;
   final List<Map<String, dynamic>> sideBarList;
+  final FloatingActionButton? actionButton;
+  final Function? onBackFunction;
 
-  const Layout(
-      {Key? key,
-      required this.sideBarList,
-      required this.appBar,
-      required this.child,
-      })
-      : super(key: key);
+  const Layout({
+    Key? key,
+    required this.sideBarList,
+    required this.appBar,
+    required this.child,
+    this.actionButton,
+    this.onBackFunction,
+  }) : super(key: key);
 
   @override
   _LayoutState createState() => _LayoutState();
@@ -27,10 +30,12 @@ class _LayoutState extends State<Layout> {
   @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
-    
+
     return WillPopScope(
         child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
           key: scaffoldKey,
+          floatingActionButton: widget.actionButton,
           backgroundColor: AppColors.BACKGROUND,
           appBar: widget.appBar,
           drawer: SideBarWidget(
@@ -45,7 +50,12 @@ class _LayoutState extends State<Layout> {
               )),
         ),
         onWillPop: () async {
-          Get.back(closeOverlays: true);
+          final isNotNullFunction = widget.onBackFunction;
+          if (isNotNullFunction != null) {
+            isNotNullFunction();
+          } else {
+            Get.back(closeOverlays: true);
+          }
           return false;
         });
   }

@@ -6,6 +6,7 @@ import 'package:developer_company/shared/utils/permission_level.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/AuthorizationWrapper.dart';
 import 'package:developer_company/widgets/admin_permission_modal.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -100,7 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                                    SizedBox(height: responsive.hp(2)),
+                  SizedBox(height: responsive.hp(2)),
                   AuthorizationWrapper(
                     requestAction: PermissionLevel.dashboardAddDevelopmentCard,
                     child: Container(
@@ -160,6 +161,33 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  AuthorizationWrapper(
+                    requestAction: PermissionLevel.analystCreditByClient,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: Dimensions.heightSize),
+                        CustomButtonWidget(
+                            text: "Aprobaciones de crédito",
+                            onTap: () =>
+                                Get.toNamed(RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE),
+                            padding:
+                                const EdgeInsets.only(left: 0.0, right: 0.0)),
+                      ],
+                    ),
+                  ),
+                  AuthorizationWrapper(
+                    requestAction: "",
+                    child: Column(
+                      children: [
+                        const SizedBox(height: Dimensions.heightSize),
+                        CustomButtonWidget(
+                            text: "Analista 2 ",
+                            onTap: () {},
+                            padding:
+                                const EdgeInsets.only(left: 0.0, right: 0.0)),
+                      ],
                     ),
                   ),
                   const SizedBox(height: Dimensions.heightSize),

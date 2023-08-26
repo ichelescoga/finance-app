@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:developer_company/data/implementations/loan_application_repository_impl.dart';
 import 'package:developer_company/data/implementations/upload_image_impl.dart';
 import 'package:developer_company/data/models/image_model.dart';
@@ -6,29 +8,25 @@ import 'package:developer_company/data/providers/loan_application_provider.dart'
 import 'package:developer_company/data/providers/upload_image.provider.dart';
 import 'package:developer_company/data/repositories/loan_application_repository.dart';
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
+import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
-import 'package:developer_company/shared/validations/days_old_validator.dart';
-import 'package:developer_company/shared/validations/dpi_validator.dart';
-import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
-import 'package:developer_company/shared/validations/image_button_validator.dart';
-import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
-// import 'package:developer_company/shared/validations/image_button_validator.dart';
-import 'package:developer_company/shared/validations/nit_validation.dart';
+import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
-import 'package:developer_company/shared/validations/string_length_validator.dart';
-import 'package:developer_company/shared/validations/years_old_validator.dart';
+// import 'package:developer_company/shared/validations/image_button_validator.dart';
+import 'package:developer_company/views/bank_executive/pages/form_detail_client.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
-import 'package:developer_company/widgets/date_picker.dart';
+
 import 'package:developer_company/widgets/layout.dart';
-import 'package:developer_company/widgets/upload_button_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ClientQuotePage extends StatefulWidget {
   const ClientQuotePage({Key? key}) : super(key: key);
@@ -54,53 +52,54 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   LoanApplicationRepository loanApplicationRepository =
       LoanApplicationRepositoryImpl(LoanApplicationProvider());
 
-  Future<void> _fetchLoanApplication() async {
-    try {
-      String loanApplicationId = arguments["quoteId"].toString();
+  HttpAdapter httpAdapter = HttpAdapter();
 
-      LoanApplication? loanApplicationResponse = await loanApplicationRepository
-          .fetchLoanApplication(loanApplicationId);
+  void updateParentVariable(bool firstTime, String? appId) {
+    final quoteStatus = arguments["quoteState"];
 
-      if (loanApplicationResponse != null) {
-        setState(() {
-          isEditMode = loanApplicationResponse.estado != 3; // Vendida
-          isFirstTime = false;
-        });
-
-        _applicationId = loanApplicationResponse.idAplicacion;
-        unitDetailPageController.detailCompany.text =
-            loanApplicationResponse.empresa;
-        unitDetailPageController.detailIncomes.text =
-            loanApplicationResponse.sueldo;
-        unitDetailPageController.detailKindJob.text = "";
-        
-        unitDetailPageController.detailJobInDate.text =
-            loanApplicationResponse.fechaIngreso;
-        unitDetailPageController.detailDpi.text = loanApplicationResponse.dpi;
-        unitDetailPageController.detailNit.text = loanApplicationResponse.nit;
-
-        unitDetailPageController.frontDpi
-            .updateLink(loanApplicationResponse.fotoDpiEnfrente);
-        unitDetailPageController.reverseDpi
-            .updateLink(loanApplicationResponse.fotoDpiReverso);
-      }
-    } catch (e) {
-      print('Failed to fetch loan application: $e');
+    if ((quoteStatus == 3 || quoteStatus == 6 || quoteStatus == 7)) {
+      setState(() {
+        isEditMode = false;
+        isFirstTime = false;
+        _applicationId = appId;
+      });
+    } else {
+      setState(() {
+        isEditMode = true;
+        isFirstTime = true;
+        _applicationId = appId;
+      });
     }
   }
+
+  // void start() {
+  //   final quoteStatus = arguments["quoteState"];
+  //   if (quoteStatus == 3 || quoteStatus == 6 || quoteStatus == 7) {
+  //     setState(() {
+  //       isEditMode = false;
+  //       isFirstTime = false;
+  //     });
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      unitDetailPageController.startController();
-      _fetchLoanApplication();
-    });
+    // start();
   }
 
   @override
   Widget build(BuildContext context) {
     return Layout(
+      actionButton: _applicationId != null
+          ? FloatingActionButton(
+              onPressed: () {
+                _showModalSendWhatsApp(context);
+              },
+              child: const Icon(Icons.picture_as_pdf),
+              backgroundColor: AppColors.softMainColor,
+            )
+          : null,
       sideBarList: const [],
       appBar: const CustomAppBarTitle(title: 'Detalle de cotización'),
       child: Form(
@@ -108,121 +107,11 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: Dimensions.heightSize),
-            CustomInputWidget(
-                enabled: isEditMode,
-                validator: (value) => notEmptyFieldValidator(value),
-                controller: unitDetailPageController.detailCompany,
-                label: "Empresa",
-                hintText: "Empresa",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                enabled: isEditMode,
-                validator: (value) {
-                  final isValidMinMonths = graterThanNumberValidator(value, 1);
-                  final isValidMaxMonths =
-                      lowerThanNumberValidator(value, 150000);
-                  if (!isValidMinMonths) {
-                    return '${Strings.incomesMax} 0.0';
-                  }
-
-                  if (isValidMaxMonths) {
-                    return null;
-                  }
-                  return '${Strings.incomesMin} 150,000.00';
-                },
-                controller: unitDetailPageController.detailIncomes,
-                label: "Sueldo",
-                hintText: "Sueldo",
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                enabled: isEditMode,
-                validator: (value) => stringLengthValidator(value, 2, 50)
-                    ? null
-                    : Strings.kindOfJob,
-                controller: unitDetailPageController.detailKindJob,
-                label: "Puesto",
-                hintText: "Puesto",
-                prefixIcon: Icons.person_outline),
-            CustomDatePicker(
-              enabled: isEditMode,
-              controller: unitDetailPageController.detailJobInDate,
-              label: "Fecha Ingreso",
-              hintText: "Fecha Ingreso",
-              prefixIcon: Icons.date_range_outlined,
-              validator: (value) {
-                bool isDateValid = daysOldValidator(value.toString(), 2);
-                if (!isDateValid) {
-                  return "La fecha debe ser mayor 2 días";
-                }
-                if (value != null) return null;
-                return "VALIDE CAMPOS";
-              },
-              initialDate: DateTime.now(),
-              firstDate: DateTime(actualYear - 60),
-              lastDate: DateTime(actualYear + 1),
+            FormDetailClient(
+              loanApplicationId: arguments["quoteId"].toString(),
+              updateEditMode: updateParentVariable,
+              isEditMode: isEditMode,
             ),
-            CustomDatePicker(
-              enabled: isEditMode,
-              controller: unitDetailPageController.detailBirthday,
-              label: "Fecha de nacimiento",
-              hintText: "Fecha de nacimiento",
-              prefixIcon: Icons.date_range_outlined,
-              validator: (value) {
-                bool isDateValid = yearsOldValidator(value.toString(), 2);
-                if (!isDateValid) {
-                  return "El cliente debe de ser mayor a 18 años";
-                }
-                if (value != null) return null;
-                return "VALIDE CAMPOS";
-              },
-              initialDate: DateTime(actualYear - 1),
-              firstDate: DateTime(actualYear - 90),
-              lastDate: DateTime(actualYear),
-            ),
-            CustomInputWidget(
-                enabled: isEditMode,
-                validator: (value) {
-                  final isValidDpi = dpiValidator(value);
-                  if (!isValidDpi) {
-                    return Strings.notValidDPI;
-                  }
-                  return null;
-                },
-                controller: unitDetailPageController.detailDpi,
-                label: "DPI",
-                hintText: "DPI",
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-                enabled: isEditMode,
-                validator: (value) => nitValidation(value),
-                controller: unitDetailPageController.detailNit,
-                label: "NIT",
-                hintText: "NIT",
-                prefixIcon: Icons.person_outline),
-            const SizedBox(height: Dimensions.heightSize),
-            LogoUploadWidget(
-                uploadImageController: unitDetailPageController.frontDpi,
-                text: "DPI (Frente)",
-                validator: (value) {
-                  if (!unitDetailPageController.frontDpi.needUpdate) {
-                    return null;
-                  }
-                  return imageButtonValidator(value,
-                      validationText: Strings.dpiPhotoFrontRequired);
-                }),
-            LogoUploadWidget(
-                uploadImageController: unitDetailPageController.reverseDpi,
-                text: "DPI (Reverso)",
-                validator: (value) {
-                  if (!unitDetailPageController.reverseDpi.needUpdate) {
-                    return null;
-                  }
-                  return imageButtonValidator(value,
-                      validationText: Strings.dpiPhotoReverseRequired);
-                }),
             Row(
               children: [
                 Expanded(
@@ -301,6 +190,14 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                                       _applicationId.toString());
                             }
 
+                            final body = {
+                              "idEstado": "2",
+                              "comentario": "",
+                            };
+                            await httpAdapter.putApi(
+                                "orders/v1/cotizacionUpdEstado/${arguments['quoteId'].toString()}",
+                                body, {});
+
                             unitDetailPageController.cleanController();
                             EasyLoading.showSuccess(
                                 "Aplicación a crédito exitosa.");
@@ -329,5 +226,105 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
         ),
       ),
     );
+  }
+
+  _showModalSendWhatsApp(BuildContext context) {
+    TextEditingController commentController = TextEditingController();
+    TextEditingController phoneController = TextEditingController();
+    final _formKeyComments = GlobalKey<FormState>();
+
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return Center(
+            child: Container(
+              color: Colors.white,
+              height: Get.height / 3,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Form(
+                  key: _formKeyComments,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const Text("¿Enviar Cotización de crédito?",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: Dimensions.extraLargeTextSize,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                        CustomInputWidget(
+                            controller: phoneController,
+                            validator: (value) {
+                              if (value!.length != 8) {
+                                return "Teléfono no valido";
+                              }
+                              return null;
+                            },
+                            label: "Teléfono",
+                            hintText: "Teléfono",
+                            keyboardType: TextInputType.number,
+                            prefixIcon: Icons.comment),
+                        CustomInputWidget(
+                            controller: commentController,
+                            validator: (value) => notEmptyFieldValidator(value),
+                            label: "Comentarios Extra",
+                            hintText: "Comentarios Extra",
+                            prefixIcon: Icons.comment),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: CustomButtonWidget(
+                                    color: AppColors.blueColor,
+                                    text: "Enviar",
+                                    onTap: () async {
+                                      if (_formKeyComments.currentState!
+                                          .validate()) {
+                                        print('FAB pressed $_applicationId');
+
+                                        final response = await httpAdapter.postApi(
+                                            "orders/v1/cotizacionPdf/$_applicationId",
+                                            {},
+                                            {});
+
+                                        if (response.statusCode != 200) {
+                                          EasyLoading.showError(
+                                              "Cotización no pudo ser generada.");
+                                          return;
+                                        }
+
+                                        final responseBody =
+                                            json.decode(response.body);
+                                        final url = responseBody['body'];
+                                        String phoneNumber =
+                                            "+502${phoneController.text}";
+                                        String text =
+                                            "${commentController.text} \n $url";
+
+                                        final whatsAppURlAndroid =
+                                            "whatsapp://send?phone=" +
+                                                phoneNumber +
+                                                "&text=$text";
+                                        await launchUrl(
+                                            Uri.parse(whatsAppURlAndroid));
+
+                                        EasyLoading.showSuccess(
+                                            "Cotización Enviada con éxito");
+
+                                        Navigator.of(context).pop();
+                                      }
+                                    })),
+                            Expanded(
+                                child: CustomButtonWidget(
+                                    text: "Regresar",
+                                    onTap: () => Navigator.of(context).pop()))
+                          ],
+                        )
+                      ]),
+                ),
+              ),
+            ),
+          );
+        }));
   }
 }

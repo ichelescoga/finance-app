@@ -8,7 +8,7 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this.userProvider);
 
   @override
-  Future<User> loginUser(String token) async {
-    return await userProvider.loginUser(token);
+  Future<User> loginUser(String email, String password) async {
+    return await userProvider.loginUser(email, password);
   }
 }

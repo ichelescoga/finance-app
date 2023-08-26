@@ -5,15 +5,13 @@ import 'package:developer_company/data/models/user_model.dart';
 class UserProvider {
   final httpAdapter = HttpAdapter();
 
-  Future<User> loginUser(String token) async {
-    final headers = {
-      'authorization': 'bearer $token',
-    };
-    final response = await httpAdapter.getApi("orders/v1/user", headers);
+  Future<User> loginUser(String email, String password) async {
+    final response = await httpAdapter.postApi(
+        "orders/v1/signin", {"email": email, "password": password}, {});
 
-    if (response.statusCode == 202) {
+    if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      return User.fromJson(jsonResponse, token);
+      return User.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to login');
     }
