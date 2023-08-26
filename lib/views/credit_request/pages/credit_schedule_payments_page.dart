@@ -23,7 +23,7 @@ class _CreditSchedulePaymentsPageState
   final Map<String, dynamic> arguments = Get.arguments;
 
   List<LoanSimulationResponse> simulation = [];
-  
+
   void loadListOfSimulation() {
     setState(() {
       simulation = arguments['simulationSchedule'];
@@ -203,8 +203,10 @@ class _CreditSchedulePaymentsPageState
               child: CustomButtonWidget(
                 text: "Aplicar a crédito",
                 onTap: () {
-                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE,
-                      arguments: {'quoteId': arguments['quoteId']});
+                  Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE, arguments: {
+                    'quoteId': arguments['quoteId'],
+                    "quoteState": arguments["quoteState"]
+                  });
                 },
               ),
             ),

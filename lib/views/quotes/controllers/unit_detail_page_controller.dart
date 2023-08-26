@@ -59,7 +59,7 @@ class UnitDetailPageController extends BaseController {
     email.text = argsEmail ?? "";
     startMoney.text = argsStartMoney ?? "";
     paymentMonths.text = argsPaymentMonths ?? "";
-    isPayedTotal = isPayedTotal ?? false;
+    // isPayedTotal = isPayedTotal ?? false;
   }
 
   void cleanController() {

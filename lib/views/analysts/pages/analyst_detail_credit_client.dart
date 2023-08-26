@@ -309,7 +309,7 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
                     ),
                     FormDetailClient(
                       loanApplicationId: parsedQuoteId,
-                      updateEditMode: (p0, p1, p2) {},
+                      updateEditMode: ( p1, p2) {},
                       isEditMode: false,
                     ),
                     CustomButtonWidget(

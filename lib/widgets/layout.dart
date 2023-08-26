@@ -33,6 +33,7 @@ class _LayoutState extends State<Layout> {
 
     return WillPopScope(
         child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
           key: scaffoldKey,
           floatingActionButton: widget.actionButton,
           backgroundColor: AppColors.BACKGROUND,

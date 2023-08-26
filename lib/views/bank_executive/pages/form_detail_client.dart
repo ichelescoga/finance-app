@@ -23,7 +23,7 @@ import 'package:get/get.dart';
 class FormDetailClient extends StatefulWidget {
   final String? loanApplicationId;
   final bool isEditMode;
-  final Function(bool, bool, String?) updateEditMode;
+  final Function(bool, String?) updateEditMode;
 
   const FormDetailClient(
       {Key? key,
@@ -59,13 +59,14 @@ class _FormDetailClientState extends State<FormDetailClient> {
       if (loanApplicationResponse != null) {
         final newIdApplication = loanApplicationResponse.idAplicacion;
 
-        final loanStatus = loanApplicationResponse.estado;
-        final canEdit = !(loanStatus == 3 ||
-                loanStatus == 6 ||
-                loanStatus == 7) &&
-            widget.isEditMode; //TODO: STUB ENHANCE LOGIC unit_status unitStatus
+        // final loanStatus = loanApplicationResponse.estado;
+        // final canEdit = !(loanStatus == 3 ||
+        //         loanStatus == 6 ||
+        //         loanStatus == 7) &&
+        //     widget.isEditMode; //TODO: STUB ENHANCE LOGIC unit_status unitStatus
 
-        widget.updateEditMode(canEdit, false, newIdApplication);
+        // widget.updateEditMode(canEdit, false, newIdApplication);
+        widget.updateEditMode(false, newIdApplication);
 
         unitDetailPageController.detailCompany.text =
             loanApplicationResponse.empresa;

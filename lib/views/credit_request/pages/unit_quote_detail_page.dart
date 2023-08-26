@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:developer_company/data/implementations/loan_simulation_repository_impl.dart';
 import 'package:developer_company/data/implementations/unit_quotation_repository_impl.dart';
@@ -8,8 +9,10 @@ import 'package:developer_company/data/providers/loan_simulation_provider.dart';
 import 'package:developer_company/data/providers/unit_quotation_provider.dart';
 import 'package:developer_company/data/repositories/loan_simulation_repository.dart';
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
+import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
+import 'package:developer_company/shared/validations/not_empty.dart';
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
 import 'package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart';
 import 'package:developer_company/views/credit_request/pages/form_quote.dart';
@@ -19,11 +22,13 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/widgets/app_bar_two_images.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/custom_input_widget.dart';
 
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UnitQuoteDetailPage extends StatefulWidget {
   const UnitQuoteDetailPage({Key? key}) : super(key: key);
@@ -111,13 +116,15 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
     return Layout(
       sideBarList: const [],
-      actionButton: FloatingActionButton(
-        onPressed: () {
-          print('FAB pressed');
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
-      ),
+      actionButton: quoteId != null
+          ? FloatingActionButton(
+              onPressed: () {
+                _showModalSendWhatsApp(context);
+              },
+              child: const Icon(Icons.picture_as_pdf),
+              backgroundColor: AppColors.softMainColor,
+            )
+          : null,
       appBar: CustomAppBarTwoImages(
           title: 'Cotización',
           leftImage: 'assets/logo_test.png',
@@ -221,7 +228,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                             LoanSimulationRequest(
                                 annualInterest: 6.2,
                                 annualPayments: anualPayments,
-                                totalCreditValue: creditValue);
+                                totalCreditValue: creditValue,
+                                cashPrice:
+                                    unitDetailPageController.isPayedTotal);
 
                         List<LoanSimulationResponse?> simulation =
                             await loanSimulationRepository
@@ -231,11 +240,14 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                           simulation = [];
                         }
 
+                        final quoteStatus = quoteInfo!.estadoId;
+
                         await Get.toNamed(
                             RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
                             arguments: {
                               'quoteId': quoteId,
-                              'simulationSchedule': simulation
+                              'simulationSchedule': simulation,
+                              "quoteState": quoteStatus ?? 2
                             });
                       } catch (e) {
                         print(e);
@@ -263,5 +275,104 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         ),
       ),
     );
+  }
+
+  _showModalSendWhatsApp(BuildContext context) {
+    TextEditingController commentController = TextEditingController();
+    TextEditingController phoneController = TextEditingController();
+    final _formKeyComments = GlobalKey<FormState>();
+
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return Center(
+            child: Container(
+              color: Colors.white,
+              height: Get.height / 3,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Form(
+                  key: _formKeyComments,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const Text("¿Enviar Cotización de crédito?",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: Dimensions.extraLargeTextSize,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                        CustomInputWidget(
+                            controller: phoneController,
+                            validator: (value) {
+                              if (value!.length != 8) {
+                                return "Teléfono no valido";
+                              }
+                              return null;
+                            },
+                            label: "Teléfono",
+                            hintText: "Teléfono",
+                            keyboardType: TextInputType.number,
+                            prefixIcon: Icons.comment),
+                        CustomInputWidget(
+                            controller: commentController,
+                            validator: (value) => notEmptyFieldValidator(value),
+                            label: "Comentarios Extra",
+                            hintText: "Comentarios Extra",
+                            prefixIcon: Icons.comment),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: CustomButtonWidget(
+                                    color: AppColors.blueColor,
+                                    text: "Enviar",
+                                    onTap: () async {
+                                      if (_formKeyComments.currentState!
+                                          .validate()) {
+                                        print('FAB pressed $quoteId');
+
+                                        final response = await httpAdapter.postApi(
+                                            "orders/v1/cotizacionPdf/$quoteId",
+                                            {},
+                                            {});
+
+                                        if (response.statusCode != 200) {
+                                          EasyLoading.showError(
+                                              "Cotización no pudo ser generada.");
+                                          return;
+                                        }
+
+                                        final responseBody =
+                                            json.decode(response.body);
+                                        final url = responseBody['body'];
+                                        String phoneNumber = "+502${phoneController.text}";
+                                        String text =
+                                            "${commentController.text} \n $url";
+
+                                        final whatsAppURlAndroid =
+                                            "whatsapp://send?phone=" +
+                                                phoneNumber +
+                                                "&text=$text";
+                                        await launchUrl(
+                                            Uri.parse(whatsAppURlAndroid));
+
+                                        EasyLoading.showSuccess(
+                                            "Cotización Enviada con éxito");
+
+                                        Navigator.of(context).pop();
+                                      }
+                                    })),
+                            Expanded(
+                                child: CustomButtonWidget(
+                                    text: "Regresar",
+                                    onTap: () => Navigator.of(context).pop()))
+                          ],
+                        )
+                      ]),
+                ),
+              ),
+            ),
+          );
+        }));
   }
 }

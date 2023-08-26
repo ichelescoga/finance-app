@@ -1,4 +1,3 @@
-
 import 'package:developer_company/data/models/unit_quotation_model.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/validations/email_validator.dart';
@@ -26,8 +25,7 @@ class FormQuote extends StatefulWidget {
       {Key? key,
       this.quoteEdit = true,
       required this.salePrice,
-      this.canEditDiscount = false
-      })
+      this.canEditDiscount = false})
       : super(key: key);
 
   @override
@@ -40,7 +38,7 @@ class _FormQuoteState extends State<FormQuote> {
       Get.put(UnitDetailPageController());
   bool _canEditDiscount = false;
   int? quoteId;
-  
+
   Quotation? quoteInfo;
   bool isFetchQuote = false;
 
@@ -76,8 +74,9 @@ class _FormQuoteState extends State<FormQuote> {
               // unitDetailPageController.finalSellPrice.text =
               //     calculateFinalSellPrice(value);
 
-              unitDetailPageController.finalSellPrice.text = calculateSellPriceDiscount(
-                  value, unitDetailPageController, widget.salePrice);
+              unitDetailPageController.finalSellPrice.text =
+                  calculateSellPriceDiscount(
+                      value, unitDetailPageController, widget.salePrice);
             },
             validator: (value) {
               if (value == "0") return null;
@@ -176,8 +175,12 @@ class _FormQuoteState extends State<FormQuote> {
           onChanged: (bool value) {
             final termMonths =
                 int.tryParse(unitDetailPageController.paymentMonths.text)!;
+
+            unitDetailPageController.isPayedTotal = value;
             if (termMonths <= 12) {
-              unitDetailPageController.isPayedTotal = value;
+              setState(() {
+                unitDetailPageController.isPayedTotal = value;
+              });
             } else {
               EasyLoading.showInfo(Strings.termOfMonthsMin);
             }
