@@ -74,6 +74,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
 
   Future<int> _fetchCompany() async {
     try {
+      //TODO SHOULD BE RETRIEVE PROYECT_ID AND GET COMPANY BY USER NOT ALL
       List<Company> companies = await companyRepository.fetchCompanies();
       return companies[0].companyId;
     } catch (e) {
