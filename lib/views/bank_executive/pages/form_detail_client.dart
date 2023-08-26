@@ -44,9 +44,6 @@ class _FormDetailClientState extends State<FormDetailClient> {
       LoanApplicationRepositoryImpl(LoanApplicationProvider());
 
   int actualYear = DateTime.now().year;
-  // bool isEditMode = true;
-  // bool isFirstTime = true;
-  // String? _applicationId;
 
   Future<void> _fetchLoanApplication() async {
     try {
@@ -62,8 +59,11 @@ class _FormDetailClientState extends State<FormDetailClient> {
       if (loanApplicationResponse != null) {
         final newIdApplication = loanApplicationResponse.idAplicacion;
 
-        final canEdit = loanApplicationResponse.estado != 3 &&
-            widget.isEditMode; //TODO: add more states Vendida
+        final loanStatus = loanApplicationResponse.estado;
+        final canEdit = !(loanStatus == 3 ||
+                loanStatus == 6 ||
+                loanStatus == 7) &&
+            widget.isEditMode; //TODO: STUB ENHANCE LOGIC unit_status unitStatus
 
         widget.updateEditMode(canEdit, false, newIdApplication);
 

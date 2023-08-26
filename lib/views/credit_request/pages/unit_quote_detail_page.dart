@@ -11,6 +11,7 @@ import 'package:developer_company/data/repositories/unit_quotation_repository.da
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
+import 'package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart';
 import 'package:developer_company/views/credit_request/pages/form_quote.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 
@@ -39,7 +40,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
       Get.put(UnitDetailPageController());
   bool _isAguinaldoSwitched = false;
   bool _isBonoSwitched = false;
-    bool _quoteEdit = true;
+  bool _quoteEdit = true;
   int? quoteId;
   Quotation? quoteInfo;
   bool isFetchQuote = false;
@@ -52,21 +53,6 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
   final Map<String, dynamic> arguments = Get.arguments;
 
-  void _handleBalanceToFinance() {
-    try {
-      double finalSellPrice =
-          double.parse(unitDetailPageController.finalSellPrice.text);
-      double startMoney =
-          double.parse(unitDetailPageController.startMoney.text);
-
-      unitDetailPageController.balanceToFinance.text =
-          (finalSellPrice - startMoney).toString();
-    } catch (e) {
-      unitDetailPageController.balanceToFinance.text =
-          unitDetailPageController.finalSellPrice.text;
-    }
-  }
-
   Future<void> start() async {
     quoteId = arguments["quoteId"];
 
@@ -76,20 +62,31 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         quoteInfo = await unitQuotationRepository
             .fetchQuotationById(quoteId.toString());
         unitDetailPageController.updateController(
-          quoteInfo?.discount.toString(),
-          quoteInfo?.downPayment.toString(),
-          quoteInfo?.termMonths.toString(),
-          quoteInfo?.clientData?.email.toString(),
-          quoteInfo?.clientData?.name.toString(),
-          quoteInfo?.clientData?.phone.toString(),
-          quoteInfo?.cashPrice == 1 ? true : false
-        );
+            quoteInfo?.discount.toString(),
+            quoteInfo?.downPayment.toString(),
+            quoteInfo?.termMonths.toString(),
+            quoteInfo?.clientData?.email.toString(),
+            quoteInfo?.clientData?.name.toString(),
+            quoteInfo?.clientData?.phone.toString(),
+            quoteInfo?.cashPrice == 1 ? true : false);
         setState(() {
           _isAguinaldoSwitched = quoteInfo?.aguinaldo == 1 ? true : false;
           _isBonoSwitched = quoteInfo?.bonusCatorce == 1 ? true : false;
         });
       }
-      _quoteEdit = arguments["unitStatus"] != 3;
+      //TODO: STUB ENHANCE LOGIC unit_status unitStatus
+      // _quoteEdit = !(arguments["unitStatus"] == 3 ||
+      //     arguments["unitStatus"] == 6 ||
+      //     arguments["unitStatus"] == 7);
+      final statusQuoteById = quoteInfo?.estadoId;
+      if (statusQuoteById != null) {
+        setState(() {
+          _quoteEdit = !(statusQuoteById == 3 ||
+              statusQuoteById == 6 ||
+              statusQuoteById == 7);
+        });
+      }
+
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.salePrice.text = arguments["salePrice"];
       unitDetailPageController.finalSellPrice.text =
@@ -109,12 +106,18 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    unitDetailPageController.finalSellPrice
-        .addListener(_handleBalanceToFinance);
-    unitDetailPageController.startMoney.addListener(_handleBalanceToFinance);
+    unitDetailPageController.finalSellPrice.addListener(handleBalanceToFinance);
+    unitDetailPageController.startMoney.addListener(handleBalanceToFinance);
 
     return Layout(
       sideBarList: const [],
+      actionButton: FloatingActionButton(
+        onPressed: () {
+          print('FAB pressed');
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
       appBar: CustomAppBarTwoImages(
           title: 'Cotización',
           leftImage: 'assets/logo_test.png',
@@ -161,7 +164,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                         "mesInicio": currentMonth.toString(),
                         "mesFin": monthOfEnd.toString(),
                         "descuento": unitDetailPageController.discount.text,
-                        "precioContado": unitDetailPageController.isPayedTotal ? "1" : "0",
+                        "precioContado":
+                            unitDetailPageController.isPayedTotal ? "1" : "0",
                         "aguinaldo": _isBonoSwitched ? "1" : "0",
                         "bonoCatorce": _isAguinaldoSwitched ? "1" : "0",
                         "idUnidad": unitId.toString(),
@@ -226,8 +230,6 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
                         if (simulation.contains(null)) {
                           simulation = [];
                         }
-
-                        print(simulation);
 
                         await Get.toNamed(
                             RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,

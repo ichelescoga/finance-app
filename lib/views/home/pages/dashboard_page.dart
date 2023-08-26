@@ -169,7 +169,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: [
                         const SizedBox(height: Dimensions.heightSize),
                         CustomButtonWidget(
-                            text: "Analista 1",
+                            text: "Aprobaciones de crédito",
                             onTap: () =>
                                 Get.toNamed(RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE),
                             padding:

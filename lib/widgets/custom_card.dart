@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class CustomCard extends StatelessWidget {
   final VoidCallback onTap;
   final Widget child;
+  final Color color;
 
-  const CustomCard({Key? key, required this.onTap, required this.child})
+  const CustomCard({Key? key, required this.onTap, required this.child, required this.color})
       : super(key: key);
 
   @override
@@ -13,7 +14,7 @@ class CustomCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-          color: AppColors.secondaryMainColor, // Blue background color
+          color: color, // Blue background color
           elevation: 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),

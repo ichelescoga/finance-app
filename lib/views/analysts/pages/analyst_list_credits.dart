@@ -1,26 +1,31 @@
+import "package:developer_company/data/implementations/analyst_repository_impl.dart";
+import "package:developer_company/data/models/analyst_model.dart";
+import "package:developer_company/data/providers/analyst_provider.dart";
+import "package:developer_company/data/repositories/analyst_repository.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/data_table.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
+import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:get/get.dart";
 
-class Simulation {
-  final String client;
-  final String unit;
-  final double sellPrice;
-  final double priceToPay;
-  final String executive;
+// class Simulation {
+//   final String client;
+//   final String unit;
+//   final double sellPrice;
+//   final double priceToPay;
+//   final String executive;
 
-  Simulation({
-    required this.client,
-    required this.unit,
-    required this.sellPrice,
-    required this.priceToPay,
-    required this.executive,
-  });
-} //! TEMP REMOVE WHEN DATA REAL PLEASE
+//   Simulation({
+//     required this.client,
+//     required this.unit,
+//     required this.sellPrice,
+//     required this.priceToPay,
+//     required this.executive,
+//   });
+// } //! TEMP REMOVE WHEN DATA REAL PLEASE
 
 class AnalystListCredits extends StatefulWidget {
   const AnalystListCredits({Key? key}) : super(key: key);
@@ -33,32 +38,40 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
   final appColors = AppColors();
   final _scrollController = ScrollController();
 
-  final List<Simulation> simulations = [
-    Simulation(
-      client: 'Jose Perez',
-      unit: "Apartamento 4",
-      sellPrice: 200000.0,
-      priceToPay: 180000.0,
-      executive: "Juan Carlos",
-    ),
-    Simulation(
-      client: 'Ana Quinoleo',
-      unit: "Apartamento 5",
-      sellPrice: 300000.0,
-      priceToPay: 250000.0,
-      executive: "Pedro Quinoa",
-    ),
-    // Add more Simulation instances as needed
-  ];
+  final AnalystRepository analystRepository =
+      AnalystRepositoryImpl(AnalystProvider());
 
-  void _onRowTap(Simulation simulation) {
-    print('Selected simulation: ${simulation.executive}');
+  void _onRowTap(AnalystQuotation simulation) {
+    // print('Selected simulation: ${simulation.executive}');
     // You can perform further actions using the selected Simulation object
+  }
+  List<AnalystQuotation> quotationsByClient = [];
+
+  void retrieveQuotationApplied() async {
+    try {
+      List<AnalystQuotation> listClients =
+          await analystRepository.fetchAllQuotesForAnalyst();
+
+      setState(() {
+        quotationsByClient = listClients;
+      });
+    } catch (e) {
+      EasyLoading.showError("Algo salio mal");
+    }
+  }
+
+  void handleUpdateQuote(isFetchQuote) async {
+    if (isFetchQuote != null && isFetchQuote is bool) {
+      if (isFetchQuote) {
+        retrieveQuotationApplied();
+      }
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    retrieveQuotationApplied();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController
           .animateTo(
@@ -93,30 +106,35 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
               'Total Saldo A financiar',
               'Ejecutivo'
             ],
-            elements: simulations
+            elements: quotationsByClient
                 .asMap()
                 .map((index, element) => MapEntry(
                     index,
                     DataRow(
-                      onSelectChanged: (value) {
+                      onSelectChanged: (value) async {
                         print(element);
                         // Get.toNamed(
                         //     RouterPaths.ANALYST_DETAIL_CREDIT_CLIENT_PAGE);
 
-                        Get.toNamed(
-                          RouterPaths.ANALYST_DETAIL_CREDIT_PAGE,
-                        );
-                        // print(element.month);
-                        // print(element.creditTotalBalance);
+                        final isQuoteUpdate = await Get.toNamed(
+                            RouterPaths.ANALYST_DETAIL_CREDIT_PAGE,
+                            arguments: {
+                              "quoteId": element.id,
+                              "statusId": element.statusId,
+                              "unitName": element.unitName,
+                              "sellPrice": element.sellPrice,
+                              "finalPrice": element.buyPrice
+                            });
+                        handleUpdateQuote(isQuoteUpdate);
                       },
                       cells: [
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),
-                          child: Text(element.client),
+                          child: Text(element.clientName),
                         )),
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),
-                          child: Text(element.unit),
+                          child: Text(element.unitName),
                         )),
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),
@@ -124,7 +142,7 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
                         )),
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),
-                          child: Text(element.priceToPay.toString()),
+                          child: Text(element.buyPrice.toString()),
                         )),
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),

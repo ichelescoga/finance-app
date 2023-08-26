@@ -7,6 +7,7 @@ import 'package:developer_company/data/providers/upload_image.provider.dart';
 import 'package:developer_company/data/repositories/loan_application_repository.dart';
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/shared/utils/http_adapter.dart';
 // import 'package:developer_company/shared/validations/image_button_validator.dart';
 import 'package:developer_company/views/bank_executive/pages/form_detail_client.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
@@ -14,7 +15,6 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
-
 
 import 'package:developer_company/widgets/layout.dart';
 
@@ -46,6 +46,8 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   LoanApplicationRepository loanApplicationRepository =
       LoanApplicationRepositoryImpl(LoanApplicationProvider());
 
+  HttpAdapter httpAdapter = HttpAdapter();
+
   void updateParentVariable(bool editMode, bool firstTime, String? appId) {
     setState(() {
       isEditMode = editMode;
@@ -54,48 +56,9 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
     });
   }
 
-  // Future<void> _fetchLoanApplication() async {
-  //   try {
-  //     String loanApplicationId = arguments["quoteId"].toString();
-
-  //     LoanApplication? loanApplicationResponse = await loanApplicationRepository
-  //         .fetchLoanApplication(loanApplicationId);
-
-  //     if (loanApplicationResponse != null) {
-  //       setState(() {
-  //         isEditMode = loanApplicationResponse.estado != 3; // Vendida
-  //         isFirstTime = false;
-  //       });
-
-  //       _applicationId = loanApplicationResponse.idAplicacion;
-  //       unitDetailPageController.detailCompany.text =
-  //           loanApplicationResponse.empresa;
-  //       unitDetailPageController.detailIncomes.text =
-  //           loanApplicationResponse.sueldo;
-  //       unitDetailPageController.detailKindJob.text = "";
-
-  //       unitDetailPageController.detailJobInDate.text =
-  //           loanApplicationResponse.fechaIngreso;
-  //       unitDetailPageController.detailDpi.text = loanApplicationResponse.dpi;
-  //       unitDetailPageController.detailNit.text = loanApplicationResponse.nit;
-
-  //       unitDetailPageController.frontDpi
-  //           .updateLink(loanApplicationResponse.fotoDpiEnfrente);
-  //       unitDetailPageController.reverseDpi
-  //           .updateLink(loanApplicationResponse.fotoDpiReverso);
-  //     }
-  //   } catch (e) {
-  //     print('Failed to fetch loan application: $e');
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
-    // Future.delayed(Duration.zero, () {
-    //   unitDetailPageController.startController();
-    //   _fetchLoanApplication();
-    // });
   }
 
   @override
@@ -189,6 +152,14 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                                   .updateLoanApplication(loanApplication,
                                       _applicationId.toString());
                             }
+
+                            final body = {
+                              "idEstado": "2",
+                              "comentario": "",
+                            };
+                            await httpAdapter.putApi(
+                                "orders/v1/cotizacionUpdEstado/${arguments['quoteId'].toString()}",
+                                body, {});
 
                             unitDetailPageController.cleanController();
                             EasyLoading.showSuccess(
