@@ -4,7 +4,6 @@ import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/views/home/controllers/login_page_controller.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
-import 'package:developer_company/widgets/custom_input_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -60,7 +59,6 @@ class CustomAppBarSideBar extends StatelessWidget
   }
 
   _showModalProfile(BuildContext context) {
-    TextEditingController controllerUserInfo = TextEditingController();
 
     return showDialog(
         context: context,

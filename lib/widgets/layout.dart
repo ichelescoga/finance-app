@@ -2,7 +2,6 @@ import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/utils/responsive.dart";
 import "package:developer_company/widgets/sidebar_widget.dart";
 import "package:flutter/material.dart";
-import "package:flutter_phoenix/flutter_phoenix.dart";
 import "package:get/get.dart";
 
 class Layout extends StatefulWidget {
