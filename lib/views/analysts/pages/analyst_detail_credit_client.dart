@@ -1,4 +1,4 @@
-import "dart:convert";
+// import "dart:convert";
 
 import "package:developer_company/data/implementations/unit_quotation_repository_impl.dart";
 import "package:developer_company/data/models/unit_quotation_model.dart";
@@ -68,17 +68,19 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
           await unitQuotationRepository.fetchQuotationById(quoteId.toString());
 
       unitDetailPageController.updateController(
-          quoteInfo?.discount.toString(),
-          quoteInfo?.downPayment.toString(),
-          quoteInfo?.termMonths.toString(),
-          quoteInfo?.clientData?.email.toString(),
-          quoteInfo?.clientData?.name.toString(),
-          quoteInfo?.clientData?.phone.toString(),
-          quoteInfo?.cashPrice == 1 ? true : false);
+        quoteInfo?.discount.toString(),
+        quoteInfo?.downPayment.toString(),
+        quoteInfo?.termMonths.toString(),
+        quoteInfo?.clientData?.email.toString(),
+        quoteInfo?.clientData?.name.toString(),
+        quoteInfo?.clientData?.phone.toString(),
+      );
 
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.salePrice.text = arguments["sellPrice"];
       unitDetailPageController.finalSellPrice.text = arguments["finalPrice"];
+      unitDetailPageController.isPayedTotal =
+          quoteInfo?.cashPrice == 1 ? true : false;
     } finally {
       EasyLoading.dismiss();
     }
@@ -89,7 +91,9 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
     super.initState();
     Future.delayed(Duration.zero, () {
       start();
-      handleBalanceToFinance();
+      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+          unitDetailPageController.finalSellPrice.text,
+          unitDetailPageController.startMoney.text);
     });
   }
 
@@ -146,7 +150,10 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
                 ],
               ),
               hideButtons
-                  ? Container()
+                  ? CustomButtonWidget(
+                      text: "Regresar",
+                      onTap: () =>
+                          Get.back(closeOverlays: true, result: hideButtons))
                   : SizedBox(
                       height: Get.height / 6,
                       child: Row(
@@ -309,7 +316,7 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
                     ),
                     FormDetailClient(
                       loanApplicationId: parsedQuoteId,
-                      updateEditMode: ( p1, p2) {},
+                      updateEditMode: (p1, p2) {},
                       isEditMode: false,
                     ),
                     CustomButtonWidget(

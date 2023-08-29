@@ -72,7 +72,8 @@ class _FormDetailClientState extends State<FormDetailClient> {
             loanApplicationResponse.empresa;
         unitDetailPageController.detailIncomes.text =
             loanApplicationResponse.sueldo;
-        unitDetailPageController.detailKindJob.text = "";
+        unitDetailPageController.detailKindJob.text = loanApplicationResponse.puesto;
+        unitDetailPageController.detailBirthday.text = loanApplicationResponse.fechaNacimiento;
 
         unitDetailPageController.detailJobInDate.text =
             loanApplicationResponse.fechaIngreso;
@@ -198,9 +199,13 @@ class _FormDetailClientState extends State<FormDetailClient> {
             prefixIcon: Icons.person_outline),
         const SizedBox(height: Dimensions.heightSize),
         LogoUploadWidget(
+           icon: Icon(
+              Icons.camera,
+              color: Colors.white,
+            ),
             enabled: widget.isEditMode,
             uploadImageController: unitDetailPageController.frontDpi,
-            text: "DPI (Frente)",
+            text: "DPI(Enfrente)",
             validator: (value) {
               if (!unitDetailPageController.frontDpi.needUpdate) {
                 return null;
@@ -209,9 +214,13 @@ class _FormDetailClientState extends State<FormDetailClient> {
                   validationText: Strings.dpiPhotoFrontRequired);
             }),
         LogoUploadWidget(
+            icon: Icon(
+              Icons.camera,
+              color: Colors.white,
+            ),
             enabled: widget.isEditMode,
             uploadImageController: unitDetailPageController.reverseDpi,
-            text: "DPI (Reverso)",
+            text: "DPI(Reverso)",
             validator: (value) {
               if (!unitDetailPageController.reverseDpi.needUpdate) {
                 return null;

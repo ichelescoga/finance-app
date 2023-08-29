@@ -119,6 +119,7 @@ class _FormQuoteState extends State<FormQuote> {
             validator: (value) => emailValidator(value),
             enabled: widget.quoteEdit,
             controller: unitDetailPageController.email,
+            keyboardType: TextInputType.emailAddress,
             label: "Correo",
             hintText: "Correo",
             prefixIcon: Icons.person_outline),
@@ -176,7 +177,6 @@ class _FormQuoteState extends State<FormQuote> {
             final termMonths =
                 int.tryParse(unitDetailPageController.paymentMonths.text)!;
 
-            unitDetailPageController.isPayedTotal = value;
             if (termMonths <= 12) {
               setState(() {
                 unitDetailPageController.isPayedTotal = value;

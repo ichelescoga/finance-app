@@ -11,6 +11,8 @@ class LoanApplication {
   final String fechaIngreso;
   final String dpi;
   final String nit;
+  final String puesto;
+  final String fechaNacimiento;
 
   LoanApplication({
     this.idAplicacion,
@@ -25,6 +27,8 @@ class LoanApplication {
     required this.fechaIngreso,
     required this.dpi,
     required this.nit,
+    required this.puesto,
+    required this.fechaNacimiento,
   });
 
   Map<String, dynamic> toJson() {
@@ -38,6 +42,8 @@ class LoanApplication {
       "empresa": empresa,
       "sueldo": sueldo,
       "fechaIngreso": fechaIngreso,
+      "puesto": puesto,
+      "fechaNacimiento": fechaNacimiento,
       "dpi": dpi,
       "nit": nit,
     };
@@ -54,6 +60,10 @@ class LoanApplication {
         sueldo: double.tryParse(json['Sueldo'])?.toStringAsFixed(2).toString() ?? "0",
         fechaIngreso: json['Fecha_ingreso'],
         dpi: json['DPI'],
-        nit: json['NIT']);
+        nit: json['NIT'],
+        fechaNacimiento: json['Id_cliente_CLIENTE']["Fecha_nacimiento"],
+        puesto: json['Id_cliente_CLIENTE']["Puesto"],
+        );
+        
   }
 }

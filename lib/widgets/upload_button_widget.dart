@@ -14,12 +14,17 @@ class LogoUploadWidget extends StatefulWidget {
   final String text;
   final FormFieldValidator<Object>? validator;
   final bool enabled;
+  final Icon icon;
 
   const LogoUploadWidget(
       {this.uploadImageController,
       required this.text,
       required this.validator,
-      this.enabled = true});
+      this.enabled = true,
+      this.icon = const Icon(
+        Icons.upload,
+        color: Colors.white,
+      )});
 
   @override
   State<LogoUploadWidget> createState() => _LogoUploadWidgetState();
@@ -64,17 +69,14 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                         const SizedBox(
                           width: 5,
                         ),
-                        const Icon(
-                          Icons.upload,
-                          color: Colors.white,
-                        ),
+                       widget.icon,
                       ],
                     ),
                   ),
                 ),
                 onTap: () async {
                   if (!widget.enabled) return;
-                  
+
                   final picker = ImagePicker();
                   final pickedFile =
                       // ignore: deprecated_member_use

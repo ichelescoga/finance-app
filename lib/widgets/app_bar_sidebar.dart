@@ -1,5 +1,12 @@
 import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/shared/resources/dimensions.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/views/home/controllers/login_page_controller.dart';
+import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/custom_input_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomAppBarSideBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -27,7 +34,19 @@ class CustomAppBarSideBar extends StatelessWidget
           }
         },
       ),
-      actions: [createIconTopProfile()],
+      actions: [
+        IconButton(
+          icon: ClipRRect(
+            borderRadius: BorderRadius.circular(60.0),
+            child: Image.asset(
+              'assets/icondef.png',
+            ),
+          ),
+          onPressed: () {
+            _showModalProfile(context);
+          },
+        )
+      ],
       elevation: 0.25,
       backgroundColor: AppColors.BACKGROUND, // Define your background color
       title: Text(
@@ -39,9 +58,59 @@ class CustomAppBarSideBar extends StatelessWidget
       ),
     );
   }
+
+  _showModalProfile(BuildContext context) {
+    TextEditingController controllerUserInfo = TextEditingController();
+
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return Center(
+            child: Container(
+              color: Colors.white,
+              height: Get.height / 3,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text("Cerrar Sesión",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: Dimensions.extraLargeTextSize,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: CustomButtonWidget(
+                                  color: AppColors.blueColor,
+                                  text: "Cerrar Sesión",
+                                  onTap: () {
+                                    LoginPageController loginController =
+                                        LoginPageController();
+                                    UnitDetailPageController quoteController =
+                                        UnitDetailPageController();
+                                    loginController.cleanController();
+                                    quoteController.cleanController();
+
+                                    Get.offAllNamed(RouterPaths.HOME_PAGE);
+                                  })),
+                          Expanded(
+                              child: CustomButtonWidget(
+                                  text: "Regresar",
+                                  onTap: () => Navigator.of(context).pop()))
+                        ],
+                      )
+                    ]),
+              ),
+            ),
+          );
+        }));
+  }
 }
 
-createIconTopProfile() {
+createIconTopProfile(BuildContext context) {
   return IconButton(
     icon: ClipRRect(
       borderRadius: BorderRadius.circular(60.0),
@@ -49,6 +118,13 @@ createIconTopProfile() {
         'assets/icondef.png',
       ),
     ),
-    onPressed: () {},
+    onPressed: () {
+      LoginPageController loginController = LoginPageController();
+      UnitDetailPageController quoteController = UnitDetailPageController();
+      loginController.cleanController();
+      quoteController.cleanController();
+
+      Get.offAllNamed(RouterPaths.HOME_PAGE);
+    },
   );
 }

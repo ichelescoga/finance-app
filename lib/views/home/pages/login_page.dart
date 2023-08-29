@@ -44,10 +44,12 @@ class _LoginPageState extends State<LoginPage> {
           loginPageController.passwordController.value.text);
 
       container.read(userProvider.notifier).setUser(user);
+      loginPageController.emailController.clear();
+      loginPageController.passwordController.clear();
       return true;
     } catch (e) {
       setState(() {
-        badLogin = e.toString();
+        badLogin = "";
       });
       return false;
     }

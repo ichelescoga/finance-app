@@ -1,4 +1,3 @@
-import 'package:developer_company/shared/resources/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {

@@ -67,7 +67,7 @@ class HttpAdapter extends http.BaseClient {
         'Authorization': 'Bearer ${user.jwt}',
         ...headersApi ?? {},
       };
-
+      print("POST BODY 😉😉 $body");
       final response = await http.post(
         Uri.parse("$apiURL/$url"),
         body: body,

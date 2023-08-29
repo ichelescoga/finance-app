@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:developer_company/data/implementations/loan_simulation_repository_impl.dart';
 import 'package:developer_company/data/implementations/unit_quotation_repository_impl.dart';
@@ -12,9 +11,11 @@ import 'package:developer_company/data/repositories/unit_quotation_repository.da
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
-import 'package:developer_company/shared/validations/not_empty.dart';
+
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
+import 'package:developer_company/views/credit_request/helpers/download_pdf.dart';
 import 'package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart';
+
 import 'package:developer_company/views/credit_request/pages/form_quote.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 
@@ -22,13 +23,14 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/widgets/app_bar_two_images.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
-import 'package:developer_company/widgets/custom_input_widget.dart';
 
 import 'package:developer_company/widgets/layout.dart';
+import 'package:developer_company/widgets/send_email_quote_dart.dart';
+import 'package:developer_company/widgets/send_whatssap_quote.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class UnitQuoteDetailPage extends StatefulWidget {
   const UnitQuoteDetailPage({Key? key}) : super(key: key);
@@ -37,6 +39,7 @@ class UnitQuoteDetailPage extends StatefulWidget {
   State<UnitQuoteDetailPage> createState() => _UnitQuoteDetailPageState();
 }
 
+// TODO: FORMATEADOR DE DINERO PARA PRECIO CON DESCUENTA, ENGANCHE, SALDO A FINANCIAR
 class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   final httpAdapter = HttpAdapter();
   final _formKey = GlobalKey<FormState>();
@@ -72,11 +75,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
             quoteInfo?.termMonths.toString(),
             quoteInfo?.clientData?.email.toString(),
             quoteInfo?.clientData?.name.toString(),
-            quoteInfo?.clientData?.phone.toString(),
-            quoteInfo?.cashPrice == 1 ? true : false);
+            quoteInfo?.clientData?.phone.toString());
+
         setState(() {
           _isAguinaldoSwitched = quoteInfo?.aguinaldo == 1 ? true : false;
           _isBonoSwitched = quoteInfo?.bonusCatorce == 1 ? true : false;
+          unitDetailPageController.isPayedTotal = quoteInfo?.cashPrice == 1 ? true : false;
         });
       }
       //TODO: STUB ENHANCE LOGIC unit_status unitStatus
@@ -96,8 +100,124 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
       unitDetailPageController.salePrice.text = arguments["salePrice"];
       unitDetailPageController.finalSellPrice.text =
           arguments["finalSellPrice"].toString();
+      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+          unitDetailPageController.finalSellPrice.text,
+          unitDetailPageController.startMoney.text);
+      // final balance =
+      // unitDetailPageController.balanceToFinance.text = balance;
     } finally {
       EasyLoading.dismiss();
+    }
+  }
+
+  void _handleSubmitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final unitId = arguments["unitId"];
+      const year = 12;
+      DateTime now = DateTime.now();
+      int currentMonth = now.month;
+      int? months = int.tryParse(unitDetailPageController.paymentMonths.text) ??
+          0 + currentMonth;
+      double years = months / year;
+      int yearOfEnd = years.floor();
+
+      int monthOfEnd = months % year;
+
+      // String finalSellPrice = calculateSellPriceDiscount(
+      //     unitDetailPageController.discount.text);
+
+      String finalSellPrice = calculateSellPriceDiscount(
+          unitDetailPageController.discount.text,
+          unitDetailPageController,
+          arguments["salePrice"]);
+
+      final body = {
+        "idPlanFinanciero": null,
+        "anioInicio": "2023",
+        "anioFin": (2023 + yearOfEnd).toString(),
+        "ventaDescuento": finalSellPrice,
+        "enganche": unitDetailPageController.startMoney.text,
+        "mesesPlazo": months.toString(),
+        "mesInicio": currentMonth.toString(),
+        "mesFin": monthOfEnd.toString(),
+        "descuento": unitDetailPageController.discount.text,
+        "precioContado": unitDetailPageController.isPayedTotal ? true : false,
+        "aguinaldo": _isBonoSwitched ? "1" : "0",
+        "bonoCatorce": _isAguinaldoSwitched ? "1" : "0",
+        "idUnidad": unitId.toString(),
+        "ingresoMensual": "0",
+        "cliente": {
+          "primerNombre": unitDetailPageController.clientName.text,
+          "fechaNacimiento": "",
+          "oficio": "",
+          "telefono": unitDetailPageController.clientPhone.text,
+          "correo": unitDetailPageController.email.text,
+          "idNacionalidad": "1"
+        }
+      };
+      try {
+        EasyLoading.showToast(Strings.loading);
+        if (quoteId == null) {
+          //CREATE QUOTE FIRST TIME
+
+          final response = await httpAdapter.postApi(
+              "orders/v1/createCotizacion",
+              json.encode(body),
+              {'Content-Type': 'application/json'});
+
+          final responseData =
+              json.decode(response.body) as Map<String, dynamic>;
+          final quoteIdResponse = responseData['idCotizacion'] as int?;
+
+          if (quoteIdResponse != null) {
+            setState(() {
+              quoteId = quoteIdResponse;
+            });
+          }
+        } else {
+          //EDIT QUOTE
+          await httpAdapter.putApi(
+              "orders/v1/actualizarCotizacion/$quoteId", json.encode(body), {});
+        }
+        setState(() {
+          isFetchQuote = true;
+        });
+        //? SHOULD BE GET PAYMENT SCHEDULE
+
+        final anualPayments =
+            double.tryParse(unitDetailPageController.paymentMonths.text)! / 12;
+        double creditValue =
+            double.tryParse(unitDetailPageController.finalSellPrice.text)!;
+
+        LoanSimulationRequest loanSimulationRequest = LoanSimulationRequest(
+            annualInterest: 6.2,
+            annualPayments: anualPayments,
+            totalCreditValue: creditValue,
+            cashPrice: unitDetailPageController.isPayedTotal);
+
+        List<LoanSimulationResponse?> simulation =
+            await loanSimulationRepository.simulateLoan(loanSimulationRequest);
+
+        if (simulation.contains(null)) {
+          simulation = [];
+        }
+
+        final quoteStatus = quoteInfo?.estadoId ?? 2;
+
+        await Get.toNamed(RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
+            arguments: {
+              'quoteId': quoteId,
+              'simulationSchedule': simulation,
+              "quoteState": quoteStatus
+            });
+      } catch (e) {
+        print(e);
+        EasyLoading.showError(Strings.pleaseVerifyInputs);
+      } finally {
+        EasyLoading.dismiss();
+      }
+    } else {
+      EasyLoading.showError(Strings.pleaseVerifyInputs);
     }
   }
 
@@ -111,18 +231,48 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    unitDetailPageController.finalSellPrice.addListener(handleBalanceToFinance);
-    unitDetailPageController.startMoney.addListener(handleBalanceToFinance);
+    unitDetailPageController.finalSellPrice.addListener(() =>
+        unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+            unitDetailPageController.finalSellPrice.text,
+            unitDetailPageController.startMoney.text));
+    unitDetailPageController.startMoney.addListener(() =>
+        unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+            unitDetailPageController.finalSellPrice.text,
+            unitDetailPageController.startMoney.text));
 
     return Layout(
       sideBarList: const [],
       actionButton: quoteId != null
-          ? FloatingActionButton(
-              onPressed: () {
-                _showModalSendWhatsApp(context);
-              },
-              child: const Icon(Icons.picture_as_pdf),
-              backgroundColor: AppColors.softMainColor,
+          ? SpeedDial(
+              animatedIcon: AnimatedIcons.menu_close,
+              animatedIconTheme: IconThemeData(size: 22),
+              backgroundColor: AppColors.blueColor,
+              visible: true,
+              curve: Curves.bounceIn,
+              direction: SpeedDialDirection.left,
+              children: [
+                SpeedDialChild(
+                    child: Icon(
+                      Icons.email,
+                      color: Colors.white,
+                    ),
+                    backgroundColor: AppColors.blueColor,
+                    onTap: () => _showModalEmail(context),
+                    labelBackgroundColor: AppColors.blueColor),
+                SpeedDialChild(
+                    child: Icon(
+                      Icons.picture_as_pdf,
+                      color: Colors.white,
+                    ),
+                    backgroundColor: AppColors.blueColor,
+                    onTap: () => downloadPdf(quoteId),
+                    labelBackgroundColor: AppColors.blueColor),
+                SpeedDialChild(
+                    child: Icon(Icons.message, color: Colors.white),
+                    backgroundColor: AppColors.blueColor,
+                    onTap: () => _showWhatsAppModal(context),
+                    labelBackgroundColor: AppColors.blueColor)
+              ],
             )
           : null,
       appBar: CustomAppBarTwoImages(
@@ -139,126 +289,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
               children: <Widget>[
                 CustomButtonWidget(
                   text: "Programación de pagos",
-                  onTap: () async {
-                    if (_formKey.currentState!.validate()) {
-                      final unitId = arguments["unitId"];
-                      const year = 12;
-                      DateTime now = DateTime.now();
-                      int currentMonth = now.month;
-                      int? months = int.tryParse(
-                              unitDetailPageController.paymentMonths.text) ??
-                          0 + currentMonth;
-                      double years = months / year;
-                      int yearOfEnd = years.floor();
-
-                      int monthOfEnd = months % year;
-
-                      // String finalSellPrice = calculateSellPriceDiscount(
-                      //     unitDetailPageController.discount.text);
-
-                      String finalSellPrice = calculateSellPriceDiscount(
-                          unitDetailPageController.discount.text,
-                          unitDetailPageController,
-                          arguments["salePrice"]);
-
-                      final body = {
-                        "idPlanFinanciero": null,
-                        "anioInicio": "2023",
-                        "anioFin": (2023 + yearOfEnd).toString(),
-                        "ventaDescuento": finalSellPrice,
-                        "enganche": unitDetailPageController.startMoney.text,
-                        "mesesPlazo": months.toString(),
-                        "mesInicio": currentMonth.toString(),
-                        "mesFin": monthOfEnd.toString(),
-                        "descuento": unitDetailPageController.discount.text,
-                        "precioContado":
-                            unitDetailPageController.isPayedTotal ? "1" : "0",
-                        "aguinaldo": _isBonoSwitched ? "1" : "0",
-                        "bonoCatorce": _isAguinaldoSwitched ? "1" : "0",
-                        "idUnidad": unitId.toString(),
-                        "ingresoMensual": "0",
-                        "cliente": {
-                          "primerNombre":
-                              unitDetailPageController.clientName.text,
-                          "fechaNacimiento": "",
-                          "oficio": "",
-                          "telefono": unitDetailPageController.clientPhone.text,
-                          "correo": unitDetailPageController.email.text,
-                          "idNacionalidad": "1"
-                        }
-                      };
-                      try {
-                        EasyLoading.showToast(Strings.loading);
-                        if (quoteId == null) {
-                          //CREATE QUOTE FIRST TIME
-
-                          final response = await httpAdapter.postApi(
-                              "orders/v1/createCotizacion",
-                              json.encode(body),
-                              {'Content-Type': 'application/json'});
-
-                          final responseData = json.decode(response.body)
-                              as Map<String, dynamic>;
-                          final quoteIdResponse =
-                              responseData['idCotizacion'] as int?;
-
-                          if (quoteIdResponse != null) {
-                            setState(() {
-                              quoteId = quoteIdResponse;
-                            });
-                          }
-                        } else {
-                          //EDIT QUOTE
-                          await httpAdapter.putApi(
-                              "orders/v1/actualizarCotizacion/$quoteId",
-                              json.encode(body), {});
-                        }
-                        setState(() {
-                          isFetchQuote = true;
-                        });
-                        //? SHOULD BE GET PAYMENT SCHEDULE
-
-                        final anualPayments = double.tryParse(
-                                unitDetailPageController.paymentMonths.text)! /
-                            12;
-                        double creditValue = double.tryParse(
-                            unitDetailPageController.finalSellPrice.text)!;
-
-                        LoanSimulationRequest loanSimulationRequest =
-                            LoanSimulationRequest(
-                                annualInterest: 6.2,
-                                annualPayments: anualPayments,
-                                totalCreditValue: creditValue,
-                                cashPrice:
-                                    unitDetailPageController.isPayedTotal);
-
-                        List<LoanSimulationResponse?> simulation =
-                            await loanSimulationRepository
-                                .simulateLoan(loanSimulationRequest);
-
-                        if (simulation.contains(null)) {
-                          simulation = [];
-                        }
-
-                        final quoteStatus = quoteInfo!.estadoId;
-
-                        await Get.toNamed(
-                            RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE,
-                            arguments: {
-                              'quoteId': quoteId,
-                              'simulationSchedule': simulation,
-                              "quoteState": quoteStatus ?? 2
-                            });
-                      } catch (e) {
-                        print(e);
-                        EasyLoading.showError(Strings.pleaseVerifyInputs);
-                      } finally {
-                        EasyLoading.dismiss();
-                      }
-                    } else {
-                      EasyLoading.showError(Strings.pleaseVerifyInputs);
-                    }
-                  },
+                  onTap: () => _handleSubmitForm(),
                 ),
                 const SizedBox(height: Dimensions.heightSize),
                 CustomButtonWidget(
@@ -277,102 +308,19 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
     );
   }
 
-  _showModalSendWhatsApp(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    final _formKeyComments = GlobalKey<FormState>();
-
+  _showWhatsAppModal(BuildContext context) {
     return showDialog(
         context: context,
         builder: ((BuildContext context) {
-          return Center(
-            child: Container(
-              color: Colors.white,
-              height: Get.height / 3,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Form(
-                  key: _formKeyComments,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text("¿Enviar Cotización de crédito?",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: Dimensions.extraLargeTextSize,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                        CustomInputWidget(
-                            controller: phoneController,
-                            validator: (value) {
-                              if (value!.length != 8) {
-                                return "Teléfono no valido";
-                              }
-                              return null;
-                            },
-                            label: "Teléfono",
-                            hintText: "Teléfono",
-                            keyboardType: TextInputType.number,
-                            prefixIcon: Icons.comment),
-                        CustomInputWidget(
-                            controller: commentController,
-                            validator: (value) => notEmptyFieldValidator(value),
-                            label: "Comentarios Extra",
-                            hintText: "Comentarios Extra",
-                            prefixIcon: Icons.comment),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    color: AppColors.blueColor,
-                                    text: "Enviar",
-                                    onTap: () async {
-                                      if (_formKeyComments.currentState!
-                                          .validate()) {
-                                        print('FAB pressed $quoteId');
+          return SendWhatssapQuote(applicationId: quoteId.toString());
+        }));
+  }
 
-                                        final response = await httpAdapter.postApi(
-                                            "orders/v1/cotizacionPdf/$quoteId",
-                                            {},
-                                            {});
-
-                                        if (response.statusCode != 200) {
-                                          EasyLoading.showError(
-                                              "Cotización no pudo ser generada.");
-                                          return;
-                                        }
-
-                                        final responseBody =
-                                            json.decode(response.body);
-                                        final url = responseBody['body'];
-                                        String phoneNumber = "+502${phoneController.text}";
-                                        String text =
-                                            "${commentController.text} \n $url";
-
-                                        final whatsAppURlAndroid =
-                                            "whatsapp://send?phone=" +
-                                                phoneNumber +
-                                                "&text=$text";
-                                        await launchUrl(
-                                            Uri.parse(whatsAppURlAndroid));
-
-                                        EasyLoading.showSuccess(
-                                            "Cotización Enviada con éxito");
-
-                                        Navigator.of(context).pop();
-                                      }
-                                    })),
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    text: "Regresar",
-                                    onTap: () => Navigator.of(context).pop()))
-                          ],
-                        )
-                      ]),
-                ),
-              ),
-            ),
-          );
+  _showModalEmail(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return SendEmailQuoteDart(quoteId: quoteId.toString());
         }));
   }
 }

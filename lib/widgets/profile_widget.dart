@@ -3,6 +3,7 @@ import 'package:developer_company/global_state/providers/user_provider_state.dar
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileWidget extends ConsumerWidget {
@@ -22,7 +23,7 @@ class ProfileWidget extends ConsumerWidget {
       child: InkWell(
         onTap: () {
           onPressedProfile();
-          //actionToAccount(x, member);
+          // actionToAccount(x, member);
         },
         child: Padding(
           padding: const EdgeInsets.only(

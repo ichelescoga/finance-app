@@ -52,14 +52,13 @@ class UnitDetailPageController extends BaseController {
       String? argsEmail,
       String? argsClientName,
       String? argsClientPhone,
-      bool? isPayedTotal) {
+      ) {
     discount.text = argsDiscount ?? "0";
     clientName.text = argsClientName ?? "";
     clientPhone.text = argsClientPhone ?? "";
     email.text = argsEmail ?? "";
     startMoney.text = argsStartMoney ?? "";
     paymentMonths.text = argsPaymentMonths ?? "";
-    // isPayedTotal = isPayedTotal ?? false;
   }
 
   void cleanController() {
