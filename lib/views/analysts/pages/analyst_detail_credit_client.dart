@@ -81,6 +81,11 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
       unitDetailPageController.finalSellPrice.text = arguments["finalPrice"];
       unitDetailPageController.isPayedTotal =
           quoteInfo?.cashPrice == 1 ? true : false;
+
+
+      final startMoney = quoteInfo?.downPayment;
+      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+          arguments["finalPrice"], startMoney!);
     } finally {
       EasyLoading.dismiss();
     }
@@ -91,9 +96,6 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
     super.initState();
     Future.delayed(Duration.zero, () {
       start();
-      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
-          unitDetailPageController.finalSellPrice.text,
-          unitDetailPageController.startMoney.text);
     });
   }
 

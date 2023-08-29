@@ -284,6 +284,7 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                 label: "Correo",
                 hintText: "Correo",
                 prefixIcon: Icons.person_outline,
+                keyboardType: TextInputType.emailAddress,
                 validator: (value) => emailValidator(value)),
             CustomInputWidget(
               controller: createAdviserPageController.collaboratorPhoto,

@@ -1,5 +1,6 @@
 import 'package:developer_company/data/models/unit_quotation_model.dart';
 import 'package:developer_company/shared/resources/strings.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/validations/email_validator.dart';
 import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
 import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
@@ -55,7 +56,10 @@ class _FormQuoteState extends State<FormQuote> {
             prefixIcon: Icons.person_outline),
         CustomInputWidget(
             enabled: false,
-            controller: unitDetailPageController.salePrice,
+            controller: TextEditingController(
+                text:
+                    quetzalesCurrency(unitDetailPageController.salePrice.text)),
+            keyboardType: TextInputType.number,
             label: "Precio de venta",
             hintText: "precio de venta",
             prefixIcon: Icons.person_outline),
@@ -71,9 +75,6 @@ class _FormQuoteState extends State<FormQuote> {
               _showPermissionDialog(context);
             },
             onChange: (value) {
-              // unitDetailPageController.finalSellPrice.text =
-              //     calculateFinalSellPrice(value);
-
               unitDetailPageController.finalSellPrice.text =
                   calculateSellPriceDiscount(
                       value, unitDetailPageController, widget.salePrice);
@@ -124,16 +125,32 @@ class _FormQuoteState extends State<FormQuote> {
             hintText: "Correo",
             prefixIcon: Icons.person_outline),
         CustomInputWidget(
+            onFocusChangeInput: (hasFocus) {
+              if (!hasFocus) {
+                unitDetailPageController.startMoney.text =
+                    quetzalesCurrency(unitDetailPageController.startMoney.text);
+              } 
+            },
             validator: (value) {
-              final isValidMinMonths = graterThanNumberValidator(value, 1);
-              double priceWithDiscount =
-                  double.parse(unitDetailPageController.finalSellPrice.text);
-              final isValidMaxMonths =
-                  double.parse(value!) <= priceWithDiscount;
+              final enganche = extractNumber(value!);
+              if (enganche == null) {
+                return "Verifique que el valor sea correcto";
+              }
 
-              if (!isValidMinMonths) return 'El Enganche debe ser mayor 0';
-              if (isValidMaxMonths) return null;
-              return 'El Enganche debe ser menor a ${unitDetailPageController.finalSellPrice.text}';
+              final isValidMinMonths = graterThanNumberValidator(enganche, 1);
+              final finalSellPrice =
+                  extractNumber(unitDetailPageController.finalSellPrice.text);
+
+              if (finalSellPrice != null) {
+                double priceWithDiscount = double.parse(finalSellPrice);
+                final isValidMaxMonths =
+                    double.parse(enganche) <= priceWithDiscount;
+
+                if (!isValidMinMonths) return 'El Enganche debe ser mayor 0';
+                if (isValidMaxMonths) return null;
+                return 'El Enganche debe ser menor a ${unitDetailPageController.finalSellPrice.text}';
+              }
+              return "Algo salio mal valide campos.";
             },
             enabled: widget.quoteEdit,
             controller: unitDetailPageController.startMoney,
@@ -143,6 +160,7 @@ class _FormQuoteState extends State<FormQuote> {
             prefixIcon: Icons.person_outline),
         CustomInputWidget(
             onChange: (value) {
+              if (value.isEmpty) return;
               final termMonths = int.tryParse(value);
               if (termMonths! > 12) {
                 setState(() {
@@ -174,6 +192,10 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.isPayedTotal,
           onChanged: (bool value) {
+            if (unitDetailPageController.paymentMonths.text.isEmpty) {
+              EasyLoading.showInfo(Strings.termOfMonthsMin);
+              return;
+            }
             final termMonths =
                 int.tryParse(unitDetailPageController.paymentMonths.text)!;
 

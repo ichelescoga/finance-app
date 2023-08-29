@@ -26,7 +26,7 @@ class _SendEmailQuoteDartState extends State<SendEmailQuoteDart> {
     return Center(
       child: Container(
         color: Colors.white,
-        height: Get.height / 3,
+        height: Get.height / 2.5,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Form(
@@ -45,6 +45,7 @@ class _SendEmailQuoteDartState extends State<SendEmailQuoteDart> {
                       validator: (value) => emailValidator(value),
                       label: "Correo Electrónico",
                       hintText: "Correo Electrónico",
+                      keyboardType: TextInputType.emailAddress,
                       prefixIcon: Icons.comment),
                   CustomInputWidget(
                       controller: commentController,

@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       return true;
     } catch (e) {
       setState(() {
-        badLogin = "";
+        badLogin = "Email o contraseña invalida.";
       });
       return false;
     }

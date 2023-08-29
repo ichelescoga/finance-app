@@ -10,6 +10,7 @@ import 'package:developer_company/data/repositories/loan_simulation_repository.d
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/strings.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
@@ -70,17 +71,19 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         quoteInfo = await unitQuotationRepository
             .fetchQuotationById(quoteId.toString());
         unitDetailPageController.updateController(
-            quoteInfo?.discount.toString(),
-            quoteInfo?.downPayment.toString(),
-            quoteInfo?.termMonths.toString(),
-            quoteInfo?.clientData?.email.toString(),
-            quoteInfo?.clientData?.name.toString(),
-            quoteInfo?.clientData?.phone.toString());
+          quoteInfo?.discount.toString(),
+          quoteInfo?.downPayment.toString(),
+          quoteInfo?.termMonths.toString(),
+          quoteInfo?.clientData?.email.toString(),
+          quoteInfo?.clientData?.name.toString(),
+          quoteInfo?.clientData?.phone.toString(),
+        );
 
         setState(() {
           _isAguinaldoSwitched = quoteInfo?.aguinaldo == 1 ? true : false;
           _isBonoSwitched = quoteInfo?.bonusCatorce == 1 ? true : false;
-          unitDetailPageController.isPayedTotal = quoteInfo?.cashPrice == 1 ? true : false;
+          unitDetailPageController.isPayedTotal =
+              quoteInfo?.cashPrice == 1 ? true : false;
         });
       }
       //TODO: STUB ENHANCE LOGIC unit_status unitStatus
@@ -99,7 +102,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.salePrice.text = arguments["salePrice"];
       unitDetailPageController.finalSellPrice.text =
-          arguments["finalSellPrice"].toString();
+          quetzalesCurrency(arguments["finalSellPrice"].toString());
       unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
           unitDetailPageController.finalSellPrice.text,
           unitDetailPageController.startMoney.text);
@@ -135,8 +138,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         "idPlanFinanciero": null,
         "anioInicio": "2023",
         "anioFin": (2023 + yearOfEnd).toString(),
-        "ventaDescuento": finalSellPrice,
-        "enganche": unitDetailPageController.startMoney.text,
+        "ventaDescuento": extractNumber(finalSellPrice),
+        "enganche": extractNumber(unitDetailPageController.startMoney.text),
         "mesesPlazo": months.toString(),
         "mesInicio": currentMonth.toString(),
         "mesFin": monthOfEnd.toString(),
@@ -148,13 +151,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         "ingresoMensual": "0",
         "cliente": {
           "primerNombre": unitDetailPageController.clientName.text,
-          "fechaNacimiento": "",
-          "oficio": "",
           "telefono": unitDetailPageController.clientPhone.text,
           "correo": unitDetailPageController.email.text,
           "idNacionalidad": "1"
         }
       };
+
       try {
         EasyLoading.showToast(Strings.loading);
         if (quoteId == null) {
@@ -186,8 +188,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
         final anualPayments =
             double.tryParse(unitDetailPageController.paymentMonths.text)! / 12;
-        double creditValue =
-            double.tryParse(unitDetailPageController.finalSellPrice.text)!;
+        double creditValue = double.tryParse(
+            extractNumber(unitDetailPageController.finalSellPrice.text)!)!;
 
         LoanSimulationRequest loanSimulationRequest = LoanSimulationRequest(
             annualInterest: 6.2,
@@ -235,10 +237,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
             unitDetailPageController.finalSellPrice.text,
             unitDetailPageController.startMoney.text));
-    unitDetailPageController.startMoney.addListener(() =>
-        unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
-            unitDetailPageController.finalSellPrice.text,
-            unitDetailPageController.startMoney.text));
+
+    unitDetailPageController.startMoney.addListener(() {
+      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+          unitDetailPageController.finalSellPrice.text,
+          unitDetailPageController.startMoney.text);
+    });
 
     return Layout(
       sideBarList: const [],

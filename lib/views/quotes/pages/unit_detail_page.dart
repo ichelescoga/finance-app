@@ -3,6 +3,7 @@ import 'package:developer_company/data/models/unit_quotation_model.dart';
 import 'package:developer_company/data/providers/unit_quotation_provider.dart';
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -68,7 +69,7 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.unitStatus.text =
           unitStatus[arguments["unitStatus"]]!;
-      unitDetailPageController.salePrice.text = arguments["salePrice"];
+      unitDetailPageController.salePrice.text = quetzalesCurrency(arguments["salePrice"].toString());
     });
   }
 
@@ -110,110 +111,105 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
           const SizedBox(
             height: Dimensions.heightSize * 0.5,
           ),
-          DataTable(
-              showCheckboxColumn: false,
-              headingRowHeight: responsive.hp(6),
-              headingRowColor: MaterialStateProperty.all<Color>(
-                  AppColors.secondaryMainColor),
-              columns: const <DataColumn>[
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Fecha',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+                showCheckboxColumn: false,
+                headingRowHeight: responsive.hp(6),
+                headingRowColor: MaterialStateProperty.all<Color>(
+                    AppColors.secondaryMainColor),
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Fecha',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Asesor',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Asesor',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-                DataColumn(
-                  label: Expanded(
-                    child: Text(
-                      'Monto cotizado',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Monto cotizado',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
                     ),
                   ),
-                ),
-              ],
-              rows: _unitQuotations
-                  .asMap()
-                  .map((index, element) => MapEntry(
-                      index,
-                      DataRow(
-                          onSelectChanged: (value) async {
-                            // 'isEditing': false,
-                            //         'idQuote': null,
-                            //         'projectId': element.projectId,
-                            //         'unitId': element.unitId,
-                            //         'unitName': element.unitName,
-                            //         'unitStatus': element.estadoId,
-                            //         'salePrice': element.salePrice,
-                            //         'finalSellPrice': element.salePrice
-                            final isFetchQuote = await Get.toNamed(
-                                RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
-                                arguments: {
-                                  'isEditing': true,
-                                  "unitName":
-                                      unitDetailPageController.unit.text,
-                                  'unitStatus': arguments["unitStatus"],
-                                  'salePrice': arguments["salePrice"],
-                                  'finalSellPrice':
-                                      element.quotation.saleDiscount,
-                                  'quoteId': element.quotationId,
-                                  'unitId': element.unitId,
-                                });
-                            handleFetchQuoteHistory(isFetchQuote);
-                          },
-                          cells: [
-                            DataCell(Container(
-                              width: (Get.width / 5),
-                              child: Text(element.createdAt),
-                            )),
-                            DataCell(Container(
-                              width: (Get.width / 5) - 20,
-                              child: Text(
-                                  element.quotation.detailAdvisorId.toString()),
-                            )),
-                            DataCell(Container(
-                              width: (Get.width / 5) - 20,
-                              child: Text(
-                                  element.quotation.saleDiscount.toString()),
-                            )),
-                          ],
-                          color: index % 2 == 0
-                              ? MaterialStateProperty.all<Color>(
-                                  AppColors.lightColor)
-                              : MaterialStateProperty.all<Color>(
-                                  AppColors.lightSecondaryColor))))
-                  .values
-                  .toList()),
+                ],
+                rows: _unitQuotations
+                    .asMap()
+                    .map((index, element) => MapEntry(
+                        index,
+                        DataRow(
+                            onSelectChanged: (value) async {
+                              final isFetchQuote = await Get.toNamed(
+                                  RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                                  arguments: {
+                                    'isEditing': true,
+                                    "unitName":
+                                        unitDetailPageController.unit.text,
+                                    'unitStatus': arguments["unitStatus"],
+                                    'salePrice': arguments["salePrice"],
+                                    'finalSellPrice':
+                                        element.quotation.saleDiscount,
+                                    'quoteId': element.quotationId,
+                                    'unitId': element.unitId,
+                                  });
+                              handleFetchQuoteHistory(isFetchQuote);
+                            },
+                            cells: [
+                              DataCell(Container(
+                                width: (Get.width / 5),
+                                child: Text(element.createdAt),
+                              )),
+                              DataCell(Container(
+                                width: (Get.width / 5) - 20,
+                                child: Text(
+                                    element.quotation.detailAdvisorId.toString()),
+                              )),
+                              DataCell(Container(
+                                width: (Get.width / 3) - 20,
+                                child: Text(
+                                    element.quotation.saleDiscount.toString()),
+                              )),
+                            ],
+                            color: index % 2 == 0
+                                ? MaterialStateProperty.all<Color>(
+                                    AppColors.lightColor)
+                                : MaterialStateProperty.all<Color>(
+                                    AppColors.lightSecondaryColor))))
+                    .values
+                    .toList()),
+          ),
           const SizedBox(height: Dimensions.heightSize),
           const SizedBox(height: Dimensions.heightSize),
           GestureDetector(

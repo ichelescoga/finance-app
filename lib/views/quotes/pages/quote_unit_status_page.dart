@@ -6,6 +6,7 @@ import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -263,7 +264,7 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                                   child: Text(unitStatus[element.estadoId]!),
                                 )),
                                 DataCell(Container(
-                                  child: Text('Q. ${element.salePrice}'),
+                                  child: Text(quetzalesCurrency(element.salePrice)),
                                 )),
                               ],
                               color: index % 2 == 0

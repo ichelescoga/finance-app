@@ -1,3 +1,5 @@
+import 'package:developer_company/shared/services/quetzales_currency.dart';
+
 class LoanSimulationRequest {
   final dynamic annualInterest;
   final dynamic annualPayments;
@@ -24,9 +26,9 @@ class LoanSimulationResponse {
   final int iteration;
   final String month;
   final dynamic monthlyInterest;
-  final dynamic monthlyCapitalPayment;
-  final dynamic monthlyTotalPayment;
-  final dynamic creditTotalBalance;
+  final String monthlyCapitalPayment;
+  final String monthlyTotalPayment;
+  final String creditTotalBalance;
 
   LoanSimulationResponse({
     required this.iteration,
@@ -43,9 +45,9 @@ class LoanSimulationResponse {
       iteration: json['iteration'],
       month: json['month'].toString(),
       monthlyInterest: json['monthlyInterest'],
-      monthlyCapitalPayment: json['monthlyCapitalPayment'],
-      monthlyTotalPayment: json['monthlyTotalPayment'],
-      creditTotalBalance: json['creditTotalBalance'],
+      monthlyCapitalPayment: quetzalesCurrency(json['monthlyCapitalPayment'].toString()) ,
+      monthlyTotalPayment: quetzalesCurrency(json['monthlyTotalPayment'].toString()),
+      creditTotalBalance: quetzalesCurrency(json['creditTotalBalance'].toString()),
     );
   }
 }

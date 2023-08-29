@@ -10,6 +10,7 @@ import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
@@ -182,41 +183,45 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                   ],
                   rows: _projectUnits
                       .asMap()
-                      .map((index, element) => MapEntry(
-                          index,
-                          DataRow(
-                            onSelectChanged: (value) async {
-                              Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
-                                  arguments: {
-                                    'isEditing': false,
-                                    'idQuote': null,
-                                    'projectId': element.projectId,
-                                    'unitName': element.unitName,
-                                    'unitStatus': element.estadoId,
-                                    'salePrice': element.salePrice,
-                                    'finalSellPrice': element.salePrice,
-                                    'unitId': element.unitId
-                                  });
-                            },
-                            cells: [
-                              DataCell(Container(
-                                constraints:
-                                    BoxConstraints(maxWidth: Get.width / 3),
-                                child: Text(element.unitName),
-                              )),
-                              DataCell(Container(
-                                child: Text(unitStatus[element.estadoId]!),
-                              )),
-                              DataCell(Container(
-                                child: Text('Q. ${element.salePrice}'),
-                              )),
-                            ],
-                            color: index % 2 == 0
-                                ? MaterialStateProperty.all<Color>(
-                                    AppColors.lightColor)
-                                : MaterialStateProperty.all<Color>(
-                                    AppColors.lightSecondaryColor),
-                          )))
+                      .map((index, element) {
+                        final priceFormatted =
+                            quetzalesCurrency(element.salePrice);
+                        return MapEntry(
+                            index,
+                            DataRow(
+                              onSelectChanged: (value) async {
+                                Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                                    arguments: {
+                                      'isEditing': false,
+                                      'idQuote': null,
+                                      'projectId': element.projectId,
+                                      'unitName': element.unitName,
+                                      'unitStatus': element.estadoId,
+                                      'salePrice': element.salePrice,
+                                      'finalSellPrice': element.salePrice,
+                                      'unitId': element.unitId
+                                    });
+                              },
+                              cells: [
+                                DataCell(Container(
+                                  constraints:
+                                      BoxConstraints(maxWidth: Get.width / 3),
+                                  child: Text(element.unitName),
+                                )),
+                                DataCell(Container(
+                                  child: Text(unitStatus[element.estadoId]!),
+                                )),
+                                DataCell(Container(
+                                  child: Text(priceFormatted),
+                                )),
+                              ],
+                              color: index % 2 == 0
+                                  ? MaterialStateProperty.all<Color>(
+                                      AppColors.lightColor)
+                                  : MaterialStateProperty.all<Color>(
+                                      AppColors.lightSecondaryColor),
+                            ));
+                      })
                       .values
                       .toList()),
             ),

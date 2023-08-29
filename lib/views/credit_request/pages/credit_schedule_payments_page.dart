@@ -168,22 +168,16 @@ class _CreditSchedulePaymentsPageState
                                   .toStringAsFixed(2)),
                             )),
                             DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text(double.tryParse(
-                                      element.monthlyCapitalPayment.toString())!
-                                  .toStringAsFixed(2)),
+                              width: (Get.width / 4) - 10,
+                              child: Text(element.monthlyCapitalPayment),
                             )),
                             DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text(double.tryParse(
-                                      element.monthlyTotalPayment.toString())!
-                                  .toStringAsFixed(2)),
+                              width: (Get.width / 4) - 10,
+                              child: Text(element.monthlyTotalPayment),
                             )),
                             DataCell(Container(
-                              width: (Get.width / 5) - 10,
-                              child: Text(double.tryParse(
-                                      element.creditTotalBalance.toString())!
-                                  .toStringAsFixed(2)),
+                              width: (Get.width / 4) - 10,
+                              child: Text(element.creditTotalBalance),
                             )),
                           ],
                           color: index % 2 == 0

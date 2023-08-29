@@ -809,7 +809,7 @@ class _FinancialEntityCreationPageState extends State<FinancialEntityCreationPag
           TextFormField(
             style: CustomStyle.textStyle,
             controller: financialEntityCreationPageController.bankEmail,
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.emailAddress,
             validator: (String? value) {
               if (value!.isEmpty) {
                 return Strings.pleaseFillOutTheField;

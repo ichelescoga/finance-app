@@ -32,7 +32,7 @@ class _SendWhatssapQuoteState extends State<SendWhatssapQuote> {
     return Center(
       child: Container(
         color: Colors.white,
-        height: Get.height / 3,
+        height: Get.height / 2.5,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Form(

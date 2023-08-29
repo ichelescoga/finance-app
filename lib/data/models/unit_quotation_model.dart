@@ -2,6 +2,7 @@
 
 
 import 'package:developer_company/data/models/client_model.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:intl/intl.dart';
 
 class Quotation {
@@ -64,14 +65,14 @@ class Quotation {
       dateTime: json['Fecha_hora'],
       monthlyIncome:
           json['Ingreso_mensual'] == null ? json['Ingreso_mensual'] : "0",
-      downPayment: double.tryParse(json['Enganche'])?.toStringAsFixed(2).toString(),
+      downPayment: quetzalesCurrency(json['Enganche'].toString()),
       termMonths: json['Meses_plazo'],
       startMonth: json['Mes_inicio'],
       startYear: json['Anio_inicio'],
       endMonth: json['Mes_fin'],
       endYear: json['Anio_fin'],
       discount: json['Descuento'],
-      saleDiscount: json['Venta_descuento'],
+      saleDiscount: quetzalesCurrency(json['Venta_descuento'].toString()),
       cashPrice: json['Precio_contado'],
       aguinaldo: json['Aguinaldo'],
       bonusCatorce: json['Bono_catorce'],

@@ -1,3 +1,5 @@
+import 'package:developer_company/shared/services/quetzales_currency.dart';
+
 class LoanApplication {
   final String? idAplicacion;
   final String idCotizacion;
@@ -57,7 +59,7 @@ class LoanApplication {
         fotoDpiReverso: json['Foto_DPI_reverso'],
         estado: json['Estado'],
         empresa: json['Empresa'],
-        sueldo: double.tryParse(json['Sueldo'])?.toStringAsFixed(2).toString() ?? "0",
+        sueldo: quetzalesCurrency(json['Sueldo'].toString()),
         fechaIngreso: json['Fecha_ingreso'],
         dpi: json['DPI'],
         nit: json['NIT'],

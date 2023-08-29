@@ -228,7 +228,7 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
                   TextFormField(
                     style: CustomStyle.textStyle,
                     controller: unitDetailPageController.bankHistory,
-                    keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.emailAddress,
                     validator: (String? value) {
                       if (value!.isEmpty) {
                         return Strings.pleaseFillOutTheField;

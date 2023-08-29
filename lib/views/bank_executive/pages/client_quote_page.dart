@@ -8,6 +8,7 @@ import 'package:developer_company/data/repositories/loan_application_repository.
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/views/bank_executive/pages/form_detail_client.dart';
 import 'package:developer_company/views/credit_request/helpers/download_pdf.dart';
@@ -198,7 +199,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
                               empresa:
                                   unitDetailPageController.detailCompany.text,
                               sueldo:
-                                  unitDetailPageController.detailIncomes.text,
+                                  extractNumber(unitDetailPageController.detailIncomes.text)!,
                               fechaIngreso:
                                   unitDetailPageController.detailJobInDate.text,
                               dpi: unitDetailPageController.detailDpi.text,

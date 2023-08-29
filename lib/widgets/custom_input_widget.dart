@@ -17,6 +17,7 @@ class CustomInputWidget extends StatelessWidget {
   final ValueChanged<String>? onChange; // Optional onChange callback
   final VoidCallback? onTap; // Optional onChange callback
   final Function(PointerDownEvent)? onTapOutside; // Optional onChange callback
+  final Function(bool)? onFocusChangeInput;
 
   const CustomInputWidget(
       {Key? key,
@@ -24,6 +25,7 @@ class CustomInputWidget extends StatelessWidget {
       required this.label,
       required this.hintText,
       required this.prefixIcon,
+      this.onFocusChangeInput,
       this.keyboardType = TextInputType.text,
       this.validator,
       this.readOnly = false,
@@ -32,8 +34,7 @@ class CustomInputWidget extends StatelessWidget {
       this.onChange,
       this.onTap,
       this.onTapOutside,
-      this.suffixIcon
-      })
+      this.suffixIcon})
       : super(key: key);
 
   @override
@@ -49,33 +50,37 @@ class CustomInputWidget extends StatelessWidget {
           height: Dimensions.heightSize *
               0.5, // You should replace this with the actual value
         ),
-        TextFormField(
-          readOnly: readOnly,
-          onTapOutside: onTapOutside,
-          obscureText: obscureText,
-          onTap: onTap,
-          onChanged: onChange,
-          enabled: enabled,
-          style: CustomStyle
-              .textStyle, // Make sure to define CustomStyle.textStyle
-          controller: controller,
-          keyboardType: keyboardType,
-          validator: validator,
-          decoration: InputDecoration(
-            hintText: hintText,
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-            labelStyle: CustomStyle.textStyle,
-            filled: true,
-            fillColor: AppColors.lightColor,
-            hintStyle: CustomStyle.textStyle,
-            focusedBorder: CustomStyle.focusBorder,
-            enabledBorder: CustomStyle.focusErrorBorder,
-            focusedErrorBorder: CustomStyle.focusErrorBorder,
-            errorBorder: CustomStyle.focusErrorBorder,
-            prefixIcon: Icon(prefixIcon),
-            suffixIcon: suffixIcon,
-            
+        Focus(
+          onFocusChange: onFocusChangeInput != null
+              ? (hasFocus) => onFocusChangeInput!(hasFocus)
+              : null,
+          child: TextFormField(
+            readOnly: readOnly,
+            onTapOutside: onTapOutside,
+            obscureText: obscureText,
+            onTap: onTap,
+            onChanged: onChange,
+            enabled: enabled,
+            style: CustomStyle
+                .textStyle, // Make sure to define CustomStyle.textStyle
+            controller: controller,
+            keyboardType: keyboardType,
+            validator: validator,
+            decoration: InputDecoration(
+              hintText: hintText,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              labelStyle: CustomStyle.textStyle,
+              filled: true,
+              fillColor: AppColors.lightColor,
+              hintStyle: CustomStyle.textStyle,
+              focusedBorder: CustomStyle.focusBorder,
+              enabledBorder: CustomStyle.focusErrorBorder,
+              focusedErrorBorder: CustomStyle.focusErrorBorder,
+              errorBorder: CustomStyle.focusErrorBorder,
+              prefixIcon: Icon(prefixIcon),
+              suffixIcon: suffixIcon,
+            ),
           ),
         ),
         const SizedBox(
