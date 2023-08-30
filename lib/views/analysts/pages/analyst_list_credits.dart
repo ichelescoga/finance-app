@@ -12,22 +12,6 @@ import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:get/get.dart";
 
-// class Simulation {
-//   final String client;
-//   final String unit;
-//   final double sellPrice;
-//   final double priceToPay;
-//   final String executive;
-
-//   Simulation({
-//     required this.client,
-//     required this.unit,
-//     required this.sellPrice,
-//     required this.priceToPay,
-//     required this.executive,
-//   });
-// } //! TEMP REMOVE WHEN DATA REAL PLEASE
-
 class AnalystListCredits extends StatefulWidget {
   const AnalystListCredits({Key? key}) : super(key: key);
 
@@ -42,13 +26,9 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
   final AnalystRepository analystRepository =
       AnalystRepositoryImpl(AnalystProvider());
 
-  void _onRowTap(AnalystQuotation simulation) {
-    // print('Selected simulation: ${simulation.executive}');
-    // You can perform further actions using the selected Simulation object
-  }
   List<AnalystQuotation> quotationsByClient = [];
 
-  void retrieveQuotationApplied() async {
+  Future<void> retrieveQuotationApplied() async {
     try {
       List<AnalystQuotation> listClients =
           await analystRepository.fetchAllQuotesForAnalyst();
@@ -69,25 +49,30 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    retrieveQuotationApplied();
+  void handleFirstTimeQuote() async {
+    await retrieveQuotationApplied();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController
           .animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
         curve: Curves.easeInOut,
       )
           .then((_) {
         _scrollController.animateTo(
           0,
-          duration: const Duration(seconds: 2),
+          duration: const Duration(seconds: 3),
           curve: Curves.easeInOut,
         );
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handleFirstTimeQuote();
   }
 
   @override
@@ -131,7 +116,7 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
                           child: Text(element.clientName),
                         )),
                         DataCell(Container(
-                          constraints: BoxConstraints(maxWidth: Get.width / 3),
+                          constraints: BoxConstraints(maxWidth: Get.width / 2.5),
                           child: Text(element.unitName),
                         )),
                         DataCell(Container(
