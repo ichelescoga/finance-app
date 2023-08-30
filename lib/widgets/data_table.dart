@@ -34,7 +34,7 @@ class CustomDataTable<T> extends StatelessWidget {
                   color: Colors.white,
                   overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 maxLines: 2,
               ),
             ),

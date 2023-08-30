@@ -4,6 +4,7 @@ import "package:developer_company/data/providers/analyst_provider.dart";
 import "package:developer_company/data/repositories/analyst_repository.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
+import "package:developer_company/shared/utils/unit_status.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/data_table.dart";
 import "package:developer_company/widgets/layout.dart";
@@ -102,6 +103,7 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
             columns: const [
               'Cliente',
               'Unidad',
+              "Estado",
               'Precio de venta',
               'Total Saldo A financiar',
               'Ejecutivo'
@@ -112,10 +114,6 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
                     index,
                     DataRow(
                       onSelectChanged: (value) async {
-                        print(element);
-                        // Get.toNamed(
-                        //     RouterPaths.ANALYST_DETAIL_CREDIT_CLIENT_PAGE);
-
                         final isQuoteUpdate = await Get.toNamed(
                             RouterPaths.ANALYST_DETAIL_CREDIT_PAGE,
                             arguments: {
@@ -135,6 +133,10 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),
                           child: Text(element.unitName),
+                        )),
+                        DataCell(Container(
+                          constraints: BoxConstraints(maxWidth: Get.width / 3),
+                          child: Text(unitStatus[element.statusId]!),
                         )),
                         DataCell(Container(
                           constraints: BoxConstraints(maxWidth: Get.width / 3),
