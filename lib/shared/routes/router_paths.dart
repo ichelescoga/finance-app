@@ -13,7 +13,6 @@ class RouterPaths{
   static const String UNIT_DETAIL_PAGE = '/unitDetailPage';
   static const String UNIT_QUOTE_PAGE = '/unitQuotePage';
   static const String UNIT_QUOTE_DETAIL_PAGE = '/unitQuoteDetailPage';
-  static const String UNIT_PAYMENT_SCHEDULE_PAGE = '/unitPaymentSchedulePage';
   static const String CREDIT_APPLICATION_PAGE = '/creditApplicationPage';
   static const String CREDIT_USER_APPLICATION_PAGE = '/creditUserApplicationPage';
   static const String FINANCIAL_ENTITY_CREATION_PAGE = '/financialEntityCreationPage';
@@ -33,4 +32,8 @@ class RouterPaths{
   static const String CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE = '/clientCreditSchedulePaymentsPage';
   static const String ANALYST_CREDITS_BY_CLIENT_PAGE = '/analystCreditByClientPage';
   static const String ANALYST_DETAIL_CREDIT_PAGE = '/analystDetailCreditPage';
+  static const String CREDIT_RESOLUTION_DETAIL_PAGE = '/creditResolutionDetailPage';
+  static const String CREDIT_DETAIL_PAGE = '/creditDetailPage';
+  
+  static const String ADVISER_CREDITS_RESERVED_APPROVED = '/AdviserCreditsReservedApproved';
 }

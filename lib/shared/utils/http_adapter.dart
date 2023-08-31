@@ -28,7 +28,7 @@ class HttpAdapter extends http.BaseClient {
     if (response.statusCode == 200 || response.statusCode == 202) {
       return response;
     } else if (response.statusCode == 403) {
-      Get.toNamed(RouterPaths.HOME_PAGE);
+      Get.offAllNamed(RouterPaths.HOME_PAGE);
       EasyLoading.showInfo(Strings.sessionExpired);
       throw Exception('Login Expired');
     } else {

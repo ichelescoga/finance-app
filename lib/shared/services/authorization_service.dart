@@ -14,7 +14,8 @@ class AuthorizationService {
       'Admin': ['all'],
       'Ejecutivo': [
         PermissionLevel.dashboardQueryQuoteButton,
-        PermissionLevel.dashboardAddQuoteButton
+        PermissionLevel.dashboardAddQuoteButton,
+        PermissionLevel.adviserCreditsApprovedAndReserved
       ],
       'Analista': [PermissionLevel.analystCreditByClient]
     };

@@ -9,5 +9,6 @@ class PermissionLevel {
   static const String dashboardReport = 'dashboard_report';
 
   static const String analystCreditByClient = 'analyst_credit_by_client';
+  static const String adviserCreditsApprovedAndReserved = "adviser_credits_approved_and_reserved";
   // Add more permission levels as needed
 }

@@ -52,6 +52,9 @@ class _DashboardPageState extends State<DashboardPage> {
   final indexTab = 0.obs;
   final showFirst = false.obs;
 
+  final spaceButton = SizedBox(height: Dimensions.heightSize);
+  final defaultPadding = EdgeInsets.only(left: 0, right: 0);
+
   @override
   void initState() {
     super.initState();
@@ -138,18 +141,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     text: "Aprobaciones de crédito",
                     onTap: () =>
                         Get.toNamed(RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE),
-                    padding: const EdgeInsets.only(left: 0.0, right: 0.0)),
-              ],
-            ),
-          ),
-          AuthorizationWrapper(
-            requestAction: "",
-            child: Column(
-              children: [
-                const SizedBox(height: Dimensions.heightSize),
-                CustomButtonWidget(
-                    text: "Analista 2 ",
-                    onTap: () {},
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0)),
               ],
             ),
@@ -301,30 +292,28 @@ class _DashboardPageState extends State<DashboardPage> {
               },
             ),
           ),
-          const SizedBox(height: Dimensions.heightSize),
           AuthorizationWrapper(
-            requestAction: PermissionLevel.dashboardAddQuoteButton,
-            child: GestureDetector(
-              child: Container(
-                height: 50.0,
-                width: Get.width,
-                decoration: const BoxDecoration(
-                    color: AppColors.mainColor,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(Dimensions.radius))),
-                child: const Center(
-                  child: Text(
-                    "Creación de solicitud de crédito",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: Dimensions.largeTextSize,
-                        fontWeight: FontWeight.bold),
+              requestAction: PermissionLevel.dashboardAddQuoteButton,
+              child: Column(
+                children: [
+                  spaceButton,
+                  CustomButtonWidget(
+                    text: "Creación de solicitud de crédito",
+                    onTap: () => Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE),
+                    padding: defaultPadding,
                   ),
-                ),
-              ),
-              onTap: () {
-                Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE);
-              },
+                ],
+              )),
+          AuthorizationWrapper(
+            requestAction: PermissionLevel.adviserCreditsApprovedAndReserved,
+            child: Column(
+              children: [
+                spaceButton,
+                CustomButtonWidget(
+                    text: "Aprobaciones de crédito",
+                    onTap: () => Get.toNamed(RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED),
+                    padding: defaultPadding),
+              ],
             ),
           ),
           const SizedBox(height: Dimensions.heightSize),
@@ -513,7 +502,5 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
-
   }
-
 }

@@ -15,9 +15,11 @@ import 'package:developer_company/views/client/pages/client_dashboard_page.dart'
 import 'package:developer_company/views/client/pages/client_documents_page.dart';
 import 'package:developer_company/views/client/pages/client_offer_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/credit_application_page.dart';
+import 'package:developer_company/views/credit_request/pages/credit_detail_page.dart';
+import 'package:developer_company/views/credit_request/pages/credit_resolution_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/credit_schedule_payments_page.dart';
 import 'package:developer_company/views/credit_request/pages/credit_user_application_page.dart';
-import 'package:developer_company/views/credit_request/pages/unit_payment_schedule_page.dart';
+import 'package:developer_company/views/credit_request/pages/credits_reserved_approved.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_page.dart';
 import 'package:developer_company/views/developer_company/pages/create_company_page.dart';
@@ -48,7 +50,6 @@ class GetRoutes{
       GetPage(name: RouterPaths.UNIT_DETAIL_PAGE, page: () => const UnitDetailPage()),
       GetPage(name: RouterPaths.UNIT_QUOTE_PAGE, page: () => const UnitQuotePage()),
       GetPage(name: RouterPaths.UNIT_QUOTE_DETAIL_PAGE, page: () => const UnitQuoteDetailPage()),
-      GetPage(name: RouterPaths.UNIT_PAYMENT_SCHEDULE_PAGE, page: () => const UnitPaymentSchedulePage()),
       GetPage(name: RouterPaths.CREDIT_APPLICATION_PAGE, page: () => const CreditApplicationPage()),
       GetPage(name: RouterPaths.CREDIT_USER_APPLICATION_PAGE, page: () => const CreditUserApplicationPage()),
       GetPage(name: RouterPaths.FINANCIAL_ENTITY_CREATION_PAGE, page: () => const FinancialEntityCreationPage()),
@@ -67,7 +68,10 @@ class GetRoutes{
       GetPage(name: RouterPaths.CLIENT_CREDIT_SCHEDULE_PAYMENTS_PAGE, page: () => const CreditSchedulePaymentsPage()),
       GetPage(name: RouterPaths.CLIENT_CREDIT_DETAIL_PAGE, page: () => const ClientCreditDetailPage()),
       GetPage(name: RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE, page: () => const AnalystListCredits()),
-      GetPage(name: RouterPaths.ANALYST_DETAIL_CREDIT_PAGE, page: () => const AnalystDetailCreditClient())
+      GetPage(name: RouterPaths.ANALYST_DETAIL_CREDIT_PAGE, page: () => const AnalystDetailCreditClient()), //equal to CREDIT_RESOLUTION_DETAIL_PAGE change the buttons posible refactor
+      GetPage(name: RouterPaths.CREDIT_DETAIL_PAGE, page: () => const CreditDetailPage()),
+      GetPage(name: RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE, page: () => const CreditResolutionDetailPage()),
+      GetPage(name: RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED, page: () => const CreditsReservedApproved()),
     ];
   }
 }

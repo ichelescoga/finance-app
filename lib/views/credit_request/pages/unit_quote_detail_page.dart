@@ -95,7 +95,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         setState(() {
           _quoteEdit = !(statusQuoteById == 3 ||
               statusQuoteById == 6 ||
-              statusQuoteById == 7);
+              statusQuoteById == 7);  //unitStatus unit_status
         });
       }
 

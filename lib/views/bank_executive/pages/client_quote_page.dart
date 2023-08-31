@@ -25,7 +25,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 
-
 class ClientQuotePage extends StatefulWidget {
   const ClientQuotePage({Key? key}) : super(key: key);
 
@@ -57,6 +56,7 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
     final quoteStatus = arguments["quoteState"];
 
     if ((quoteStatus == 3 || quoteStatus == 6 || quoteStatus == 7)) {
+      //unitStatus unit_status
       setState(() {
         isEditMode = false;
         isFirstTime = false;
@@ -80,6 +80,88 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   //     });
   //   }
   // }
+
+  void _applyCredit() async {
+    {
+      if (_formKeyApplyQuote.currentState!.validate()) {
+        final dpiValue = unitDetailPageController.detailDpi.text;
+
+        final quoteId = arguments["quoteId"];
+        final frontDpiBase64 = unitDetailPageController.frontDpi.base64;
+        final needUpdateFrontDpi = unitDetailPageController.frontDpi.needUpdate;
+
+        if (frontDpiBase64 != null && needUpdateFrontDpi) {
+          final UploadImage frontDpiRequestImage = UploadImage(
+              file: frontDpiBase64,
+              fileName: "$dpiValue-front-$quoteId",
+              transactionType: "frontDpiUpload");
+
+          ImageToUpload responseImage =
+              await uploadImageRepository.postImage(frontDpiRequestImage);
+          final link = responseImage.link;
+          unitDetailPageController.frontDpi.updateLink(link!);
+        }
+
+        final reverseDpiBase64 = unitDetailPageController.reverseDpi.base64;
+        final needUpdateReverseDpi =
+            unitDetailPageController.reverseDpi.needUpdate;
+
+        if (reverseDpiBase64 != null && needUpdateReverseDpi) {
+          final UploadImage reverseDpiRequestImage = UploadImage(
+              file: reverseDpiBase64,
+              fileName: "$dpiValue-reverse-$quoteId",
+              transactionType: "reverseDpiUpload");
+
+          ImageToUpload responseImage =
+              await uploadImageRepository.postImage(reverseDpiRequestImage);
+          final link = responseImage.link;
+          unitDetailPageController.reverseDpi.updateLink(link!);
+        }
+
+        LoanApplication loanApplication = LoanApplication(
+            idCotizacion: arguments['quoteId'].toString(),
+            fotoDpiEnfrente: unitDetailPageController.frontDpi.link!,
+            fotoDpiReverso: unitDetailPageController.reverseDpi.link!,
+            estado: 2, //Estado inicializada
+            empresa: unitDetailPageController.detailCompany.text,
+            sueldo: extractNumber(unitDetailPageController.detailIncomes.text)!,
+            fechaIngreso: unitDetailPageController.detailJobInDate.text,
+            dpi: unitDetailPageController.detailDpi.text,
+            nit: unitDetailPageController.detailNit.text,
+            puesto: unitDetailPageController.detailKindJob.text,
+            fechaNacimiento: unitDetailPageController.detailBirthday.text);
+
+        try {
+          EasyLoading.showToast(Strings.loading);
+          if (isFirstTime) {
+            await loanApplicationRepository
+                .submitLoanApplication(loanApplication);
+          } else {
+            await loanApplicationRepository.updateLoanApplication(
+                loanApplication, _applicationId.toString());
+          }
+
+          final body = {
+            "idEstado": "2",
+            "comentario": "",
+          };
+          await httpAdapter.putApi(
+              "orders/v1/cotizacionUpdEstado/${arguments['quoteId'].toString()}",
+              body, {});
+
+          unitDetailPageController.cleanController();
+          EasyLoading.showSuccess("Aplicación a crédito exitosa.");
+          Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+        } catch (e) {
+          EasyLoading.showError(Strings.pleaseVerifyInputs);
+        } finally {
+          EasyLoading.dismiss();
+        }
+      } else {
+        EasyLoading.showError(Strings.pleaseVerifyInputs);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -140,108 +222,19 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
             ),
             Row(
               children: [
-                Expanded(
-                  child: CustomButtonWidget(
-                      text: "Aplicar a crédito",
-                      onTap: () async {
-                        if (_formKeyApplyQuote.currentState!.validate()) {
-                          final dpiValue =
-                              unitDetailPageController.detailDpi.text;
-
-                          final quoteId = arguments["quoteId"];
-                          final frontDpiBase64 =
-                              unitDetailPageController.frontDpi.base64;
-                          final needUpdateFrontDpi =
-                              unitDetailPageController.frontDpi.needUpdate;
-
-                          if (frontDpiBase64 != null && needUpdateFrontDpi) {
-                            final UploadImage frontDpiRequestImage =
-                                UploadImage(
-                                    file: frontDpiBase64,
-                                    fileName: "$dpiValue-front-$quoteId",
-                                    transactionType: "frontDpiUpload");
-
-                            ImageToUpload responseImage =
-                                await uploadImageRepository
-                                    .postImage(frontDpiRequestImage);
-                            final link = responseImage.link;
-                            unitDetailPageController.frontDpi.updateLink(link!);
-                          }
-
-                          final reverseDpiBase64 =
-                              unitDetailPageController.reverseDpi.base64;
-                          final needUpdateReverseDpi =
-                              unitDetailPageController.reverseDpi.needUpdate;
-
-                          if (reverseDpiBase64 != null &&
-                              needUpdateReverseDpi) {
-                            final UploadImage reverseDpiRequestImage =
-                                UploadImage(
-                                    file: reverseDpiBase64,
-                                    fileName: "$dpiValue-reverse-$quoteId",
-                                    transactionType: "reverseDpiUpload");
-
-                            ImageToUpload responseImage =
-                                await uploadImageRepository
-                                    .postImage(reverseDpiRequestImage);
-                            final link = responseImage.link;
-                            unitDetailPageController.reverseDpi
-                                .updateLink(link!);
-                          }
-
-                          LoanApplication loanApplication = LoanApplication(
-                              idCotizacion: arguments['quoteId'].toString(),
-                              fotoDpiEnfrente:
-                                  unitDetailPageController.frontDpi.link!,
-                              fotoDpiReverso:
-                                  unitDetailPageController.reverseDpi.link!,
-                              estado: 2, //Estado inicializada
-                              empresa:
-                                  unitDetailPageController.detailCompany.text,
-                              sueldo:
-                                  extractNumber(unitDetailPageController.detailIncomes.text)!,
-                              fechaIngreso:
-                                  unitDetailPageController.detailJobInDate.text,
-                              dpi: unitDetailPageController.detailDpi.text,
-                              nit: unitDetailPageController.detailNit.text,
-                              puesto:
-                                  unitDetailPageController.detailKindJob.text,
-                              fechaNacimiento:
-                                  unitDetailPageController.detailBirthday.text);
-
-                          try {
-                            EasyLoading.showToast(Strings.loading);
-                            if (isFirstTime) {
-                              await loanApplicationRepository
-                                  .submitLoanApplication(loanApplication);
-                            } else {
-                              await loanApplicationRepository
-                                  .updateLoanApplication(loanApplication,
-                                      _applicationId.toString());
-                            }
-
-                            final body = {
-                              "idEstado": "2",
-                              "comentario": "",
-                            };
-                            await httpAdapter.putApi(
-                                "orders/v1/cotizacionUpdEstado/${arguments['quoteId'].toString()}",
-                                body, {});
-
-                            unitDetailPageController.cleanController();
-                            EasyLoading.showSuccess(
-                                "Aplicación a crédito exitosa.");
-                            Get.toNamed(RouterPaths.DASHBOARD_PAGE);
-                          } catch (e) {
-                            EasyLoading.showError(Strings.pleaseVerifyInputs);
-                          } finally {
-                            EasyLoading.dismiss();
-                          }
-                        } else {
-                          EasyLoading.showError(Strings.pleaseVerifyInputs);
-                        }
-                      }),
-                ),
+                isEditMode
+                    ? Expanded(
+                        child: CustomButtonWidget(
+                            text: "Aplicar a crédito",
+                            onTap: () => _applyCredit()),
+                      )
+                    : Expanded(
+                        child: CustomButtonWidget(
+                        text: "Ir al Inicio",
+                        onTap: () {
+                          Get.offAllNamed(RouterPaths.DASHBOARD_PAGE);
+                        },
+                      )),
                 Expanded(
                   child: CustomButtonWidget(
                       text: Strings.goBack,
