@@ -24,7 +24,7 @@ class _CreditResolutionDetailPageState
   @override
   void initState() {
     super.initState();
-    isAlreadySell = arguments["statusId"] != 3; //unitStatus unit_status
+    isAlreadySell = int.tryParse(arguments["statusId"]) == 3; //unitStatus unit_status
   }
 
   @override

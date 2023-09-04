@@ -31,7 +31,7 @@ class CreditsApprovedReserved {
         unitStatusId: unitStatusId,
         unitId: json["UNIDAD_COTIZACIONs"][0]["Id_unidad_UNIDAD"]["Id_unidad"].toString(),
         sellPrice: quetzalesCurrency(json["UNIDAD_COTIZACIONs"][0]["Id_unidad_UNIDAD"]["Precio_Venta"].toString()),
-        sellToFinance: quetzalesCurrency((double.parse(json["Venta_descuento"]) - double.parse(json["Enganche"])).toString()),
+        sellToFinance: quetzalesCurrency(double.parse(json["Venta_descuento"]).toString()),
         statusId: quoteStatusId
         );
   }

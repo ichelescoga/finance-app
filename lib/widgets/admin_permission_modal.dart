@@ -55,39 +55,41 @@ class _PermissionAdminModalState extends State<PermissionAdminModal> {
       title: 'Permiso Administrador',
       child: Form(
         key: _formKeyAdminPermission,
-        child: Column(
-          children: [
-            CustomInputWidget(
-                validator: (value) => emailValidator(value),
-                controller: controllerUser,
-                label: "Usuario",
-                hintText: "Usuario",
-                prefixIcon: Icons.person_outline),
-            CustomInputWidget(
-              obscureText: !_showPassword,
-              controller: controllerPassword,
-              label: "Contraseña",
-              hintText: "Contraseña",
-              prefixIcon: Icons.person_outline,
-              validator: (value) => notEmptyFieldValidator(value),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    _showPassword = !_showPassword;
-                  });
-                },
-                icon: !_showPassword
-                    ? const Icon(
-                        Icons.visibility_off,
-                        color: Colors.black,
-                      )
-                    : const Icon(
-                        Icons.visibility,
-                        color: Colors.black,
-                      ),
-              ),
-            )
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomInputWidget(
+                  validator: (value) => emailValidator(value),
+                  controller: controllerUser,
+                  label: "Usuario",
+                  hintText: "Usuario",
+                  prefixIcon: Icons.person_outline),
+              CustomInputWidget(
+                obscureText: !_showPassword,
+                controller: controllerPassword,
+                label: "Contraseña",
+                hintText: "Contraseña",
+                prefixIcon: Icons.person_outline,
+                validator: (value) => notEmptyFieldValidator(value),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                  icon: !_showPassword
+                      ? const Icon(
+                          Icons.visibility_off,
+                          color: Colors.black,
+                        )
+                      : const Icon(
+                          Icons.visibility,
+                          color: Colors.black,
+                        ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
       actions: Row(

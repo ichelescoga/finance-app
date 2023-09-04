@@ -77,7 +77,7 @@ class _FormQuoteState extends State<FormQuote> {
             onChange: (value) {
               unitDetailPageController.finalSellPrice.text =
                   calculateSellPriceDiscount(
-                      value, unitDetailPageController, widget.salePrice);
+                      value, unitDetailPageController, unitDetailPageController.salePrice.text);
             },
             validator: (value) {
               if (value == "0") return null;

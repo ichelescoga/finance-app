@@ -266,6 +266,18 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
           ),
+          AuthorizationWrapper(
+              requestAction: PermissionLevel.dashboardAddQuoteButton,
+              child: Column(
+                children: [
+                  spaceButton,
+                  CustomButtonWidget(
+                    text: "Creación de solicitud de crédito",
+                    onTap: () => Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE),
+                    padding: defaultPadding,
+                  ),
+                ],
+              )),
           const SizedBox(height: Dimensions.heightSize),
           AuthorizationWrapper(
             requestAction: PermissionLevel.dashboardQueryQuoteButton,
@@ -293,25 +305,14 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
           AuthorizationWrapper(
-              requestAction: PermissionLevel.dashboardAddQuoteButton,
-              child: Column(
-                children: [
-                  spaceButton,
-                  CustomButtonWidget(
-                    text: "Creación de solicitud de crédito",
-                    onTap: () => Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE),
-                    padding: defaultPadding,
-                  ),
-                ],
-              )),
-          AuthorizationWrapper(
             requestAction: PermissionLevel.adviserCreditsApprovedAndReserved,
             child: Column(
               children: [
                 spaceButton,
                 CustomButtonWidget(
-                    text: "Aprobaciones de crédito",
-                    onTap: () => Get.toNamed(RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED),
+                    text: "Créditos Aprobados",
+                    onTap: () => Get.toNamed(
+                        RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED),
                     padding: defaultPadding),
               ],
             ),

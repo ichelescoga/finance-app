@@ -95,17 +95,19 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         setState(() {
           _quoteEdit = !(statusQuoteById == 3 ||
               statusQuoteById == 6 ||
-              statusQuoteById == 7);  //unitStatus unit_status
+              statusQuoteById == 7); //unitStatus unit_status
         });
       }
 
-      unitDetailPageController.unit.text = arguments["unitName"];
-      unitDetailPageController.salePrice.text = arguments["salePrice"];
-      unitDetailPageController.finalSellPrice.text =
-          quetzalesCurrency(arguments["finalSellPrice"].toString());
-      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
-          unitDetailPageController.finalSellPrice.text,
-          unitDetailPageController.startMoney.text);
+      setState(() {
+        unitDetailPageController.unit.text = arguments["unitName"];
+        unitDetailPageController.salePrice.text = arguments["salePrice"];
+        unitDetailPageController.finalSellPrice.text =
+            quetzalesCurrency(arguments["finalSellPrice"].toString());
+        unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+            unitDetailPageController.finalSellPrice.text,
+            unitDetailPageController.startMoney.text);
+      });
       // final balance =
       // unitDetailPageController.balanceToFinance.text = balance;
     } finally {
