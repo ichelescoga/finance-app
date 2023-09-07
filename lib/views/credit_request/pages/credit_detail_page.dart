@@ -9,7 +9,7 @@ import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/views/bank_executive/pages/form_detail_client.dart";
 import "package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart";
-import "package:developer_company/views/credit_request/pages/form_quote.dart";
+import 'package:developer_company/views/credit_request/forms/form_quote.dart';
 import "package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
