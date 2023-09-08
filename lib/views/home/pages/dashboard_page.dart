@@ -10,6 +10,7 @@ import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -55,9 +56,22 @@ class _DashboardPageState extends State<DashboardPage> {
   final spaceButton = SizedBox(height: Dimensions.heightSize);
   final defaultPadding = EdgeInsets.only(left: 0, right: 0);
 
+  Future askPermission() async {
+    await Permission.manageExternalStorage.request();
+    var status = await Permission.manageExternalStorage.status;
+    if (status.isDenied) {
+      return;
+    }
+    if (await Permission.storage.isRestricted) {
+      return;
+    }
+    if (status.isGranted) {}
+  }
+
   @override
   void initState() {
-    super.initState();  
+    super.initState();
+    askPermission();
   }
 
   @override

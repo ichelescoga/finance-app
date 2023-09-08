@@ -8,13 +8,13 @@ import 'package:developer_company/data/providers/loan_simulation_provider.dart';
 import 'package:developer_company/data/providers/unit_quotation_provider.dart';
 import 'package:developer_company/data/repositories/loan_simulation_repository.dart';
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
-import 'package:developer_company/shared/resources/colors.dart';
+
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
-import 'package:developer_company/views/credit_request/helpers/download_pdf.dart';
+
 import 'package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart';
 
 import 'package:developer_company/views/credit_request/forms/form_quote.dart';
@@ -26,11 +26,10 @@ import 'package:developer_company/widgets/app_bar_two_images.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 
 import 'package:developer_company/widgets/layout.dart';
-import 'package:developer_company/widgets/send_email_quote_dart.dart';
-import 'package:developer_company/widgets/send_whatssap_quote.dart';
+import 'package:developer_company/widgets/share_quote_action_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
 import 'package:get/get.dart';
 
 class UnitQuoteDetailPage extends StatefulWidget {
@@ -233,6 +232,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    EasyLoading.dismiss();
+  }
+
+  @override
   Widget build(BuildContext context) {
     unitDetailPageController.finalSellPrice.addListener(() =>
         unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
@@ -247,39 +252,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
     return Layout(
       sideBarList: const [],
-      actionButton: quoteId != null
-          ? SpeedDial(
-              animatedIcon: AnimatedIcons.menu_close,
-              animatedIconTheme: IconThemeData(size: 22),
-              backgroundColor: AppColors.blueColor,
-              visible: true,
-              curve: Curves.bounceIn,
-              direction: SpeedDialDirection.left,
-              children: [
-                SpeedDialChild(
-                    child: Icon(
-                      Icons.email,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: AppColors.blueColor,
-                    onTap: () => _showModalEmail(context),
-                    labelBackgroundColor: AppColors.blueColor),
-                SpeedDialChild(
-                    child: Icon(
-                      Icons.picture_as_pdf,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: AppColors.blueColor,
-                    onTap: () => downloadPdf(quoteId),
-                    labelBackgroundColor: AppColors.blueColor),
-                SpeedDialChild(
-                    child: Icon(Icons.message, color: Colors.white),
-                    backgroundColor: AppColors.blueColor,
-                    onTap: () => _showWhatsAppModal(context),
-                    labelBackgroundColor: AppColors.blueColor)
-              ],
-            )
-          : null,
+      actionButton:
+          quoteId != null ? ShareQuoteActionButtons(quoteId: quoteId.toString()) : null,
       appBar: CustomAppBarTwoImages(
           title: 'Cotización',
           leftImage: 'assets/logo_test.png',
@@ -311,21 +285,5 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         ),
       ),
     );
-  }
-
-  _showWhatsAppModal(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return SendWhatssapQuote(applicationId: quoteId.toString());
-        }));
-  }
-
-  _showModalEmail(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return SendEmailQuoteDart(quoteId: quoteId.toString());
-        }));
   }
 }

@@ -75,7 +75,6 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   final indexTab = 0.obs;
   final showFirst = false.obs;
 
-
   void _fetchUnitProjects(String projectId) async {
     try {
       List<Project> project =
@@ -179,17 +178,25 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                             index,
                             DataRow(
                               onSelectChanged: (value) async {
-                                Get.toNamed(RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
-                                    arguments: {
-                                      'isEditing': false,
-                                      'idQuote': null,
-                                      'projectId': element.projectId,
-                                      'unitName': element.unitName,
-                                      'unitStatus': element.estadoId,
-                                      'salePrice': element.salePrice,
-                                      'finalSellPrice': element.salePrice,
-                                      'unitId': element.unitId
-                                    });
+                                if (element.estadoId == 3 ||
+                                    element.estadoId == 5) {
+                                  // unitStatus unit_status vendida
+                                  EasyLoading.showInfo(
+                                      "No Se puede crear cotización para unidad en estado ${unitStatus[element.estadoId]}");
+                                } else {
+                                  Get.toNamed(
+                                      RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                                      arguments: {
+                                        'isEditing': false,
+                                        'idQuote': null,
+                                        'projectId': element.projectId,
+                                        'unitName': element.unitName,
+                                        'unitStatus': element.estadoId,
+                                        'salePrice': element.salePrice,
+                                        'finalSellPrice': element.salePrice,
+                                        'unitId': element.unitId
+                                      });
+                                }
                               },
                               cells: [
                                 DataCell(Container(

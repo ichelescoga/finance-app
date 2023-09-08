@@ -6,12 +6,10 @@ import 'package:developer_company/data/providers/loan_application_provider.dart'
 import 'package:developer_company/data/providers/upload_image.provider.dart';
 import 'package:developer_company/data/repositories/loan_application_repository.dart';
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
-import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/views/bank_executive/pages/form_detail_client.dart';
-import 'package:developer_company/views/credit_request/helpers/download_pdf.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
@@ -20,9 +18,9 @@ import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:developer_company/widgets/send_email_quote_dart.dart';
 import 'package:developer_company/widgets/send_whatssap_quote.dart';
+import 'package:developer_company/widgets/share_quote_action_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 
 class ClientQuotePage extends StatefulWidget {
@@ -173,41 +171,8 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
   @override
   Widget build(BuildContext context) {
     return Layout(
-      actionButton: _applicationId != null
-          ? SpeedDial(
-              animatedIcon: AnimatedIcons.menu_close,
-              animatedIconTheme: IconThemeData(size: 22),
-              backgroundColor: AppColors.blueColor,
-              visible: true,
-              curve: Curves.bounceIn,
-              direction: SpeedDialDirection.left,
-              children: [
-                // FAB 1
-                SpeedDialChild(
-                    child: Icon(
-                      Icons.email,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: AppColors.blueColor,
-                    onTap: () => _showModalEmail(context),
-                    labelBackgroundColor: AppColors.blueColor),
-                // FAB 2
-                SpeedDialChild(
-                    child: Icon(
-                      Icons.picture_as_pdf,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: AppColors.blueColor,
-                    onTap: () => downloadPdf(quoteId),
-                    labelBackgroundColor: AppColors.blueColor),
-                SpeedDialChild(
-                    child: Icon(Icons.message, color: Colors.white),
-                    backgroundColor: AppColors.blueColor,
-                    onTap: () => _showWhatsAppModal(context),
-                    labelBackgroundColor: AppColors.blueColor)
-              ],
-            )
-          : null,
+      actionButton:
+          ShareQuoteActionButtons(quoteId: arguments["quoteId"].toString()),
       sideBarList: const [],
       appBar: const CustomAppBarTitle(title: 'Detalle de cotización'),
       child: Form(
