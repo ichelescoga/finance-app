@@ -40,7 +40,6 @@ class UnitQuoteDetailPage extends StatefulWidget {
   State<UnitQuoteDetailPage> createState() => _UnitQuoteDetailPageState();
 }
 
-// TODO: FORMATEADOR DE DINERO PARA PRECIO CON DESCUENTA, ENGANCHE, SALDO A FINANCIAR
 class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
   final httpAdapter = HttpAdapter();
   final _formKey = GlobalKey<FormState>();

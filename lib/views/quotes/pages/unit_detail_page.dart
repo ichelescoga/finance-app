@@ -2,6 +2,8 @@ import 'package:developer_company/data/implementations/unit_quotation_repository
 import 'package:developer_company/data/models/unit_quotation_model.dart';
 import 'package:developer_company/data/providers/unit_quotation_provider.dart';
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
+import 'package:developer_company/global_state/providers/user_provider_state.dart';
+import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
@@ -9,9 +11,9 @@ import 'package:developer_company/views/quotes/controllers/unit_detail_page_cont
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
-import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
+import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -28,6 +30,8 @@ class UnitDetailPage extends StatefulWidget {
 class _UnitDetailPageState extends State<UnitDetailPage> {
   // final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final Map<String, dynamic> arguments = Get.arguments;
+  final user = container.read(userProvider);
+  final appColors = AppColors();
 
   UnitDetailPageController unitDetailPageController =
       Get.put(UnitDetailPageController());
@@ -69,7 +73,8 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
       unitDetailPageController.unit.text = arguments["unitName"];
       unitDetailPageController.unitStatus.text =
           unitStatus[arguments["unitStatus"]]!;
-      unitDetailPageController.salePrice.text = quetzalesCurrency(arguments["salePrice"].toString());
+      unitDetailPageController.salePrice.text =
+          quetzalesCurrency(arguments["salePrice"].toString());
     });
   }
 
@@ -77,7 +82,6 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    Responsive responsive = Responsive.of(context);
     return Layout(
       sideBarList: const [],
       appBar: const CustomAppBarTitle(title: "Detalle de unidad"),
@@ -112,104 +116,50 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
             height: Dimensions.heightSize * 0.5,
           ),
           SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-                showCheckboxColumn: false,
-                headingRowHeight: responsive.hp(6),
-                headingRowColor: MaterialStateProperty.all<Color>(
-                    AppColors.secondaryMainColor),
-                columns: const <DataColumn>[
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Fecha',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Asesor',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Monto cotizado',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                      ),
-                    ),
-                  ),
-                ],
-                rows: _unitQuotations
+              scrollDirection: Axis.horizontal,
+              child: CustomDataTable(
+                columns: ["Fecha", "Asesor", "Monto cotizado"],
+                elements: _unitQuotations
                     .asMap()
                     .map((index, element) => MapEntry(
                         index,
                         DataRow(
-                            onSelectChanged: (value) async {
-                              final isFetchQuote = await Get.toNamed(
-                                  RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
-                                  arguments: {
-                                    'isEditing': true,
-                                    "unitName":
-                                        unitDetailPageController.unit.text,
-                                    'unitStatus': arguments["unitStatus"],
-                                    'salePrice': arguments["salePrice"],
-                                    'finalSellPrice':
-                                        element.quotation.saleDiscount,
-                                    'quoteId': element.quotationId,
-                                    'unitId': element.unitId,
-                                  });
-                              handleFetchQuoteHistory(isFetchQuote);
-                            },
-                            cells: [
-                              DataCell(Container(
-                                width: (Get.width / 5),
-                                child: Text(element.createdAt),
-                              )),
-                              DataCell(Container(
-                                width: (Get.width / 5) - 20,
-                                child: Text(
-                                    element.quotation.detailAdvisorId.toString()),
-                              )),
-                              DataCell(Container(
-                                width: (Get.width / 3) - 20,
-                                child: Text(
-                                    element.quotation.saleDiscount.toString()),
-                              )),
-                            ],
-                            color: index % 2 == 0
-                                ? MaterialStateProperty.all<Color>(
-                                    AppColors.lightColor)
-                                : MaterialStateProperty.all<Color>(
-                                    AppColors.lightSecondaryColor))))
+                          onSelectChanged: (value) async {
+                            final isFetchQuote = await Get.toNamed(
+                                RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
+                                arguments: {
+                                  'isEditing': true,
+                                  "unitName":
+                                      unitDetailPageController.unit.text,
+                                  'unitStatus': arguments["unitStatus"],
+                                  'salePrice': arguments["salePrice"],
+                                  'finalSellPrice':
+                                      element.quotation.saleDiscount,
+                                  'quoteId': element.quotationId,
+                                  'unitId': element.unitId,
+                                });
+                            handleFetchQuoteHistory(isFetchQuote);
+                          },
+                          cells: [
+                            DataCell(Container(
+                              width: (Get.width / 5),
+                              child: Text(element.createdAt),
+                            )),
+                            DataCell(Container(
+                              width: (Get.width / 3) - 20,
+                              child: Text(user!.name),
+                            )),
+                            DataCell(Container(
+                              width: (Get.width / 3) - 20,
+                              child: Text(
+                                  element.quotation.saleDiscount.toString()),
+                            )),
+                          ],
+                          color: appColors.dataRowColors(index),
+                        )))
                     .values
-                    .toList()),
-          ),
+                    .toList(),
+              )),
           const SizedBox(height: Dimensions.heightSize),
           const SizedBox(height: Dimensions.heightSize),
           GestureDetector(

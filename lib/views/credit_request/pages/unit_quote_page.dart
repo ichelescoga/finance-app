@@ -1,11 +1,12 @@
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/implementations/project__repository_impl.dart';
-import 'package:developer_company/data/models/company_model.dart';
 import 'package:developer_company/data/models/project_model.dart';
 import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
+import 'package:developer_company/global_state/providers/user_provider_state.dart';
+import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
@@ -36,6 +37,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
       ProjectRepositoryImpl(ProjectProvider());
 
   List<Unit> _projectUnits = [];
+  final user = container.read(userProvider);
 
   final List<Map<String, dynamic>> sideBarList = [
     // {
@@ -73,27 +75,15 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   final indexTab = 0.obs;
   final showFirst = false.obs;
 
-  Future<int> _fetchCompany() async {
-    try {
-      //TODO SHOULD BE RETRIEVE PROYECT_ID AND GET COMPANY BY USER NOT ALL
-      List<Company> companies = await companyRepository.fetchCompanies();
-      return companies[0].companyId;
-    } catch (e) {
-      return 0;
-    }
-  }
 
-  void _fetchUnitProjects(int companyId) async {
+  void _fetchUnitProjects(String projectId) async {
     try {
       List<Project> project =
-          await projectRepository.fetchUnitsByProject(companyId);
-      // print(project[0].units);
+          await projectRepository.fetchUnitsByProject(int.tryParse(projectId)!);
       setState(() {
         _projectUnits = project[0].units;
       });
-      // print(project[0].units[0].unitName);
     } catch (e) {
-      // Handle project fetching failure or show error message
       // print('Project fetching failed: $e');
     }
   }
@@ -101,9 +91,8 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   void retrieveData() async {
     try {
       EasyLoading.showToast(Strings.loading);
-      final companyId = await _fetchCompany();
-      print(companyId);
-      _fetchUnitProjects(companyId);
+      final projectId = user?.project.projectId;
+      _fetchUnitProjects(projectId!);
     } finally {
       EasyLoading.dismiss();
     }

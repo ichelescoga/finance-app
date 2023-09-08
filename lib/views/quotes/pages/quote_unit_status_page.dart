@@ -58,8 +58,6 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
 
   List<Item> items = [
     Item(icon: Icons.home, title: 'Unidad', isSelected: true),
-    // Item(icon: Icons.people, title: 'Cliente'),
-    // Item(icon: Icons.work, title: 'Ejecutivo'),
   ];
 
   void selectItem(int index) {
@@ -242,7 +240,7 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                               onSelectChanged: (value) {
                                 print("projectId ${element.projectId}");
                                 print("unitId ${element.unitId}");
-                                                                
+
                                 Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
                                     arguments: {
                                       'isEditing': false,
@@ -264,7 +262,8 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                                   child: Text(unitStatus[element.estadoId]!),
                                 )),
                                 DataCell(Container(
-                                  child: Text(quetzalesCurrency(element.salePrice)),
+                                  child: Text(
+                                      quetzalesCurrency(element.salePrice)),
                                 )),
                               ],
                               color: index % 2 == 0

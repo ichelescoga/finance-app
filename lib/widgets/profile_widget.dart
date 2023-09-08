@@ -15,6 +15,8 @@ class ProfileWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     User? user = ref.watch(userProvider);
+    print("🚀🚀🥊  ${user?.company.companyName}");
+    print("🚀🚀🥊  ${user?.project.projectName}");
 
     return DrawerHeader(
       decoration: const BoxDecoration(
@@ -30,27 +32,36 @@ class ProfileWidget extends ConsumerWidget {
             top: 5 * 3,
           ),
           child: ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(60.0),
-              child: Image.asset(
-                'assets/icondef.png',
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(60.0),
+                child: Image.asset(
+                  'assets/icondef.png',
+                ),
               ),
-            ),
-            title: Text(
-              user == null ? "Usuario" : user.name,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  height: 1.1),
-            ),
-            subtitle: Text(
-              Strings.appName,
-              style: const TextStyle(
-                color: Colors.white,
+              title: Text(
+                user == null ? "Usuario" : user.name,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    height: 1.1),
               ),
-            ),
-          ),
+              subtitle: Column(
+                children: [
+                  Text(
+                    Strings.appName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    user == null ? "Usuario" : user.company.companyName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              )),
         ),
       ),
     );
