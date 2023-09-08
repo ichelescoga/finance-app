@@ -93,7 +93,14 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         setState(() {
           _quoteEdit = !(statusQuoteById == 3 ||
               statusQuoteById == 6 ||
-              statusQuoteById == 7); //unitStatus unit_status
+              statusQuoteById == 7 ||
+              arguments["unitStatus"] == 3 ||
+              arguments["unitStatus"] == 5); //unitStatus unit_status
+        });
+      } else {
+        setState(() {
+          _quoteEdit =
+              !(arguments["unitStatus"] == 3 || arguments["unitStatus"] == 5);
         });
       }
 
@@ -210,7 +217,8 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
             arguments: {
               'quoteId': quoteId,
               'simulationSchedule': simulation,
-              "quoteState": quoteStatus
+              "quoteState": quoteStatus,
+              "unitStatus": arguments["unitStatus"]
             });
       } catch (e) {
         print(e);
@@ -252,8 +260,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
     return Layout(
       sideBarList: const [],
-      actionButton:
-          quoteId != null ? ShareQuoteActionButtons(quoteId: quoteId.toString()) : null,
+      actionButton: quoteId != null
+          ? ShareQuoteActionButtons(quoteId: quoteId.toString())
+          : null,
       appBar: CustomAppBarTwoImages(
           title: 'Cotización',
           leftImage: 'assets/logo_test.png',

@@ -166,6 +166,15 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
     super.initState();
     quoteId = arguments["quoteId"].toString();
     // start();
+    final unitStatus =
+        arguments["unitStatus"] == 3 || arguments["unitStatus"] == 5;
+
+    if (unitStatus) {
+      setState(() {
+        isEditMode = false;
+        isFirstTime = false;
+      });
+    }
   }
 
   @override

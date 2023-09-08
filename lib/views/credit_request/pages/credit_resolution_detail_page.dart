@@ -5,6 +5,7 @@ import "package:developer_company/data/repositories/buyer_repository.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
+import "package:developer_company/shared/services/pdf_download_share.dart";
 import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/views/credit_request/controllers/finish_sell_form_controller.dart";
 import 'package:developer_company/views/credit_request/forms/finish_sell_form.dart';
@@ -14,7 +15,7 @@ import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:get/get.dart";
-import "package:url_launcher/url_launcher.dart";
+
 
 class CreditResolutionDetailPage extends StatefulWidget {
   const CreditResolutionDetailPage({Key? key}) : super(key: key);
@@ -39,6 +40,74 @@ class _CreditResolutionDetailPageState
     super.initState();
     isAlreadySell =
         int.tryParse(arguments["statusId"]) == 3; //unitStatus unit_status
+  }
+
+  void sellUnit() async {
+    final BuyerData buyerData = BuyerData(
+        nombreCompletoCmprd: _finishSellFormController.fullName.text,
+        fechaNacimientoCmprd: _finishSellFormController.birthDate.text,
+        estadoCivilCmprd: _finishSellFormController.civilStatus.text,
+        nacionalidadCmprd: _finishSellFormController.nationality.text,
+        profesionCmprd: _finishSellFormController.job.text,
+        residenciaCmprd: _finishSellFormController.addressJob.text,
+        telefonoCmprd: _finishSellFormController.phone.text,
+        direccionTrabajoCmprd: _finishSellFormController.addressJob.text,
+        telefonoTrabajoCmprd: _finishSellFormController.phoneJob.text,
+        ingresoMensualTextoCmprd: _finishSellFormController.monthlyIncome.text,
+        ingresoMensualNumCmprd: _finishSellFormController.monthlyIncome.text,
+        correoElectronicoCmprd: _finishSellFormController.email.text,
+        docIdentificacionCmprd: _finishSellFormController.typeOfDocument.text,
+        pasaporteCmprd: "NA",
+        dpiCmprd: _finishSellFormController.numberOfDocument.text,
+        extendido: _finishSellFormController.whereExtended.text,
+        razonSocial: _finishSellFormController.businessName.text,
+        urlFotocopiaRepresentacion: "",
+        valorTotalLote: _finishSellFormController.totalOfLote.text,
+        valorMejoras: _finishSellFormController.totalOfEnhancesLote.text,
+        contado: "0",
+        reserva: _finishSellFormController.reserveCashPrice.text,
+        fechaLimiteCancelSaldo: "",
+        enganche: _finishSellFormController.enganche.text,
+        saldo: "",
+        numeroCuotas: _finishSellFormController.numberOfPayments.text,
+        valorCuota: _finishSellFormController.valueOfEachPayment.text,
+        ciudad: _finishSellFormController.city.text,
+        referencia: [
+          Reference(
+              nombreCompleto:
+                  _finishSellFormController.referenceOneFullName.text,
+              residencia:
+                  _finishSellFormController.referenceOneFullContact.text,
+              telefono: ""),
+          Reference(
+              nombreCompleto:
+                  _finishSellFormController.referenceTwoFullName.text,
+              residencia:
+                  _finishSellFormController.referenceTwoFullContact.text,
+              telefono: "")
+        ]);
+
+    try {
+      String? urlOfDocument = await buyerProvider.postSellBuyerData(
+          buyerData, arguments["quoteId"]);
+
+      if (urlOfDocument == null) {
+        throw Exception('Failed to post buyer data');
+      }
+
+      await shareFile(urlOfDocument.toString(),
+          "Formalizacion de venta-${_finishSellFormController.numberOfDocument}.pdf");
+
+
+      await httpAdapter.putApi(
+          "orders/v1/cotizacionVendida/${arguments["quoteId"]}", {}, {});
+      EasyLoading.showSuccess("Formalización de venta procesada con éxito.");
+      isAlreadySell = true;
+      _finishSellFormController.clearController();
+      Get.offAllNamed(RouterPaths.DASHBOARD_PAGE);
+    } catch (e) {
+      EasyLoading.showError("Algo Salio Mal");
+    }
   }
 
   @override
@@ -67,90 +136,7 @@ class _CreditResolutionDetailPageState
                       text: "Formalizar Venta",
                       onTap: () async {
                         if (_formBuyerKey.currentState!.validate()) {
-                          final BuyerData buyerData = BuyerData(
-                              nombreCompletoCmprd:
-                                  _finishSellFormController.fullName.text,
-                              fechaNacimientoCmprd:
-                                  _finishSellFormController.birthDate.text,
-                              estadoCivilCmprd:
-                                  _finishSellFormController.civilStatus.text,
-                              nacionalidadCmprd:
-                                  _finishSellFormController.nationality.text,
-                              profesionCmprd:
-                                  _finishSellFormController.job.text,
-                              residenciaCmprd:
-                                  _finishSellFormController.addressJob.text,
-                              telefonoCmprd:
-                                  _finishSellFormController.phone.text,
-                              direccionTrabajoCmprd:
-                                  _finishSellFormController.addressJob.text,
-                              telefonoTrabajoCmprd:
-                                  _finishSellFormController.phoneJob.text,
-                              ingresoMensualTextoCmprd:
-                                  _finishSellFormController.monthlyIncome.text,
-                              ingresoMensualNumCmprd:
-                                  _finishSellFormController.monthlyIncome.text,
-                              correoElectronicoCmprd:
-                                  _finishSellFormController.email.text,
-                              docIdentificacionCmprd:
-                                  _finishSellFormController.typeOfDocument.text,
-                              pasaporteCmprd: "NA",
-                              dpiCmprd: _finishSellFormController
-                                  .numberOfDocument.text,
-                              extendido:
-                                  _finishSellFormController.whereExtended.text,
-                              razonSocial: _finishSellFormController.businessName.text,
-                              urlFotocopiaRepresentacion: "",
-                              valorTotalLote: _finishSellFormController.totalOfLote.text,
-                              valorMejoras: _finishSellFormController.totalOfEnhancesLote.text,
-                              contado: "0",
-                              reserva: _finishSellFormController.reserveCashPrice.text,
-                              fechaLimiteCancelSaldo: "",
-                              enganche: _finishSellFormController.enganche.text,
-                              saldo: "",
-                              numeroCuotas: _finishSellFormController.numberOfPayments.text,
-                              valorCuota: _finishSellFormController.valueOfEachPayment.text,
-                              ciudad: _finishSellFormController.city.text,
-                              referencia: [
-                                Reference(
-                                    nombreCompleto: _finishSellFormController
-                                        .referenceOneFullName.text,
-                                    residencia: _finishSellFormController
-                                        .referenceOneFullContact.text,
-                                    telefono: ""),
-                                Reference(
-                                    nombreCompleto: _finishSellFormController
-                                        .referenceTwoFullName.text,
-                                    residencia: _finishSellFormController
-                                        .referenceTwoFullContact.text,
-                                    telefono: "")
-                              ]);
-
-                          try {
-                            String? urlOfDocument =
-                                await buyerProvider.postSellBuyerData(
-                                    buyerData, arguments["quoteId"]);
-
-                            if (urlOfDocument == null) {
-                              throw Exception('Failed to post buyer data');
-                            }
-
-                            Uri pdfUrl = Uri.parse(urlOfDocument.toString());
-                            await launchUrl(pdfUrl,
-                                mode: LaunchMode.externalNonBrowserApplication);
-
-                            await httpAdapter.putApi(
-                                "orders/v1/cotizacionVendida/${arguments["quoteId"]}",
-                                {},
-                                {});
-                            EasyLoading.showSuccess(
-                                "Formalización de venta procesada con éxito.");
-                            isAlreadySell = true;
-                            _finishSellFormController.clearController();
-                            Get.offAllNamed(RouterPaths.DASHBOARD_PAGE);
-                          } catch (e) {
-                            EasyLoading.showError("Algo Salio Mal");
-                          }
+                          sellUnit();
                         } else {
                           EasyLoading.showInfo(Strings.pleaseVerifyInputs);
                         }

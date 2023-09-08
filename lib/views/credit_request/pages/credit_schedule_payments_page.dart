@@ -199,7 +199,8 @@ class _CreditSchedulePaymentsPageState
                 onTap: () {
                   Get.toNamed(RouterPaths.CLIENT_QUOTE_PAGE, arguments: {
                     'quoteId': arguments['quoteId'],
-                    "quoteState": arguments["quoteState"]
+                    "quoteState": arguments["quoteState"],
+                    "unitStatus": arguments["unitStatus"]
                   });
                 },
               ),

@@ -4,6 +4,7 @@ import "package:developer_company/data/providers/pre_sell_provider.dart";
 import "package:developer_company/data/repositories/pre_sell_respository.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
+import "package:developer_company/shared/services/quetzales_currency.dart";
 import "package:developer_company/shared/validations/not_empty.dart";
 import "package:developer_company/shared/validations/years_old_validator.dart";
 import "package:developer_company/views/credit_request/controllers/finish_sell_form_controller.dart";
@@ -149,10 +150,19 @@ class _FinishSellFormState extends State<FinishSellForm> {
       CustomInputWidget(
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.phoneJob,
+          keyboardType: TextInputType.phone,
           label: "Teléfono de Trabajo",
           hintText: "Teléfono de Trabajo",
           prefixIcon: Icons.person),
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.monthlyIncome.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.monthlyIncome.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.monthlyIncome,
           label: "Ingreso Mensual",
@@ -249,12 +259,28 @@ class _FinishSellFormState extends State<FinishSellForm> {
           prefixIcon: Icons.house),
       Text("Datos de Negociación", style: textStyle),
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.totalOfLote.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.totalOfLote.text);
+            }
+          },
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.totalOfLote,
+          keyboardType: TextInputType.number,
           label: "Valor Total del Lote",
           hintText: "Valor Total del Lote",
           prefixIcon: Icons.monetization_on),
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.totalOfEnhancesLote.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.totalOfEnhancesLote.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.totalOfEnhancesLote,
           label: "Valor de las mejoras",
@@ -264,6 +290,14 @@ class _FinishSellFormState extends State<FinishSellForm> {
 
       //TODO SWITCH TO MARK CASH PRICE
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.reserveCashPrice.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.reserveCashPrice.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.reserveCashPrice,
           label: "Reserva al Contado",
@@ -272,18 +306,41 @@ class _FinishSellFormState extends State<FinishSellForm> {
 
       //TODO SWITCH TO MARK CASH PRICE
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.reserveCredit.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.reserveCredit.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.reserveCredit,
           label: "Reserva al Crédito",
           hintText: "Reserva al Crédito",
           prefixIcon: Icons.attach_money_sharp),
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.enganche.text = quetzalesCurrency(
+                  widget.finishSellFormController.enganche.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.enganche,
           label: "Enganche",
           hintText: "Enganche",
           prefixIcon: Icons.attach_money_sharp),
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.monthlyBalance.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.monthlyBalance.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.monthlyBalance,
           label: "Saldo: Cuotas Fijas",
@@ -294,8 +351,17 @@ class _FinishSellFormState extends State<FinishSellForm> {
           controller: widget.finishSellFormController.numberOfPayments,
           label: "Numero de Cuotas",
           hintText: "Numero de Cuotas",
+          keyboardType: TextInputType.number,
           prefixIcon: Icons.attach_money_sharp),
       CustomInputWidget(
+          onFocusChangeInput: (hasFocus) {
+            if (!hasFocus) {
+              widget.finishSellFormController.valueOfEachPayment.text =
+                  quetzalesCurrency(
+                      widget.finishSellFormController.valueOfEachPayment.text);
+            }
+          },
+          keyboardType: TextInputType.number,
           validator: (value) => notEmptyFieldValidator(value),
           controller: widget.finishSellFormController.valueOfEachPayment,
           label: "Valor de Cada Cuota",
