@@ -52,7 +52,7 @@ class Project {
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-        projectId: json["proyecto"][0]["Id_proyecto"].toString(),
-        projectName: json["proyecto"][0]["Nombre_proyecto"]);
+        projectId: json["proyecto"]["Id_proyecto"].toString(),
+        projectName: json["proyecto"]["Nombre_proyecto"]);
   }
 }

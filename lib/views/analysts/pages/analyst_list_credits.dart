@@ -2,6 +2,8 @@ import "package:developer_company/data/implementations/analyst_repository_impl.d
 import "package:developer_company/data/models/analyst_model.dart";
 import "package:developer_company/data/providers/analyst_provider.dart";
 import "package:developer_company/data/repositories/analyst_repository.dart";
+import "package:developer_company/global_state/providers/user_provider_state.dart";
+import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/shared/utils/unit_status.dart";
@@ -22,6 +24,7 @@ class AnalystListCredits extends StatefulWidget {
 class _AnalystListCreditsState extends State<AnalystListCredits> {
   final appColors = AppColors();
   final _scrollController = ScrollController();
+  final user = container.read(userProvider);
 
   final AnalystRepository analystRepository =
       AnalystRepositoryImpl(AnalystProvider());
@@ -30,8 +33,9 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
 
   Future<void> retrieveQuotationApplied() async {
     try {
+      final projectId = user?.project.projectId;
       List<AnalystQuotation> listClients =
-          await analystRepository.fetchAllQuotesForAnalyst();
+          await analystRepository.fetchAllQuotesForAnalyst(projectId!);
 
       setState(() {
         quotationsByClient = listClients;

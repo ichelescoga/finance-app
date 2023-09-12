@@ -8,7 +8,7 @@ class AnalystRepositoryImpl implements AnalystRepository {
   AnalystRepositoryImpl(this.analystProvider);
 
   @override
-  Future<List<AnalystQuotation>> fetchAllQuotesForAnalyst() async {
-    return await analystProvider.fetchAllQuotesForAnalyst();
+  Future<List<AnalystQuotation>> fetchAllQuotesForAnalyst(String projectId) async {
+    return await analystProvider.fetchAllQuotesForAnalyst(projectId);
   }
 }

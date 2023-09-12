@@ -1,11 +1,12 @@
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/implementations/project__repository_impl.dart';
-import 'package:developer_company/data/models/company_model.dart';
 import 'package:developer_company/data/models/project_model.dart';
 import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
+import 'package:developer_company/global_state/providers/user_provider_state.dart';
+import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/views/quotes/controllers/quote_consult_page_controller.dart';
@@ -37,6 +38,9 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   final ProjectRepository projectRepository =
       ProjectRepositoryImpl(ProjectProvider());
   List<Unit> _projectUnits = [];
+
+    final user = container.read(userProvider);
+
 
   final List<Map<String, dynamic>> sideBarList = [
     // {
@@ -72,20 +76,20 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     });
   }
 
-  Future<int> _fetchCompany() async {
-    EasyLoading.show(status: "Cargando...");
-    try {
-      List<Company> companies = await companyRepository.fetchCompanies();
-      return companies[0].companyId;
-    } catch (e) {
-      return 0;
-    }
-  }
+  // Future<int> _fetchCompany() async {
+  //   EasyLoading.show(status: "Cargando...");
+  //   try {
+  //     List<Company> companies = await companyRepository.fetchCompanies();
+  //     return companies[0].companyId;
+  //   } catch (e) {
+  //     return 0;
+  //   }
+  // }
 
-  void _fetchUnitProjects(int companyId) async {
+  void _fetchUnitProjects(String projectId) async {
     try {
       List<Project> project =
-          await projectRepository.fetchUnitsByProject(companyId);
+          await projectRepository.fetchUnitsByProject(int.tryParse(projectId)!);
       print(project[0].units);
       setState(() {
         _projectUnits = project[0].units;
@@ -100,9 +104,8 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   void retrieveData() async {
     try {
       EasyLoading.show(status: "Cargando");
-      final companyId = await _fetchCompany();
-      print(companyId);
-      _fetchUnitProjects(companyId);
+    final projectId = user?.project.projectId;
+      _fetchUnitProjects(projectId!);
     } finally {
       EasyLoading.dismiss();
     }
