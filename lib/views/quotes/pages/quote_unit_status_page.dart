@@ -13,8 +13,8 @@ import 'package:developer_company/views/quotes/controllers/quote_consult_page_co
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
-import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
+import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -39,29 +39,23 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
       ProjectRepositoryImpl(ProjectProvider());
   List<Unit> _projectUnits = [];
 
-    final user = container.read(userProvider);
-
+  final user = container.read(userProvider);
 
   final List<Map<String, dynamic>> sideBarList = [
     // {
     //   'icon': Icons.business,
     //   'title': 'Consulta de cotizaciones',
     //   'route': RouterPaths.QUOTE_CONSULT_PAGE,
-    // },
-    // {
-    //   'icon': Icons.business,
-    //   'title': 'Tipo de unidades',
-    //   'route': RouterPaths.QUOTE_STATS_PAGE,
-    // },
-    // {
-    //   'icon': Icons.business,
-    //   'title': 'Estado de unidades',
-    //   'route': RouterPaths.QUOTE_UNIT_STATUS_PAGE,
     // }
   ];
 
   List<Item> items = [
-    Item(icon: Icons.home, title: 'Unidad', isSelected: true),
+    Item(id: "units", icon: Icons.home, title: 'Unidad', isSelected: true),
+    Item(
+        id: "byClient",
+        icon: Icons.document_scanner,
+        title: 'Cotizaciones',
+        isSelected: false)
   ];
 
   void selectItem(int index) {
@@ -75,16 +69,6 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
       }
     });
   }
-
-  // Future<int> _fetchCompany() async {
-  //   EasyLoading.show(status: "Cargando...");
-  //   try {
-  //     List<Company> companies = await companyRepository.fetchCompanies();
-  //     return companies[0].companyId;
-  //   } catch (e) {
-  //     return 0;
-  //   }
-  // }
 
   void _fetchUnitProjects(String projectId) async {
     try {
@@ -104,7 +88,7 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   void retrieveData() async {
     try {
       EasyLoading.show(status: "Cargando");
-    final projectId = user?.project.projectId;
+      final projectId = user?.project.projectId;
       _fetchUnitProjects(projectId!);
     } finally {
       EasyLoading.dismiss();
@@ -123,8 +107,6 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    Responsive responsive = Responsive.of(context);
-
     return Layout(
         appBar: const CustomAppBarSideBar(title: "Consulta de Cotizaciones"),
         sideBarList: sideBarList,
@@ -172,112 +154,70 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
                   .toList(),
             ),
             const SizedBox(height: Dimensions.heightSize),
-            const Text(
-              "Estado de unidad",
-              style: TextStyle(color: Colors.black),
-            ),
-            const SizedBox(
-              height: Dimensions.heightSize * 0.5,
-            ),
-            const SizedBox(height: Dimensions.heightSize),
-            Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                    showCheckboxColumn: false,
-                    headingRowHeight: responsive.hp(6),
-                    headingRowColor: MaterialStateProperty.all<Color>(
-                        AppColors.secondaryMainColor),
-                    columns: const <DataColumn>[
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Unidad',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17,
-                              color: Colors.white,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Estado',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17,
-                              color: Colors.white,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Precio de venta',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17,
-                              color: Colors.white,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                          ),
-                        ),
-                      ),
-                    ],
-                    rows: _projectUnits
-                        .asMap()
-                        .map((index, element) => MapEntry(
-                            index,
-                            DataRow(
-                              onSelectChanged: (value) {
-                                Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
-                                    arguments: {
-                                      'isEditing': false,
-                                      'projectId': "${element.projectId}",
-                                      'unitId': '${element.unitId}',
-                                      'unitName': element.unitName,
-                                      'unitStatus': element.estadoId,
-                                      'salePrice': element.salePrice,
-                                      'finalSellPrice': element.salePrice
-                                    });
-                              },
-                              cells: [
-                                DataCell(Container(
-                                  constraints:
-                                      BoxConstraints(maxWidth: Get.width / 3),
-                                  child: Text(element.unitName),
-                                )),
-                                DataCell(Container(
-                                  child: Text(unitStatus[element.estadoId]!),
-                                )),
-                                DataCell(Container(
-                                  child: Text(
-                                      quetzalesCurrency(element.salePrice)),
-                                )),
-                              ],
-                              color: index % 2 == 0
-                                  ? MaterialStateProperty.all<Color>(
-                                      AppColors.lightColor)
-                                  : MaterialStateProperty.all<Color>(
-                                      AppColors.lightSecondaryColor),
-                            )))
-                        .values
-                        .toList()),
-              ),
-            )
+            if (itemSelected.id == "units") unitsQuotes(context),
+            if(itemSelected.id == "byClient") Text("By Client :)")
           ],
         ));
+  }
+
+  unitsQuotes(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          "Estado de unidad",
+          style: TextStyle(color: Colors.black),
+        ),
+        const SizedBox(
+          height: Dimensions.heightSize * 0.5,
+        ),
+        const SizedBox(height: Dimensions.heightSize),
+        Center(
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: CustomDataTable(
+                columns: ["Unidad", "Estado", "Precio de Venta"],
+                elements: _projectUnits
+                    .asMap()
+                    .map((index, element) => MapEntry(
+                        index,
+                        DataRow(
+                          onSelectChanged: (value) {
+                            Get.toNamed(RouterPaths.UNIT_DETAIL_PAGE,
+                                arguments: {
+                                  'isEditing': false,
+                                  'projectId': "${element.projectId}",
+                                  'unitId': '${element.unitId}',
+                                  'unitName': element.unitName,
+                                  'unitStatus': element.estadoId,
+                                  'salePrice': element.salePrice,
+                                  'finalSellPrice': element.salePrice
+                                });
+                          },
+                          cells: [
+                            DataCell(Container(
+                              constraints:
+                                  BoxConstraints(maxWidth: Get.width / 3),
+                              child: Text(element.unitName),
+                            )),
+                            DataCell(Container(
+                              child: Text(unitStatus[element.estadoId]!),
+                            )),
+                            DataCell(Container(
+                              child: Text(quetzalesCurrency(element.salePrice)),
+                            )),
+                          ],
+                          color: index % 2 == 0
+                              ? MaterialStateProperty.all<Color>(
+                                  AppColors.lightColor)
+                              : MaterialStateProperty.all<Color>(
+                                  AppColors.lightSecondaryColor),
+                        )))
+                    .values
+                    .toList(),
+              )),
+        )
+      ],
+    );
   }
 
   createIconTopProfile() {
@@ -297,6 +237,11 @@ class Item {
   final IconData icon;
   final String title;
   bool isSelected;
+  final String id;
 
-  Item({required this.icon, required this.title, this.isSelected = false});
+  Item(
+      {required this.id,
+      required this.icon,
+      required this.title,
+      this.isSelected = false});
 }

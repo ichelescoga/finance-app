@@ -28,6 +28,9 @@ import 'package:developer_company/views/home/pages/dashboard_page.dart';
 import 'package:developer_company/views/home/pages/home_page.dart';
 import 'package:developer_company/views/home/pages/login_page.dart';
 import 'package:developer_company/views/home/pages/register_page.dart';
+import 'package:developer_company/views/marketing/pages/Marketing_carrousel_albums.dart';
+import 'package:developer_company/views/marketing/pages/marketing_album_detail_maintenance.dart';
+import 'package:developer_company/views/marketing/screens/marketing_album_detail.dart';
 import 'package:developer_company/views/quotes/pages/quote_consult_page.dart';
 import 'package:developer_company/views/quotes/pages/quote_stats_page.dart';
 import 'package:developer_company/views/quotes/pages/quote_unit_status_page.dart';
@@ -72,6 +75,16 @@ class GetRoutes{
       GetPage(name: RouterPaths.CREDIT_DETAIL_PAGE, page: () => const CreditDetailPage()),
       GetPage(name: RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE, page: () => const CreditResolutionDetailPage()),
       GetPage(name: RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED, page: () => const CreditsReservedApproved()),
+      
+
+      // MARKETING
+      GetPage(name: RouterPaths.MARKETING_MAINTENANCE_ALBUMS, page: () => const MarketingAlbumDetailMaintenance()),
+      GetPage(name: RouterPaths.MARKETING_MAINTENANCE_DETAIL_ALBUM, page: () => const MarketingAlbumDetailMaintenance()),
+      GetPage(name: RouterPaths.MARKETING_CARROUSEL_ALBUMS, page: () => const MarketingCarrouselAlbums()),
+      GetPage(name: RouterPaths.MARKETING_DETAIL_ALBUM, page: () => const MarketingAlbumDetail()),
+
+
+      
     ];
   }
 }

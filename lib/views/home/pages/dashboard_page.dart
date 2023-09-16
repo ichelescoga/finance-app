@@ -331,6 +331,21 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
+          
+          AuthorizationWrapper(
+            requestAction: PermissionLevel.adviserCreditsApprovedAndReserved,
+            child: Column(
+              children: [
+                spaceButton,
+                CustomButtonWidget(
+                    text: "Mercadeo",
+                    onTap: () => Get.toNamed(
+                        RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED),
+                    padding: defaultPadding),
+              ],
+            ),
+          ),
+
           const SizedBox(height: Dimensions.heightSize),
           AuthorizationWrapper(
             requestAction: PermissionLevel.dashboardExecutiveButton,
