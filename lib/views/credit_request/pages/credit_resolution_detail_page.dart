@@ -6,6 +6,7 @@ import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/shared/services/pdf_download_share.dart";
+import "package:developer_company/shared/services/quetzales_currency.dart";
 import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/views/credit_request/controllers/finish_sell_form_controller.dart";
 import 'package:developer_company/views/credit_request/forms/finish_sell_form.dart';
@@ -53,8 +54,8 @@ class _CreditResolutionDetailPageState
         telefonoCmprd: _finishSellFormController.phone.text,
         direccionTrabajoCmprd: _finishSellFormController.addressJob.text,
         telefonoTrabajoCmprd: _finishSellFormController.phoneJob.text,
-        ingresoMensualTextoCmprd: _finishSellFormController.monthlyIncome.text,
-        ingresoMensualNumCmprd: _finishSellFormController.monthlyIncome.text,
+        ingresoMensualTextoCmprd: extractNumber(_finishSellFormController.monthlyIncome.text)!,
+        ingresoMensualNumCmprd: extractNumber(_finishSellFormController.monthlyIncome.text)!,
         correoElectronicoCmprd: _finishSellFormController.email.text,
         docIdentificacionCmprd: _finishSellFormController.typeOfDocument.text,
         pasaporteCmprd: "NA",
@@ -62,15 +63,15 @@ class _CreditResolutionDetailPageState
         extendido: _finishSellFormController.whereExtended.text,
         razonSocial: _finishSellFormController.businessName.text,
         urlFotocopiaRepresentacion: "",
-        valorTotalLote: _finishSellFormController.totalOfLote.text,
-        valorMejoras: _finishSellFormController.totalOfEnhancesLote.text,
-        contado: "0",
-        reserva: _finishSellFormController.reserveCashPrice.text,
+        valorTotalLote: extractNumber(_finishSellFormController.totalOfLote.text)!,
+        valorMejoras: extractNumber(_finishSellFormController.totalOfEnhancesLote.text)!,
+        contado: _finishSellFormController.cashPriceOrCredit ? "1" : "0",
+        reserva: extractNumber(_finishSellFormController.reserveCashPrice.text)!,
         fechaLimiteCancelSaldo: "",
-        enganche: _finishSellFormController.enganche.text,
+        enganche: extractNumber(_finishSellFormController.enganche.text)!,
         saldo: "",
         numeroCuotas: _finishSellFormController.numberOfPayments.text,
-        valorCuota: _finishSellFormController.valueOfEachPayment.text,
+        valorCuota: extractNumber(_finishSellFormController.valueOfEachPayment.text)!,
         ciudad: _finishSellFormController.city.text,
         referencia: [
           Reference(

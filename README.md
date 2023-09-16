@@ -31,3 +31,11 @@ For some reason the compressed package generated for flutter (flutter build apk)
 flutter build apk --debug
 ```
 this generate a app-debug.apk more weightily but works fine.
+
+
+
+## Pull Files from android to PC
+
+```
+adb pull /storage/emulated/0/Download/$nameOfFile C:\Users\elpab\Downloads
+```

@@ -75,7 +75,7 @@ class BuyerData {
       'ingresoMensualTextoCmprd': ingresoMensualTextoCmprd,
       'ingresoMensualNumCmprd': ingresoMensualNumCmprd,
       'correoElectronicoCmprd': correoElectronicoCmprd,
-      'docIdentificacionCmprd': docIdentificacionCmprd,
+      'docIdentificaionCmprd': docIdentificacionCmprd,
       'pasaporteCmprd': pasaporteCmprd,
       'dpiCmprd': dpiCmprd,
       'extendido': extendido,

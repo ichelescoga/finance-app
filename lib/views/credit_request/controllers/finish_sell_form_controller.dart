@@ -42,9 +42,8 @@ class FinishSellController extends BaseController {
   TextEditingController totalOfEnhancesLote = TextEditingController();
 
   // pay Method
-  bool cashPrice = false;
+  bool cashPriceOrCredit = false; //False to Cash and true for credit
   TextEditingController reserveCashPrice = TextEditingController();
-  bool credit = false;
   TextEditingController reserveCredit = TextEditingController();
   TextEditingController enganche = TextEditingController();
   TextEditingController monthlyBalance = TextEditingController();
@@ -80,7 +79,6 @@ class FinishSellController extends BaseController {
   }
 
   final List<String> typeOfDocumentList = ["DPI", "PASAPORTE"];
-
 
   void clearController() {
     fullName.clear();
@@ -123,7 +121,6 @@ class FinishSellController extends BaseController {
     numberOfDocument.clear();
     typeOfDocument.clear();
     whereExtended.clear();
-    cashPrice = false;
-    credit = false;
+    cashPriceOrCredit = false;
   }
 }

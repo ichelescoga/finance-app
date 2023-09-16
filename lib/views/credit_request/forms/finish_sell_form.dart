@@ -2,6 +2,7 @@ import "package:developer_company/data/implementations/pre_sell_repository_impl.
 import "package:developer_company/data/models/pre_sell_model.dart";
 import "package:developer_company/data/providers/pre_sell_provider.dart";
 import "package:developer_company/data/repositories/pre_sell_respository.dart";
+import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/shared/services/quetzales_currency.dart";
@@ -288,7 +289,23 @@ class _FinishSellFormState extends State<FinishSellForm> {
           prefixIcon: Icons.monetization_on),
       Text("Forma de pago", style: textStyle),
 
-      //TODO SWITCH TO MARK CASH PRICE
+      SwitchListTile(
+        inactiveThumbColor: AppColors.greenColor,
+        title: Text(
+          widget.finishSellFormController.cashPriceOrCredit
+              ? "Reserva al Crédito"
+              : "Reserva Al Contado",
+          style: TextStyle(color: Colors.black),
+        ),
+        value: widget.finishSellFormController.cashPriceOrCredit,
+        onChanged: (bool value) {
+          setState(() {
+            widget.finishSellFormController.cashPriceOrCredit = value;
+          });
+        },
+        activeColor: AppColors.softMainColor,
+      ),
+
       CustomInputWidget(
           onFocusChangeInput: (hasFocus) {
             if (!hasFocus) {
