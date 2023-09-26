@@ -22,22 +22,22 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
   BankExecutivePageController bankExecutivePageController =
       Get.put(BankExecutivePageController());
 
-  final List<Map<String, dynamic>> sideBarList = [
-    {
-      'icon': Icons.business,
-      'title': 'Ejecutivo bancario',
-      'route': RouterPaths.BANK_EXECUTIVE_PAGE,
-    },
-    {
-      'icon': Icons.business,
-      'title': 'Consultas ejecutivo',
-      'route': RouterPaths.BANK_EXECUTIVE_STATS_PAGE,
-    },
-    {
-      'icon': Icons.business,
-      'title': 'Estado de unidades',
-      'route': RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE,
-    },
+  final List<SideBarItem> sideBarList = [
+    
+    SideBarItem(  icon: Icons.business,
+      title: 'Ejecutivo bancario',
+      route: RouterPaths.BANK_EXECUTIVE_PAGE,)
+    ,
+    
+    SideBarItem(  icon: Icons.business,
+      title: 'Consultas ejecutivo',
+      route: RouterPaths.BANK_EXECUTIVE_STATS_PAGE,)
+    ,
+    
+    SideBarItem(  icon: Icons.business,
+      title: 'Estado de unidades',
+      route: RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE,)
+    ,
   ];
 
   @override

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class SideBarWidget extends StatelessWidget {
   final Function onPressedProfile;
-  final List<Map<String, dynamic>> listTiles;
+  final List<SideBarItem> listTiles;
 
   const SideBarWidget(
       {Key? key, required this.listTiles, required this.onPressedProfile})
@@ -30,14 +30,14 @@ class SideBarWidget extends StatelessWidget {
                 listTiles[index - 1]; // Subtract 1 for the DrawerHeader
             return ListTile(
               leading: Icon(
-                tileData['icon'],
+                tileData.icon,
                 color: Colors.black87,
               ),
               title: Text(
-                tileData['title'],
+                tileData.title,
               ),
               onTap: () {
-                Get.toNamed(tileData['route']);
+                Get.toNamed(tileData.route);
               },
               trailing: const Icon(Icons.keyboard_arrow_right),
             );
@@ -46,4 +46,12 @@ class SideBarWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class SideBarItem {
+  final IconData icon;
+  final String title;
+  final String route;
+
+  SideBarItem({required this.icon, required this.title, required this.route});
 }

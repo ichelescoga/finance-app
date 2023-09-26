@@ -7,7 +7,7 @@ import "package:get/get.dart";
 class Layout extends StatefulWidget {
   final Widget child;
   final PreferredSizeWidget appBar;
-  final List<Map<String, dynamic>> sideBarList;
+  final List<SideBarItem> sideBarList;
   final Widget? actionButton;
   final bool useScroll;
   final Function? onBackFunction;

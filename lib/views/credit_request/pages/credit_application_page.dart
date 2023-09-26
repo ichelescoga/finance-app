@@ -21,17 +21,16 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
   UnitDetailPageController unitDetailPageController =
       Get.put(UnitDetailPageController());
 
-  final List<Map<String, dynamic>> sideBarList = [
-    {
-      'icon': Icons.business,
-      'title': 'Cotización de unidad',
-      'route': RouterPaths.UNIT_QUOTE_PAGE,
-    },
-    {
-      'icon': Icons.business,
-      'title': 'Aplicación a crédito',
-      'route': RouterPaths.CREDIT_APPLICATION_PAGE,
-    },
+  final List<SideBarItem> sideBarList = [
+    SideBarItem(
+        icon: Icons.business,
+        title: 'Cotización de unidad',
+        route: RouterPaths.UNIT_QUOTE_PAGE),
+    SideBarItem(
+      icon: Icons.business,
+      title: 'Aplicación a crédito',
+      route: RouterPaths.CREDIT_APPLICATION_PAGE,
+    ),
   ];
 
   @override

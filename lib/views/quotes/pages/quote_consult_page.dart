@@ -22,22 +22,22 @@ class _QuoteConsultPageState extends State<QuoteConsultPage> {
   QuoteConsultPageController quoteConsultPageController =
       Get.put(QuoteConsultPageController());
 
-  final List<Map<String, dynamic>> sideBarList = [
-    {
-      'icon': Icons.business,
-      'title': 'Consulta de cotizaciones',
-      'route': RouterPaths.QUOTE_CONSULT_PAGE,
-    },
-    {
-      'icon': Icons.business,
-      'title': 'Tipo de unidades',
-      'route': RouterPaths.QUOTE_STATS_PAGE,
-    },
-    {
-      'icon': Icons.business,
-      'title': 'Estado de unidades',
-      'route': RouterPaths.QUOTE_UNIT_STATUS_PAGE,
-    },
+  final List<SideBarItem> sideBarList = [
+    SideBarItem(
+      icon: Icons.business,
+      title: 'Consulta de cotizaciones',
+      route: RouterPaths.QUOTE_CONSULT_PAGE,
+    ),
+    SideBarItem(
+      icon: Icons.business,
+      title: 'Tipo de unidades',
+      route: RouterPaths.QUOTE_STATS_PAGE,
+    ),
+    SideBarItem(
+      icon: Icons.business,
+      title: 'Estado de unidades',
+      route: RouterPaths.QUOTE_UNIT_STATUS_PAGE,
+    ),
   ];
 
   final List<String> overviews = [

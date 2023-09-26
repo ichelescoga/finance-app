@@ -16,6 +16,7 @@ import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/layout.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -39,7 +40,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   List<Unit> _projectUnits = [];
   final user = container.read(userProvider);
 
-  final List<Map<String, dynamic>> sideBarList = [
+  final List<SideBarItem> sideBarList = [
     // {
     //   'icon': Icons.business,
     //   'title': 'Cotización de unidad',
