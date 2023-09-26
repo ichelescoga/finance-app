@@ -10,7 +10,7 @@ import "package:get/get.dart";
 import "package:http/http.dart" as http;
 
 class HttpAdapter extends http.BaseClient {
-  String apiURL = dotenv.env["API_URL"] ?? "http://lb-api-finance-1469619945.us-east-2.elb.amazonaws.com";
+  String apiURL = dotenv.env["API_URL"] ?? "";
   final http.Client _inner = http.Client();
 
   @override

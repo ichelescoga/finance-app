@@ -199,7 +199,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
             extractNumber(unitDetailPageController.finalSellPrice.text)!)!;
 
         LoanSimulationRequest loanSimulationRequest = LoanSimulationRequest(
-            annualInterest: 6.2,
+            annualInterest: 16,
             annualPayments: anualPayments,
             totalCreditValue: creditValue,
             cashPrice: unitDetailPageController.isPayedTotal);

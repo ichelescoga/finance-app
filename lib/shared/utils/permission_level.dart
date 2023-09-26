@@ -10,5 +10,7 @@ class PermissionLevel {
 
   static const String analystCreditByClient = 'analyst_credit_by_client';
   static const String adviserCreditsApprovedAndReserved = "adviser_credits_approved_and_reserved";
+
+  static const String marketingMaintenance = "marketing_maintenance";
   // Add more permission levels as needed
 }

@@ -39,3 +39,19 @@ this generate a app-debug.apk more weightily but works fine.
 ```
 adb pull /storage/emulated/0/Download/$nameOfFile C:\Users\elpab\Downloads
 ```
+
+
+## ICONS
+[Icons Inspiration](https://icons8.com/icon/set/no-image/cotton)
+
+
+## PERMISSIONS IOS 
+
+video_player
+https://docs.flutter.dev/cookbook/plugins/play-video
+
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>

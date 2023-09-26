@@ -331,20 +331,30 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
-          
           AuthorizationWrapper(
-            requestAction: PermissionLevel.adviserCreditsApprovedAndReserved,
+            requestAction: PermissionLevel.marketingMaintenance,
             child: Column(
               children: [
                 spaceButton,
                 CustomButtonWidget(
                     text: "Mercadeo",
                     onTap: () => Get.toNamed(
-                        RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED),
+                        RouterPaths.MARKETING_MAINTENANCE_ALBUMS,
+                        arguments: {"isWatchMode": false}),
                     padding: defaultPadding),
               ],
             ),
           ),
+
+          // TODO REMOVE ME
+          // VideoCard(
+          //     autoPlay: true,
+          //     looping: true,
+          //     videoUrl: "https://www.youtube.com/watch?v=N211yi0cJJI",
+          //     showFavorite: true,
+          //     description: "Hello World",
+          //     initialFavorite: true,
+          //     onFavoriteChanged: (bool hey) {}),
 
           const SizedBox(height: Dimensions.heightSize),
           AuthorizationWrapper(

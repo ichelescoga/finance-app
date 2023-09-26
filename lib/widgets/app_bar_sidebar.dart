@@ -10,10 +10,13 @@ import 'package:get/get.dart';
 class CustomAppBarSideBar extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
+  final List<Widget> rightActions;
+  final bool showProfileIcon;
 
-  const CustomAppBarSideBar({
-    required this.title,
-  });
+  const CustomAppBarSideBar(
+      {required this.title,
+      this.showProfileIcon = true,
+      this.rightActions = const []});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -34,17 +37,19 @@ class CustomAppBarSideBar extends StatelessWidget
         },
       ),
       actions: [
-        IconButton(
-          icon: ClipRRect(
-            borderRadius: BorderRadius.circular(60.0),
-            child: Image.asset(
-              'assets/icondef.png',
+        if (showProfileIcon)
+          IconButton(
+            icon: ClipRRect(
+              borderRadius: BorderRadius.circular(60.0),
+              child: Image.asset(
+                'assets/icondef.png',
+              ),
             ),
+            onPressed: () {
+              _showModalProfile(context);
+            },
           ),
-          onPressed: () {
-            _showModalProfile(context);
-          },
-        )
+        ...rightActions
       ],
       elevation: 0.25,
       backgroundColor: AppColors.BACKGROUND, // Define your background color
@@ -59,7 +64,6 @@ class CustomAppBarSideBar extends StatelessWidget
   }
 
   _showModalProfile(BuildContext context) {
-
     return showDialog(
         context: context,
         builder: ((BuildContext context) {

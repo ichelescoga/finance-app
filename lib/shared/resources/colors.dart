@@ -13,7 +13,7 @@ class AppColors {
   static const Color softMainColor = Color(0xff3e5ac6);
   static const Color mainColor = Color(0xff695bc2); // Color(0xff5673d9);
   static const Color secondaryMainColor =
-      Color(0xff8175c4); // Color(0xff5673d9);
+      Color(0xFF8175C4); // Color(0xff5673d9);
   static const Color lightColor = Color(0xffedf0fc);
   static const Color lightSecondaryColor = Color(0xffd9dbe7);
 
@@ -24,6 +24,8 @@ class AppColors {
   static const Color greenColor = Color(0xFF03A60F);
   static const Color greenLightColor = Color(0xFFE5F6E7);
   static const Color blueColor = Color(0xFF307AFF);
+  static const Color alternativeBlack = Color(0xFF444B54);
+  static const Color officialWhite = Color(0xFFFFFFFF);
 
   dataRowColors(index) {
     return index % 2 == 0

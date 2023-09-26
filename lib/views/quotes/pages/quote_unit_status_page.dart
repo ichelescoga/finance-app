@@ -51,11 +51,11 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
 
   List<Item> items = [
     Item(id: "units", icon: Icons.home, title: 'Unidad', isSelected: true),
-    Item(
-        id: "byClient",
-        icon: Icons.document_scanner,
-        title: 'Cotizaciones',
-        isSelected: false)
+    // Item(
+    //     id: "byClient",
+    //     icon: Icons.document_scanner,
+    //     title: 'Cotizaciones',
+    //     isSelected: false)
   ];
 
   void selectItem(int index) {

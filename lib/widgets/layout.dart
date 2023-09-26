@@ -9,16 +9,18 @@ class Layout extends StatefulWidget {
   final PreferredSizeWidget appBar;
   final List<Map<String, dynamic>> sideBarList;
   final Widget? actionButton;
+  final bool useScroll;
   final Function? onBackFunction;
 
-  const Layout({
-    Key? key,
-    required this.sideBarList,
-    required this.appBar,
-    required this.child,
-    this.actionButton,
-    this.onBackFunction,
-  }) : super(key: key);
+  const Layout(
+      {Key? key,
+      required this.sideBarList,
+      required this.appBar,
+      required this.child,
+      this.actionButton,
+      this.onBackFunction,
+      this.useScroll = true})
+      : super(key: key);
 
   @override
   _LayoutState createState() => _LayoutState();
@@ -41,13 +43,19 @@ class _LayoutState extends State<Layout> {
           drawer: SideBarWidget(
               listTiles: widget.sideBarList,
               onPressedProfile: () => Get.back()),
-          body: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: responsive.wp(5), right: responsive.wp(5)),
-                child: widget.child,
-              )),
+          body: widget.useScroll
+              ? SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: responsive.wp(5), right: responsive.wp(5)),
+                    child: widget.child,
+                  ))
+              : Padding(
+                  padding: EdgeInsets.only(
+                      left: responsive.wp(5), right: responsive.wp(5)),
+                  child: widget.child,
+                ),
         ),
         onWillPop: () async {
           final isNotNullFunction = widget.onBackFunction;
@@ -59,27 +67,4 @@ class _LayoutState extends State<Layout> {
           return false;
         });
   }
-
-  createIconTopProfile() {
-    return IconButton(
-      icon: ClipRRect(
-        borderRadius: BorderRadius.circular(60.0),
-        child: Image.asset(
-          'assets/icondef.png',
-        ),
-      ),
-      onPressed: () {
-        print("asdflasdf");
-        
-      },
-    );
-  }
-}
-
-class Item {
-  final IconData icon;
-  final String title;
-  bool isSelected;
-
-  Item({required this.icon, required this.title, this.isSelected = false});
 }
