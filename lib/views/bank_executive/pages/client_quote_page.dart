@@ -16,8 +16,6 @@ import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
-import 'package:developer_company/widgets/send_email_quote_dart.dart';
-import 'package:developer_company/widgets/send_whatssap_quote.dart';
 import 'package:developer_company/widgets/share_quote_action_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -225,19 +223,4 @@ class _ClientQuotePageState extends State<ClientQuotePage> {
     );
   }
 
-  _showWhatsAppModal(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return SendWhatssapQuote(applicationId: quoteId.toString());
-        }));
-  }
-
-  _showModalEmail(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return SendEmailQuoteDart(quoteId: quoteId.toString());
-        }));
-  }
 }

@@ -234,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                           EasyLoading.dismiss();
                           final loginResult = await _loginUser(container);
                           if (loginResult) {
-                            Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+                            Get.toNamed(RouterPaths.MARKETING_CARROUSEL_ALBUMS);
                           }
                           setState(() {
                             successLogin = loginResult;

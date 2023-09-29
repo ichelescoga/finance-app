@@ -7,6 +7,7 @@ import 'package:developer_company/widgets/AuthorizationWrapper.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
+import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -22,12 +23,12 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final List<Map<String, dynamic>> sideBarList = [
-    {
-      'icon': Icons.business,
-      'title': 'Empresa Desarrolladora',
-      'route': RouterPaths.QUOTE_CONSULT_PAGE,
-    },
+  final List<SideBarItem> sideBarList = [
+    SideBarItem(
+      icon: Icons.insert_emoticon_sharp,
+      title: 'Mercadeo',
+      route: RouterPaths.MARKETING_CARROUSEL_ALBUMS,
+    )
   ];
 
   final List<String> overviews = [
@@ -81,7 +82,7 @@ class _DashboardPageState extends State<DashboardPage> {
       onBackFunction: () {
         Get.overlayContext?.findRootAncestorStateOfType<NavigatorState>();
       },
-      sideBarList: const [],
+      sideBarList: sideBarList,
       appBar: CustomAppBarSideBar(title: "Aplicación Financiera"),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

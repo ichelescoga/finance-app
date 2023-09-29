@@ -6,6 +6,7 @@ import "package:developer_company/global_state/providers/user_provider_state.dar
 import "package:developer_company/main.dart";
 import "package:developer_company/widgets/image_description_card.dart";
 import "package:developer_company/widgets/video_card.dart";
+import "package:developer_company/widgets/zoom_image_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 
@@ -99,104 +100,117 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: assets.length * 280,
-      child: widget.isWatchMode
-          ? ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: ScrollPhysics(),
-              itemCount: assets.length,
-              itemBuilder: (context, index) {
-                final album = assets[index];
+    return widget.isWatchMode
+        ? ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
+            itemCount: assets.length,
+            itemBuilder: (context, index) {
+              final album = assets[index];
 
-                final assetUrl = album.assetUrl;
-                final firstAssetType = assets[index].assetType;
+              final assetUrl = album.assetUrl;
+              final firstAssetType = assets[index].assetType;
 
-                return GestureDetector(
-                  onTap: () {},
-                  child: (firstAssetType == 2)
-                      ? ImageDescriptionCard(
-                          imageUrl: assetUrl,
-                          description: "",
-                        )
-                      : VideoCard(
-                          shouldBePausedReset: (p0) {},
-                          shouldBePaused: false,
-                          mute: true,
-                          autoPlay: true,
-                          looping: true,
-                          videoUrl: assetUrl,
-                          showFavorite: false,
-                          description: "",
-                          initialFavorite: false,
-                          onFavoriteChanged: (bool _) {},
-                        ),
-                );
-              },
-            )
-          : ReorderableListView(
-              physics: NeverScrollableScrollPhysics(),
-              onReorder: ((oldIndex, newIndex) async {
-                if (newIndex > oldIndex) newIndex--;
-                final album = assets.removeAt(oldIndex);
-                setState(() {
-                  assets.insert(newIndex, album);
-                });
+              return GestureDetector(
+                onTap: () {},
+                child: (firstAssetType == 2)
+                    ? ImageDescriptionCard(
+                        imageUrl: assetUrl,
+                        description: "",
+                        rightIcon: RightIcon(
+                            rightIcon: Icons.open_in_browser,
+                            onPressRightIcon: () {
+                              _showImageZoom(context);
+                              //TODO SHOULD BE OPEN IMAGE TO PAN AND ZOOM
+                            }),
+                      )
+                    : VideoCard(
+                        shouldBePausedReset: (p0) {},
+                        shouldBePaused: false,
+                        mute: true,
+                        autoPlay: true,
+                        looping: true,
+                        videoUrl: assetUrl,
+                        showFavorite: false,
+                        description: "",
+                        initialFavorite: false,
+                        onFavoriteChanged: (bool _) {},
+                      ),
+              );
+            },
+          )
+        : ReorderableListView(
+            physics: NeverScrollableScrollPhysics(),
+            onReorder: ((oldIndex, newIndex) async {
+              if (newIndex > oldIndex) newIndex--;
+              final album = assets.removeAt(oldIndex);
+              setState(() {
+                assets.insert(newIndex, album);
+              });
 
-                Asset assetData1 = Asset(
-                    assetId: assets[oldIndex].assetId,
-                    albumId: widget.albumId,
-                    assetType: assets[oldIndex].assetType,
-                    assetUrl: assets[oldIndex].assetUrl,
-                    position: oldIndex,
-                    isActive: assets[oldIndex].isActive,
-                    isFavorite: assets[oldIndex].isFavorite);
-                Asset assetData2 = Asset(
-                    assetId: assets[newIndex].assetId,
-                    albumId: widget.albumId,
-                    assetType: assets[newIndex].assetType,
-                    assetUrl: assets[newIndex].assetUrl,
-                    position: newIndex,
-                    isActive: assets[newIndex].isActive,
-                    isFavorite: assets[newIndex].isFavorite);
+              Asset assetData1 = Asset(
+                  assetId: assets[oldIndex].assetId,
+                  albumId: widget.albumId,
+                  assetType: assets[oldIndex].assetType,
+                  assetUrl: assets[oldIndex].assetUrl,
+                  position: oldIndex,
+                  isActive: assets[oldIndex].isActive,
+                  isFavorite: assets[oldIndex].isFavorite);
+              Asset assetData2 = Asset(
+                  assetId: assets[newIndex].assetId,
+                  albumId: widget.albumId,
+                  assetType: assets[newIndex].assetType,
+                  assetUrl: assets[newIndex].assetUrl,
+                  position: newIndex,
+                  isActive: assets[newIndex].isActive,
+                  isFavorite: assets[newIndex].isFavorite);
 
-                await albumProvider.updateAsset(assetData1);
-                await albumProvider.updateAsset(assetData2);
-              }),
-              children: [
-                for (final asset in assets)
-                  GestureDetector(
-                    key: ValueKey(asset.assetId),
-                    onTap: () => widget.openEditAssetDialog(asset),
-                    child: (asset.assetType == 2)
-                        ? ImageFavoriteDescriptionCard(
-                            imageUrl: asset.assetUrl,
-                            description: "",
-                            onFavoriteChanged: (bool isFavorite) =>
-                                _handleUpdateAssetFavorite(isFavorite, asset),
-                            initialFavorite: asset.isFavorite,
-                          )
-                        : VideoCard(
-                            shouldBePausedReset: (p0) {},
-                            shouldBePaused: false,
-                            mute: true,
-                            autoPlay: true,
-                            looping: true,
-                            videoUrl: asset.assetUrl,
-                            showFavorite: true,
-                            description: "",
-                            initialFavorite: false,
-                            onFavoriteChanged: (bool isFavorite) =>
-                                _handleUpdateAssetFavorite(isFavorite, asset),
-                            rightIcon: RightIcon(
-                                onPressRightIcon: () {
-                                  print("PRESSED RIGHT ICON");
-                                },
-                                rightIcon: Icons.arrow_forward)),
-                  )
-              ],
-            ),
-    );
+              await albumProvider.updateAsset(assetData1);
+              await albumProvider.updateAsset(assetData2);
+            }),
+            children: [
+              for (final asset in assets)
+                (asset.assetType == 2)
+                    ? ImageFavoriteDescriptionCard(
+                        key: ValueKey(asset.assetId),
+                        imageUrl: asset.assetUrl,
+                        description: "",
+                        onFavoriteChanged: (bool isFavorite) =>
+                            _handleUpdateAssetFavorite(isFavorite, asset),
+                        initialFavorite: asset.isFavorite,
+                        rightIcon: RightIcon(
+                          onPressRightIcon: () =>
+                              widget.openEditAssetDialog(asset),
+                          rightIcon: Icons.open_in_browser_sharp,
+                        ))
+                    : VideoCard(
+                        key: ValueKey(asset.assetId),
+                        shouldBePausedReset: (p0) {},
+                        shouldBePaused: false,
+                        mute: true,
+                        autoPlay: true,
+                        looping: true,
+                        videoUrl: asset.assetUrl,
+                        showFavorite: true,
+                        description: "",
+                        initialFavorite: false,
+                        onFavoriteChanged: (bool isFavorite) =>
+                            _handleUpdateAssetFavorite(isFavorite, asset),
+                        rightIcon: RightIcon(
+                          onPressRightIcon: () =>
+                              widget.openEditAssetDialog(asset),
+                          rightIcon: Icons.open_in_browser_sharp,
+                        ))
+            ],
+          );
+  }
+
+  _showImageZoom(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return ZoomImageDialog();
+        }));
   }
 }

@@ -6,7 +6,7 @@ class Dimensions {
   static const double extraLargeTextSize = 20.00;
 
   static const double defaultPaddingSize = 30.00;
-  static const double paddingCard = 16.00;
+  static const double paddingCard = 13.00;
   static const double marginSize = 20.00;
   static const double heightSize = 12.00;
   static const double widthSize = 10.00;

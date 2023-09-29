@@ -8,4 +8,5 @@ abstract class AlbumRepository {
   Future<Asset?> postNewAsset(Asset assetData);
   Future<Asset?> updateAsset(Asset assetData);
   Future<List<Asset>?> getAssetsByAlbum(String albumId, bool isActive);
+    Future<List<Asset>> getFavoritesByProject(String projectId);
 }

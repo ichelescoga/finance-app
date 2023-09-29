@@ -141,55 +141,58 @@ class ImageDescriptionCard extends StatefulWidget {
 class _ImageDescriptionCardState extends State<ImageDescriptionCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(top: 15),
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(15), // No border radius for the card itself
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: <Widget>[
-          Stack(
-            alignment: Alignment.topRight,
-            children: <Widget>[
-              if (widget.imageUrl != null)
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Image.network(
-                    widget.imageUrl!,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              else
-                Image.asset("assets/no-image.png", height: 160),
-            ],
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-                padding: widget.rightIcon == null
-                    ? EdgeInsets.all(Dimensions.paddingCard)
-                    : EdgeInsets.only(left: Dimensions.paddingCard),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.description,
-                      style: TextStyle(
-                        fontSize: Dimensions.defaultTextSize,
-                      ),
+    return AspectRatio(
+      aspectRatio: 4 / 3,
+      child: Card(
+        margin: EdgeInsets.only(top: 15),
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(15), // No border radius for the card itself
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.topRight,
+              children: <Widget>[
+                if (widget.imageUrl != null)
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      widget.imageUrl!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
-                    if (widget.rightIcon != null)
-                      IconButton(
-                          onPressed: widget.rightIcon!.onPressRightIcon,
-                          icon: Icon(widget.rightIcon!.rightIcon))
-                  ],
-                )),
-          ),
-        ],
+                  )
+                else
+                  Image.asset("assets/no-image.png", height: 160),
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: widget.rightIcon == null
+                      ? EdgeInsets.all(Dimensions.paddingCard)
+                      : EdgeInsets.only(left: Dimensions.paddingCard),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.description,
+                        style: TextStyle(
+                          fontSize: Dimensions.defaultTextSize,
+                        ),
+                      ),
+                      if (widget.rightIcon != null)
+                        IconButton(
+                            onPressed: widget.rightIcon!.onPressRightIcon,
+                            icon: Icon(widget.rightIcon!.rightIcon))
+                    ],
+                  )),
+            ),
+          ],
+        ),
       ),
     );
   }

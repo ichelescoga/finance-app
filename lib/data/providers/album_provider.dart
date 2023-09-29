@@ -97,4 +97,26 @@ class AlbumProvider {
       // throw Exception("Failed to get resources 🤖");
     }
   }
+
+  Future<List<Asset>> getFavoritesByProject(String projectId) async {
+    final response = await httpAdapter
+        .getApi("orders/v1/albumsProyectFavoritas/$projectId", {});
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseJson = json.decode(response.body);
+      List<dynamic> albums = responseJson["ALBUNs"];
+
+      List<Asset> assets = albums
+          .map((album) {
+            List<dynamic> favoriteAssets = album["RECURSOs"];
+            return favoriteAssets.map((fa) => Asset.fromJson(fa));
+          })
+          .expand((assetsIterable) => assetsIterable)
+          .toList();
+
+      return assets;
+    } else {
+      return [];
+    }
+  }
 }

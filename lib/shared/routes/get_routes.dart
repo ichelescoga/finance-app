@@ -81,7 +81,7 @@ class GetRoutes{
       // MARKETING
       GetPage(name: RouterPaths.MARKETING_MAINTENANCE_ALBUMS, page: () => const MarketingAlbumsMaintenancePage()),
       GetPage(name: RouterPaths.MARKETING_MAINTENANCE_DETAIL_ALBUM, page: () => const MarketingAlbumDetailMaintenancePage()),
-      GetPage(name: RouterPaths.MARKETING_CARROUSEL_ALBUMS, page: () => const MarketingCarrouselAlbumsPage()),
+      GetPage(name: RouterPaths.MARKETING_CARROUSEL_ALBUMS, page: () => const MarketingCarrouselAlbumsPage(), transition: Transition.upToDown),
       GetPage(name: RouterPaths.MARKETING_DETAIL_ALBUM, page: () => const MarketingAlbumDetailPage()),
 
 

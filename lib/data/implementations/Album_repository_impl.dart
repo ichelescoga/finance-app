@@ -34,4 +34,8 @@ class AlbumRepositoryImpl implements AlbumRepository {
   Future<List<Asset>?> getAssetsByAlbum(String albumId, bool isActive) async {
     return this.albumProvider.getAssetsByAlbum(albumId, isActive);
   }
+
+  Future<List<Asset>> getFavoritesByProject(String projectId) async {
+    return this.albumProvider.getFavoritesByProject(projectId);
+  }
 }

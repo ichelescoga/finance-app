@@ -114,26 +114,26 @@ class _VideoCardState extends State<VideoCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(top: 15),
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(15), // No border radius for the card itself
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: <Widget>[
-          Stack(
-            alignment: Alignment.topRight,
-            children: <Widget>[
-              widget.videoUrl.toLowerCase().contains("youtube")
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
+    return AspectRatio(
+      aspectRatio: 4 / 3,
+      child: Card(
+        margin: EdgeInsets.only(top: 15),
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(15), // No border radius for the card itself
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.topRight,
+              children: <Widget>[
+                widget.videoUrl.toLowerCase().contains("youtube")
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
                         child: YoutubePlayer(
                           controller: _controllerYoutube!,
                           showVideoProgressIndicator: true,
@@ -162,77 +162,74 @@ class _VideoCardState extends State<VideoCard> {
                             const PlaybackSpeedButton(),
                           ],
                         ),
+                      )
+                    : FutureBuilder(
+                        future: _initializeVideoPlayerFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            // If the VideoPlayerController has finished initialization, use
+                            // the data it provides to limit the aspect ratio of the video.
+                            return VideoPlayer(_controllerVideo);
+                          } else {
+                            // If the VideoPlayerController is still initializing, show a
+                            // loading spinner.
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
                       ),
-                    )
-                  : FutureBuilder(
-                      future: _initializeVideoPlayerFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          // If the VideoPlayerController has finished initialization, use
-                          // the data it provides to limit the aspect ratio of the video.
-                          return AspectRatio(
-                            aspectRatio: 16 / 9,
-                            // Use the VideoPlayer widget to display the video.
-                            child: VideoPlayer(_controllerVideo),
-                          );
-                        } else {
-                          // If the VideoPlayerController is still initializing, show a
-                          // loading spinner.
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
-              if (widget.showFavorite)
-                Container(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    margin: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: IconButton(
-                      icon: Icon(
-                        isMarkAsFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_outline,
-                        color: favoriteColor,
+                if (widget.showFavorite)
+                  Container(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      margin: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                      child: IconButton(
+                        icon: Icon(
+                          isMarkAsFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_outline,
+                          color: favoriteColor,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isMarkAsFavorite = !isMarkAsFavorite;
+                          });
+                          widget.onFavoriteChanged(isMarkAsFavorite);
+                        },
                       ),
-                      onPressed: () {
-                        setState(() {
-                          isMarkAsFavorite = !isMarkAsFavorite;
-                        });
-                        widget.onFavoriteChanged(isMarkAsFavorite);
-                      },
                     ),
                   ),
-                ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-                padding: widget.rightIcon == null
-                    ? EdgeInsets.all(Dimensions.paddingCard)
-                    : EdgeInsets.only(left: Dimensions.paddingCard),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.description,
-                      style: TextStyle(
-                        fontSize: Dimensions.defaultTextSize,
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: widget.rightIcon == null
+                      ? EdgeInsets.all(Dimensions.paddingCard)
+                      : EdgeInsets.only(left: Dimensions.paddingCard),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.description,
+                        style: TextStyle(
+                          fontSize: Dimensions.defaultTextSize,
+                        ),
                       ),
-                    ),
-                    if (widget.rightIcon != null)
-                      IconButton(
-                          onPressed: widget.rightIcon!.onPressRightIcon,
-                          icon: Icon(widget.rightIcon!.rightIcon))
-                  ],
-                )),
-          ),
-        ],
+                      if (widget.rightIcon != null)
+                        IconButton(
+                            onPressed: widget.rightIcon!.onPressRightIcon,
+                            icon: Icon(widget.rightIcon!.rightIcon))
+                    ],
+                  )),
+            ),
+          ],
+        ),
       ),
     );
   }

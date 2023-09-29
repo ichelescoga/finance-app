@@ -86,6 +86,11 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
     _handleUpdateAlbumMainInfo(result);
   }
 
+  _handleNextPageAlbumDetail(Album album) async {
+    Get.toNamed(RouterPaths.MARKETING_DETAIL_ALBUM,
+        arguments: {"albumId": album.albumId});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,122 +105,102 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: Get.height - 100,
-        child: widget.isWatchMode
-            ? ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount: albums.length,
-                itemBuilder: (context, index) {
-                  final album = albums[index];
+    return widget.isWatchMode
+        ? ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: albums.length,
+            itemBuilder: (context, index) {
+              final album = albums[index];
 
-                  final firstAsset = album.firstAsset;
-                  final firstAssetType = albums[index].firstAsset?.assetType;
+              final firstAsset = album.firstAsset;
+              final firstAssetType = albums[index].firstAsset?.assetType;
 
-                  return GestureDetector(
-                    onTap: () {
-                      // TODO Should be go to detail of album in watchmode true
-                    },
-                    child: (firstAsset == null || firstAssetType == 2)
-                        ? ImageDescriptionCard(
-                            imageUrl: album.firstAsset?.assetUrl,
-                            description: album.albumName,
-                          )
-                        : VideoCard(
-                            shouldBePausedReset: (value) =>
-                                setState(() => shouldBePaused = false),
-                            shouldBePaused: shouldBePaused,
-                            mute: true,
-                            autoPlay: true,
-                            looping: true,
-                            videoUrl: firstAsset.assetUrl,
-                            showFavorite: false,
-                            description: album.albumName,
-                            initialFavorite: false,
-                            onFavoriteChanged: (bool _) {},
-                            rightIcon: RightIcon(
-                                onPressRightIcon: () {
-                                  print("PRESSED RIGHT ICON");
-                                },
-                                rightIcon: Icons.arrow_forward),
-                          ),
-                  );
-                },
-              )
-            : ReorderableListView(
-                onReorder: ((oldIndex, newIndex) async {
-                  if (newIndex > oldIndex) newIndex--;
-                  final album = albums.removeAt(oldIndex);
-                  setState(() {
-                    albums.insert(newIndex, album);
-                  });
-                  final projectId = user?.project.projectId;
+              return (firstAsset == null || firstAssetType == 2)
+                  ? ImageDescriptionCard(
+                      imageUrl: album.firstAsset?.assetUrl,
+                      description: album.albumName,
+                      rightIcon: RightIcon(
+                          onPressRightIcon: () => _handleNextPageAlbumDetail(album),
+                          rightIcon: Icons.arrow_forward),
+                    )
+                  : VideoCard(
+                      shouldBePausedReset: (value) =>
+                          setState(() => shouldBePaused = false),
+                      shouldBePaused: shouldBePaused,
+                      mute: true,
+                      autoPlay: true,
+                      looping: true,
+                      videoUrl: firstAsset.assetUrl,
+                      showFavorite: false,
+                      description: album.albumName,
+                      initialFavorite: false,
+                      onFavoriteChanged: (bool _) {},
+                      rightIcon: RightIcon(
+                          onPressRightIcon: () => _handleNextPageAlbumDetail(album),
+                          rightIcon: Icons.arrow_forward),
+                    );
+            },
+          )
+        : Container(
+            height: Get.height - 100,
+            child: ReorderableListView(
+              onReorder: ((oldIndex, newIndex) async {
+                if (newIndex > oldIndex) newIndex--;
+                final album = albums.removeAt(oldIndex);
+                setState(() {
+                  albums.insert(newIndex, album);
+                });
+                final projectId = user?.project.projectId;
 
-                  Album albumData1 = Album(
-                      projectId: int.tryParse(projectId!),
-                      albumId: albums[oldIndex].albumId,
-                      albumName: albums[oldIndex].albumName,
-                      position: oldIndex,
-                      isActive: true,
-                      assets: []);
+                Album albumData1 = Album(
+                    projectId: int.tryParse(projectId!),
+                    albumId: albums[oldIndex].albumId,
+                    albumName: albums[oldIndex].albumName,
+                    position: oldIndex,
+                    isActive: true,
+                    assets: []);
 
-                  Album albumData2 = Album(
-                      projectId: int.tryParse(projectId),
-                      albumId: albums[newIndex].albumId,
-                      albumName: albums[newIndex].albumName,
-                      position: newIndex,
-                      isActive: true,
-                      assets: []);
-                  await albumProvider.updateAlbum(albumData1);
-                  await albumProvider.updateAlbum(albumData2);
-                }),
-                children: [
-                  for (final album in albums)
-                    (album.firstAsset == null ||
-                            album.firstAsset?.assetType == 2)
-                        ? ImageDescriptionCard(
-                            key: ValueKey(album.albumId),
-                            imageUrl: album.firstAsset?.assetUrl,
-                            description: album.albumName,
-                            rightIcon: RightIcon(
-                                onPressRightIcon: () => _handleNextPageMaintenanceAlbumDetails(album),
-                                rightIcon: Icons.arrow_forward))
-                        : VideoCard(
-                            key: ValueKey(album.albumId),
-                            shouldBePausedReset: (value) =>
-                                setState(() => shouldBePaused = false),
-                            shouldBePaused: shouldBePaused,
-                            mute: true,
-                            autoPlay: true,
-                            looping: true,
-                            videoUrl: album.firstAsset!.assetUrl,
-                            showFavorite: false,
-                            description: album.albumName,
-                            initialFavorite: false,
-                            onFavoriteChanged: (bool _) {},
-                            rightIcon: RightIcon(
-                                onPressRightIcon: () => _handleNextPageMaintenanceAlbumDetails(album),
-                                rightIcon: Icons.arrow_forward))
-                ],
-              ));
+                Album albumData2 = Album(
+                    projectId: int.tryParse(projectId),
+                    albumId: albums[newIndex].albumId,
+                    albumName: albums[newIndex].albumName,
+                    position: newIndex,
+                    isActive: true,
+                    assets: []);
+                await albumProvider.updateAlbum(albumData1);
+                await albumProvider.updateAlbum(albumData2);
+              }),
+              children: [
+                for (final album in albums)
+                  (album.firstAsset == null || album.firstAsset?.assetType == 2)
+                      ? ImageDescriptionCard(
+                          key: ValueKey(album.albumId),
+                          imageUrl: album.firstAsset?.assetUrl,
+                          description: album.albumName,
+                          rightIcon: RightIcon(
+                              onPressRightIcon: () =>
+                                  _handleNextPageMaintenanceAlbumDetails(album),
+                              rightIcon: Icons.arrow_forward))
+                      : VideoCard(
+                          key: ValueKey(album.albumId),
+                          shouldBePausedReset: (value) =>
+                              setState(() => shouldBePaused = false),
+                          shouldBePaused: shouldBePaused,
+                          mute: true,
+                          autoPlay: true,
+                          looping: true,
+                          videoUrl: album.firstAsset!.assetUrl,
+                          showFavorite: false,
+                          description: album.albumName,
+                          initialFavorite: false,
+                          onFavoriteChanged: (bool _) {},
+                          rightIcon: RightIcon(
+                              onPressRightIcon: () =>
+                                  _handleNextPageMaintenanceAlbumDetails(album),
+                              rightIcon: Icons.arrow_forward))
+              ],
+            ),
+          );
   }
 }
-
-
-    //  child: ReorderableListView.builder(
-    //       onReorder: ((oldIndex, newIndex) {
-    //         print(oldIndex);
-    //         print(newIndex);
-    //       }),
-    //       itemCount: albums.length,
-    //       itemBuilder: (context, index) {
-    //         final album = albums[index];
-    //         return ImageDescriptionCard(
-    //           key: ValueKey(album.albumId),
-    //           imageUrl: album.firstAssetUrl,
-    //           description: album.albumName,
-    //         );
-    //       },
-    //     ));
