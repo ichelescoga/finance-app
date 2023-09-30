@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
+import "package:developer_company/shared/utils/responsive.dart";
 import "package:flutter/material.dart";
 import "package:video_player/video_player.dart";
 import "package:youtube_player_flutter/youtube_player_flutter.dart";
@@ -11,18 +12,24 @@ class VideoCard extends StatefulWidget {
   final bool autoPlay;
   final bool mute;
   final bool shouldBePaused;
+  final bool resetCheckCard;
 
+  final Function(bool)? updateResetCheckCard;
   final Function(bool) shouldBePausedReset;
   final Function(bool) onFavoriteChanged;
+  final Function(bool) handleCheckedVideoCard;
   final bool initialFavorite;
   final String videoUrl;
   final String description;
+  final bool showChecked;
   final bool showFavorite;
-  final RightIcon? rightIcon;
+  final List<RightIcon>? rightIcons;
 
   const VideoCard(
       {Key? key,
       required this.autoPlay,
+      this.resetCheckCard = false,
+      this.updateResetCheckCard,
       required this.looping,
       required this.videoUrl,
       this.mute = false,
@@ -32,7 +39,9 @@ class VideoCard extends StatefulWidget {
       required this.onFavoriteChanged,
       required this.shouldBePaused,
       required this.shouldBePausedReset,
-      this.rightIcon})
+      required this.showChecked,
+      required this.handleCheckedVideoCard,
+      this.rightIcons})
       : super(key: key);
 
   @override
@@ -45,16 +54,43 @@ class _VideoCardState extends State<VideoCard> {
   late VideoPlayerController _controllerVideo;
   late YoutubePlayerController? _controllerYoutube;
   bool isMuted = true;
+  bool isCheckedCard = false;
 
   late Future<void> _initializeVideoPlayerFuture;
+
+  bool isYoutubeVideo() {
+    return widget.videoUrl.toLowerCase().contains("youtube") ||
+        widget.videoUrl.toLowerCase().contains("youtu.be");
+  }
+
+  String? getIDYoutube(String url) {
+    RegExp regExp = RegExp(
+      r"^(?:https:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/(?:watch\?v=)?([\w-]+)",
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    final match = regExp.firstMatch(url);
+
+    if (match != null && match.groupCount >= 1) {
+      return match.group(1);
+    } else {
+      return null;
+    }
+  }
 
   @override
   void initState() {
     final videoUrl = widget.videoUrl;
     isMuted = widget.mute;
+    isMarkAsFavorite = widget.initialFavorite;
 
-    if (videoUrl.toLowerCase().contains("youtube")) {
-      final VideoID = YoutubePlayer.convertUrlToId(videoUrl);
+    if (isYoutubeVideo()) {
+      String? VideoID = YoutubePlayer.convertUrlToId(videoUrl);
+      if (VideoID == null) {
+        VideoID = getIDYoutube(videoUrl);
+      }
+
       _controllerYoutube = YoutubePlayerController(
         initialVideoId: VideoID!,
         flags: YoutubePlayerFlags(
@@ -89,12 +125,21 @@ class _VideoCardState extends State<VideoCard> {
 
   @override
   void dispose() {
-    if (widget.videoUrl.toLowerCase().contains("youtube")) {
+    if (isYoutubeVideo()) {
       _controllerYoutube?.dispose();
     } else {
       _controllerVideo.dispose();
     }
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(VideoCard oldWidget) {
+    if (isCheckedCard == true && widget.resetCheckCard == true) {
+      setState(() => isCheckedCard = false);
+      widget.updateResetCheckCard!(false);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   void listener() {
@@ -114,14 +159,16 @@ class _VideoCardState extends State<VideoCard> {
 
   @override
   Widget build(BuildContext context) {
+    Responsive responsive = Responsive(context);
+
     return AspectRatio(
       aspectRatio: 4 / 3,
       child: Card(
-        margin: EdgeInsets.only(top: 15),
+        margin: EdgeInsets.only(bottom: 20),
         elevation: 5,
         shape: RoundedRectangleBorder(
           borderRadius:
-              BorderRadius.circular(15), // No border radius for the card itself
+              BorderRadius.circular(10), // No border radius for the card itself
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -129,11 +176,11 @@ class _VideoCardState extends State<VideoCard> {
             Stack(
               alignment: Alignment.topRight,
               children: <Widget>[
-                widget.videoUrl.toLowerCase().contains("youtube")
+                isYoutubeVideo()
                     ? ClipRRect(
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15)),
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
                         child: YoutubePlayer(
                           controller: _controllerYoutube!,
                           showVideoProgressIndicator: true,
@@ -180,51 +227,79 @@ class _VideoCardState extends State<VideoCard> {
                           }
                         },
                       ),
-                if (widget.showFavorite)
-                  Container(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      margin: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.white),
-                      child: IconButton(
-                        icon: Icon(
-                          isMarkAsFavorite
-                              ? Icons.favorite
-                              : Icons.favorite_outline,
-                          color: favoriteColor,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (widget.showChecked)
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.white),
+                          child: Checkbox(
+                              value: isCheckedCard,
+                              onChanged: (p0) {
+                                setState(() => isCheckedCard = p0!);
+                                widget.handleCheckedVideoCard(p0!);
+                              })),
+                    if (widget.showFavorite)
+                      Container(
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.white),
+                        child: IconButton(
+                          icon: Icon(
+                            isMarkAsFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_outline,
+                            color: favoriteColor,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isMarkAsFavorite = !isMarkAsFavorite;
+                            });
+                            widget.onFavoriteChanged(isMarkAsFavorite);
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            isMarkAsFavorite = !isMarkAsFavorite;
-                          });
-                          widget.onFavoriteChanged(isMarkAsFavorite);
-                        },
                       ),
-                    ),
-                  ),
+                  ],
+                )
               ],
             ),
-            Align(
-              alignment: Alignment.centerLeft,
+            Expanded(
               child: Padding(
-                  padding: widget.rightIcon == null
-                      ? EdgeInsets.all(Dimensions.paddingCard)
-                      : EdgeInsets.only(left: Dimensions.paddingCard),
+                  padding: EdgeInsets.only(
+                      left: Dimensions.paddingCard, right: responsive.wp(2)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         widget.description,
                         style: TextStyle(
-                          fontSize: Dimensions.defaultTextSize,
+                          fontSize: responsive.hp(1.20),
                         ),
                       ),
-                      if (widget.rightIcon != null)
-                        IconButton(
-                            onPressed: widget.rightIcon!.onPressRightIcon,
-                            icon: Icon(widget.rightIcon!.rightIcon))
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (widget.rightIcons != null)
+                            for (final rightIcon in widget.rightIcons!)
+                              Row(
+                                children: [
+                                  SizedBox(width: 10),
+                                  IconButton(
+                                      iconSize: responsive.hp(2.10),
+                                      padding: EdgeInsets.zero,
+                                      constraints: BoxConstraints(),
+                                      onPressed: rightIcon.onPressRightIcon,
+                                      icon: Icon(rightIcon.rightIcon))
+                                ],
+                              )
+                        ],
+                      ),
                     ],
                   )),
             ),

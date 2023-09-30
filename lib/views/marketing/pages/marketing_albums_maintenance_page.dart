@@ -27,19 +27,24 @@ class _MarketingAlbumsMaintenancePageState
   bool shouldFetchAlbums = false;
   TextEditingController newAlbumController = TextEditingController();
   bool isLoadingAddNewAlbum = false;
+  int albumsLength = 0;
   bool isActiveAlbum = true;
   AlbumRepository albumProvider = AlbumRepositoryImpl(AlbumProvider());
 
-  handleUpdateListAlbums(bool shouldFetch) {
+  handleUpdateListAlbums(bool shouldFetch, int lengthAlbums) {
     setState(() {
       shouldFetchAlbums = shouldFetch;
+      albumsLength = lengthAlbums;
     });
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
     return Layout(
         sideBarList: [],
+        useScroll: false,
         appBar: CustomAppBarSideBar(
           title: "Álbumes Mercadeo",
           rightActions: [
@@ -56,11 +61,12 @@ class _MarketingAlbumsMaintenancePageState
         ),
         child: Column(
           children: [
-            MarketingAlbums(
-                isWatchMode: dashboardArgs["isWatchMode"],
-                shouldFetchAlbums: shouldFetchAlbums,
-                handleUpdateListAlbums: handleUpdateListAlbums),
-            SizedBox(height: Dimensions.buttonHeight)
+            Expanded(
+              child: MarketingAlbums(
+                  isWatchMode: dashboardArgs["isWatchMode"],
+                  shouldFetchAlbums: shouldFetchAlbums,
+                  handleUpdateListAlbums: handleUpdateListAlbums),
+            ),
           ],
         ));
   }
@@ -73,10 +79,10 @@ class _MarketingAlbumsMaintenancePageState
               onWillPop: () async {
                 return false;
               },
-              child: AddNewAlbum());
+              child: AddNewAlbum(albumsLength: albumsLength ));
         }).then((result) {
       if (result == true) {
-        handleUpdateListAlbums(true);
+        handleUpdateListAlbums(true, 0);
         return;
       }
     });

@@ -14,18 +14,32 @@ class MarketingAlbumDetail extends StatefulWidget {
   final bool isWatchMode;
   final int albumId;
   final bool shouldFetchAssets;
+  final bool resetVideoCheckCards;
+  final Function(bool)? updateVideoResetCheckCards;
+
+  final bool resetImageCheckCards;
+  final Function(bool)? updateImageResetCheckCards;
+
   final Function(bool) handleUpdateListAssets;
   final Function(int) handleUpdateAssetsLength;
   final Function(Asset) openEditAssetDialog;
+  final Function(bool)? updateInfoHasChange;
+  final Function(bool, Asset) handleCheckedResources;
 
   const MarketingAlbumDetail(
       {Key? key,
       required this.isWatchMode,
+      this.resetVideoCheckCards = false,
+      this.updateVideoResetCheckCards,
+      this.resetImageCheckCards = false,
+      this.updateImageResetCheckCards,
       required this.albumId,
       required this.shouldFetchAssets,
       required this.handleUpdateListAssets,
       required this.handleUpdateAssetsLength,
-      required this.openEditAssetDialog})
+      required this.openEditAssetDialog,
+      required this.handleCheckedResources,
+      this.updateInfoHasChange})
       : super(key: key);
 
   @override
@@ -57,12 +71,13 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
     if (assetsEnables != null) {
       assets.addAll(assetsEnables);
     }
-    widget.handleUpdateAssetsLength(assets.length);
     setState(() {
       assets.sort((a, b) => a.position.compareTo(b.position));
     });
 
     EasyLoading.dismiss();
+    widget.handleUpdateAssetsLength(assets.length);
+    widget.handleUpdateListAssets(false);
   }
 
   _handleUpdateAssetFavorite(bool isFavorite, Asset asset) async {
@@ -81,7 +96,6 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
   void didUpdateWidget(MarketingAlbumDetail oldWidget) {
     if (widget.shouldFetchAssets) {
       _fetchAssets();
-      widget.handleUpdateListAssets(false);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -107,41 +121,49 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
             physics: ScrollPhysics(),
             itemCount: assets.length,
             itemBuilder: (context, index) {
-              final album = assets[index];
+              final asset = assets[index];
 
-              final assetUrl = album.assetUrl;
+              final assetUrl = asset.assetUrl;
               final firstAssetType = assets[index].assetType;
-
-              return GestureDetector(
-                onTap: () {},
-                child: (firstAssetType == 2)
-                    ? ImageDescriptionCard(
-                        imageUrl: assetUrl,
-                        description: "",
-                        rightIcon: RightIcon(
+              return (firstAssetType == 2)
+                  ? ImageDescriptionCard(
+                      resetCheckImageCard: widget.resetImageCheckCards,
+                      updateResetCheckCard: widget.updateImageResetCheckCards,
+                      showChecked: true,
+                      handleCheckedImageCard: (p0) =>
+                          widget.handleCheckedResources(p0, asset),
+                      imageUrl: assetUrl,
+                      description: "",
+                      rightIcons: [
+                        RightIcon(
                             rightIcon: Icons.open_in_browser,
                             onPressRightIcon: () {
-                              _showImageZoom(context);
-                              //TODO SHOULD BE OPEN IMAGE TO PAN AND ZOOM
-                            }),
-                      )
-                    : VideoCard(
-                        shouldBePausedReset: (p0) {},
-                        shouldBePaused: false,
-                        mute: true,
-                        autoPlay: true,
-                        looping: true,
-                        videoUrl: assetUrl,
-                        showFavorite: false,
-                        description: "",
-                        initialFavorite: false,
-                        onFavoriteChanged: (bool _) {},
-                      ),
-              );
+                              _showImageZoom(context, assetUrl);
+                            })
+                      ],
+                    )
+                  : VideoCard(
+                      resetCheckCard: widget.resetVideoCheckCards,
+                      updateResetCheckCard: widget.updateVideoResetCheckCards,
+                      showChecked: true,
+                      handleCheckedVideoCard: (p0) =>
+                          widget.handleCheckedResources(p0, asset),
+                      shouldBePausedReset: (p0) {},
+                      shouldBePaused: false,
+                      mute: true,
+                      autoPlay: true,
+                      looping: true,
+                      videoUrl: assetUrl,
+                      showFavorite: false,
+                      description: "",
+                      initialFavorite: false,
+                      onFavoriteChanged: (bool _) {},
+                    );
             },
           )
         : ReorderableListView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: ClampingScrollPhysics(),
+            shrinkWrap: true,
             onReorder: ((oldIndex, newIndex) async {
               if (newIndex > oldIndex) newIndex--;
               final album = assets.removeAt(oldIndex);
@@ -168,6 +190,9 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
 
               await albumProvider.updateAsset(assetData1);
               await albumProvider.updateAsset(assetData2);
+              if (newIndex == 0) {
+                widget.updateInfoHasChange!(true);
+              }
             }),
             children: [
               for (final asset in assets)
@@ -179,13 +204,22 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
                         onFavoriteChanged: (bool isFavorite) =>
                             _handleUpdateAssetFavorite(isFavorite, asset),
                         initialFavorite: asset.isFavorite,
-                        rightIcon: RightIcon(
-                          onPressRightIcon: () =>
-                              widget.openEditAssetDialog(asset),
-                          rightIcon: Icons.open_in_browser_sharp,
-                        ))
+                        rightIcons: [
+                            RightIcon(
+                              onPressRightIcon: () =>
+                                  _showImageZoom(context, asset.assetUrl),
+                              rightIcon: Icons.open_in_browser_sharp,
+                            ),
+                            RightIcon(
+                              onPressRightIcon: () =>
+                                  widget.openEditAssetDialog(asset),
+                              rightIcon: Icons.edit_square,
+                            )
+                          ])
                     : VideoCard(
                         key: ValueKey(asset.assetId),
+                        showChecked: false,
+                        handleCheckedVideoCard: (p0) {},
                         shouldBePausedReset: (p0) {},
                         shouldBePaused: false,
                         mute: true,
@@ -194,23 +228,27 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
                         videoUrl: asset.assetUrl,
                         showFavorite: true,
                         description: "",
-                        initialFavorite: false,
+                        initialFavorite: asset.isFavorite,
                         onFavoriteChanged: (bool isFavorite) =>
                             _handleUpdateAssetFavorite(isFavorite, asset),
-                        rightIcon: RightIcon(
-                          onPressRightIcon: () =>
-                              widget.openEditAssetDialog(asset),
-                          rightIcon: Icons.open_in_browser_sharp,
-                        ))
+                        rightIcons: [
+                            RightIcon(
+                              onPressRightIcon: () =>
+                                  widget.openEditAssetDialog(asset),
+                              rightIcon: Icons.edit_square,
+                            )
+                          ])
             ],
           );
   }
 
-  _showImageZoom(BuildContext context) {
+  _showImageZoom(BuildContext context, String image) {
     return showDialog(
         context: context,
         builder: ((BuildContext context) {
-          return ZoomImageDialog();
+          return ZoomImageDialog(
+            imageLink: image,
+          );
         }));
   }
 }

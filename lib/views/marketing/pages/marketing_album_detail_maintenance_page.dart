@@ -13,6 +13,7 @@ import "package:developer_company/widgets/custom_button_widget.dart";
 import "package:developer_company/widgets/custom_input_widget.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
+import "package:flutter_easyloading/flutter_easyloading.dart";
 
 import "package:get/get.dart";
 
@@ -55,13 +56,17 @@ class _MarketingAlbumDetailMaintenancePageState
         assets: []);
 
     await albumProvider.updateAlbum(albumData);
-    albumMainInfoHasChange = true;
+    updateInfoHasChange(true);
   }
 
   _retrieveAssetTypes() async {
     setState(() => isLoadingAssetTypes = true);
     assetTypes = await albumProvider.getAssetTypes();
     setState(() => isLoadingAssetTypes = false);
+  }
+
+  updateInfoHasChange(bool hasChange) {
+    albumMainInfoHasChange = hasChange;
   }
 
   handleUpdateListAssets(bool shouldFetch) {
@@ -87,7 +92,7 @@ class _MarketingAlbumDetailMaintenancePageState
           Get.back(result: albumMainInfoHasChange);
         },
         sideBarList: [],
-        useScroll: false,
+        useScroll: true,
         appBar: CustomAppBarTitle(
           title: "Album",
           rightActions: [
@@ -110,59 +115,66 @@ class _MarketingAlbumDetailMaintenancePageState
               )
           ],
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CustomInputWidget(
-                  readOnly: !isEditAlbumTitle,
-                  controller: nameOfAlbumController,
-                  label: "Nombre Album",
-                  hintText: "Nombre Album",
-                  prefixIcon: Icons.image),
-              SwitchListTile(
-                title: Text(
-                  isActiveAlbum ? "Album Activo" : "Album Inactivo",
-                  style: TextStyle(color: Colors.black),
-                ),
-                value: isActiveAlbum,
-                onChanged: (bool value) {
-                  setState(() {
-                    isActiveAlbum = value;
-                  });
-                },
-                activeColor: AppColors.softMainColor,
+        child: Column(
+          children: [
+            CustomInputWidget(
+                readOnly: !isEditAlbumTitle,
+                controller: nameOfAlbumController,
+                label: "Nombre Album",
+                hintText: "Nombre Album",
+                prefixIcon: Icons.image),
+            SwitchListTile(
+              title: Text(
+                isActiveAlbum ? "Album Activo" : "Album Inactivo",
+                style: TextStyle(color: Colors.black),
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButtonWidget(
-                      color: isEditAlbumTitle
-                          ? AppColors.softMainColor
-                          : AppColors.secondaryMainColor,
-                      padding: EdgeInsets.only(left: 0, right: 0),
-                      onTap: () {
-                        if (isEditAlbumTitle) _handleUpdateAlbumMainInfo();
-                        setState(() => isEditAlbumTitle = !isEditAlbumTitle);
-                      },
-                      text: isEditAlbumTitle ? "Guardar Album" : "Editar Album",
-                    ),
-                  )
-                ],
-              ),
-              MarketingAlbumDetail(
-                openEditAssetDialog: (asset) {
-                  _dialogNewEditAsset(context, assetTypes, asset);
-                },
-                isWatchMode: false,
-                albumId: marketingArgs["albumId"],
-                shouldFetchAssets: shouldFetchAssets,
-                handleUpdateListAssets: (bool shouldFetch) {
-                  handleUpdateListAssets(shouldFetch);
-                },
-                handleUpdateAssetsLength: (p0) => setState(() => assetsLength),
-              )
-            ],
-          ),
+              value: isActiveAlbum,
+              onChanged: (bool value) {
+                if (!isEditAlbumTitle) {
+                  EasyLoading.showInfo(
+                      "Presione Editar para habilitar esta opción.");
+                  return;
+                }
+                setState(() {
+                  isActiveAlbum = value;
+                });
+              },
+              activeColor: AppColors.softMainColor,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButtonWidget(
+                    color: isEditAlbumTitle
+                        ? AppColors.softMainColor
+                        : AppColors.secondaryMainColor,
+                    padding: EdgeInsets.only(left: 0, right: 0),
+                    onTap: () {
+                      if (isEditAlbumTitle) _handleUpdateAlbumMainInfo();
+                      setState(() => isEditAlbumTitle = !isEditAlbumTitle);
+                    },
+                    text: isEditAlbumTitle ? "Guardar Album" : "Editar Album",
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 30),
+            MarketingAlbumDetail(
+              handleCheckedResources: (p0, p1) {},
+              updateInfoHasChange: updateInfoHasChange,
+              openEditAssetDialog: (asset) {
+                _dialogNewEditAsset(context, assetTypes, asset);
+              },
+              isWatchMode: false,
+              albumId: marketingArgs["albumId"],
+              shouldFetchAssets: shouldFetchAssets,
+              handleUpdateListAssets: (bool shouldFetch) {
+                handleUpdateListAssets(shouldFetch);
+              },
+              handleUpdateAssetsLength: (p0) =>
+                  setState(() => assetsLength = p0),
+            )
+          ],
         ));
   }
 

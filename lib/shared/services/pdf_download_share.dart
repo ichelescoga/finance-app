@@ -34,6 +34,28 @@ Future shareFile(String fileUrl, String fileName) async {
   );
 }
 
+Future ShareText(List<String> texts) async {
+  await Share.share(texts.join("\n ------------- \n"));
+}
+
+Future shareFiles(List<String> urls, String fileName) async {
+  List<XFile> pathUrls = [];
+  int idx = 0;
+  for (final url in urls) {
+    idx++;
+    String path = await saveFileLocalApp(url, "${idx}_$fileName");
+    pathUrls.add(XFile(path));
+  }
+
+  await Share.shareXFiles(
+    pathUrls,
+    sharePositionOrigin: Rect.fromCircle(
+      radius: Get.width * 0.25,
+      center: const Offset(0, 0),
+    ),
+  );
+}
+
 Future<void> openFolderPicker(String fileUrl, String fileName) async {
   try {
     final selectedFolder = await FilePicker.platform.getDirectoryPath();

@@ -5,13 +5,13 @@ import "package:developer_company/data/repositories/album_repository.dart";
 import "package:developer_company/global_state/providers/user_provider_state.dart";
 import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/colors.dart";
-import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/shared/utils/responsive.dart";
 import "package:developer_company/views/marketing/screens/marketing_albums.dart";
 import "package:developer_company/widgets/image_description_card.dart";
-import "package:developer_company/widgets/slide_fade_transition_animation.dart";
+import "package:developer_company/widgets/rounded_container_text.dart";
 import "package:developer_company/widgets/video_card.dart";
+import "package:developer_company/widgets/zoom_image_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:get/get.dart";
@@ -31,7 +31,7 @@ class _MarketingCarrouselAlbumsPageState
   final user = container.read(userProvider);
   List<Asset> favoriteAssets = [];
   late AnimationController _controller;
-  late Animation<double> _animation;
+  // late Animation<double> _animation;
 
   _retrieveFavoriteAlbums() async {
     favoriteAssets.clear();
@@ -57,10 +57,10 @@ class _MarketingCarrouselAlbumsPageState
       duration: Duration(seconds: 1), // Adjust the duration as needed
     );
 
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut, // Use your preferred curve
-    );
+    // _animation = CurvedAnimation(
+    //   parent: _controller,
+    //   curve: Curves.easeInOut, // Use your preferred curve
+    // );
 
     _controller.forward();
   }
@@ -75,37 +75,41 @@ class _MarketingCarrouselAlbumsPageState
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.officialWhite,
-        onPressed: () => Get.toNamed(RouterPaths.DASHBOARD_PAGE),
-        child: Icon(
-          Icons.arrow_forward_ios,
-          color: AppColors.mainColor,
-        ),
-      ),
-      body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/sun-tornado-white.png"),
-              fit: BoxFit.cover,
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+        return false;
+      },
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: AppColors.officialWhite,
+          onPressed: () => Get.toNamed(RouterPaths.DASHBOARD_PAGE),
+          child: Icon(
+            Icons.arrow_forward_ios,
+            color: AppColors.mainColor,
           ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                Text(
-                  "Recursos Destacados",
-                  style: TextStyle(
-                      fontSize: Dimensions.extraLargeTextSize,
-                      color: AppColors.officialWhite,
-                      fontWeight: FontWeight.bold),
-                ),
-                SlideFadeTransition(
-                  animation: _animation,
-                  child: Container(
+        ),
+        body: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/sun-tornado-white.png"),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 15),
+                  RoundedContainer(
+                      text: "Galería de Favoritos",
+                      height: 40,
+                      width: Get.width / 2.40,
+                      color: AppColors.officialWhite),
+                  Container(
                     width: Get.width,
+                    height: Get.height / 4,
                     child: AspectRatio(
                       aspectRatio: 4 / 3,
                       child: ListView.builder(
@@ -120,10 +124,20 @@ class _MarketingCarrouselAlbumsPageState
                                   children: [
                                     SizedBox(width: 20),
                                     Container(
-                                      width: Get.width - 50,
+                                      height: Get.height / 5,
                                       child: ImageDescriptionCard(
+                                        showChecked: false,
+                                        handleCheckedImageCard: (p0) {},
                                         imageUrl: assetUrl,
                                         description: "",
+                                        rightIcons: [
+                                          RightIcon(
+                                              onPressRightIcon: () =>
+                                                  _showImageZoom(
+                                                      context, assetUrl),
+                                              rightIcon:
+                                                  Icons.open_in_browser_rounded)
+                                        ],
                                       ),
                                     )
                                   ],
@@ -132,8 +146,10 @@ class _MarketingCarrouselAlbumsPageState
                                   children: [
                                     SizedBox(width: 20),
                                     Container(
-                                      width: Get.width - 50,
+                                      height: Get.height / 5,
                                       child: VideoCard(
+                                        showChecked: false,
+                                        handleCheckedVideoCard: (p0) {},
                                         shouldBePausedReset: (p0) {},
                                         shouldBePaused: false,
                                         mute: true,
@@ -152,26 +168,42 @@ class _MarketingCarrouselAlbumsPageState
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        left: responsive.wp(5), right: responsive.wp(5)),
-                    child: SingleChildScrollView(
-                      child: MarketingAlbums(
-                        isWatchMode: true,
-                        shouldFetchAlbums: false,
-                        handleUpdateListAlbums: (p0) {},
+                  RoundedContainer(
+                      text: "Álbumes del proyecto",
+                      height: 40,
+                      width: Get.width / 2.40,
+                      color: AppColors.officialWhite),
+                  SizedBox(height: 30),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: responsive.wp(5), right: responsive.wp(5)),
+                      child: SingleChildScrollView(
+                        child: MarketingAlbums(
+                          isWatchMode: true,
+                          shouldFetchAlbums: false,
+                          handleUpdateListAlbums: (p0, p1) {},
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 40,
-                )
-              ],
-            ),
-          )),
+                  SizedBox(
+                    height: 40,
+                  )
+                ],
+              ),
+            )),
+      ),
     );
+  }
+
+  _showImageZoom(BuildContext context, String image) {
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return ZoomImageDialog(
+            imageLink: image,
+          );
+        }));
   }
 }

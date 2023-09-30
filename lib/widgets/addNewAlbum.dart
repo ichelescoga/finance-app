@@ -14,7 +14,8 @@ import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:get/get.dart";
 
 class AddNewAlbum extends StatefulWidget {
-  const AddNewAlbum({Key? key}) : super(key: key);
+  final int albumsLength;
+  const AddNewAlbum({Key? key, required this.albumsLength}) : super(key: key);
 
   @override
   _AddNewAlbumState createState() => _AddNewAlbumState();
@@ -40,7 +41,7 @@ class _AddNewAlbumState extends State<AddNewAlbum> {
             projectId: int.parse(projectId!),
             albumId: 0,
             albumName: albumNameController.text,
-            position: 100,
+            position: widget.albumsLength + 1,
             isActive: isActiveAlbum,
             assets: []);
 

@@ -14,7 +14,7 @@ import "package:get/get.dart";
 class MarketingAlbums extends StatefulWidget {
   final bool isWatchMode;
   final bool shouldFetchAlbums;
-  final Function(bool) handleUpdateListAlbums;
+  final Function(bool, int) handleUpdateListAlbums;
 
   const MarketingAlbums(
       {Key? key,
@@ -53,13 +53,13 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
       });
     }
     EasyLoading.dismiss();
+    widget.handleUpdateListAlbums(false, albums.length);
   }
 
   @override
   void didUpdateWidget(MarketingAlbums oldWidget) {
     if (widget.shouldFetchAlbums) {
       _fetchAlbums();
-      widget.handleUpdateListAlbums(false);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -88,7 +88,7 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
 
   _handleNextPageAlbumDetail(Album album) async {
     Get.toNamed(RouterPaths.MARKETING_DETAIL_ALBUM,
-        arguments: {"albumId": album.albumId});
+        arguments: {"albumId": album.albumId, "albumName": album.albumName});
   }
 
   @override
@@ -118,13 +118,20 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
 
               return (firstAsset == null || firstAssetType == 2)
                   ? ImageDescriptionCard(
+                      showChecked: false,
+                      handleCheckedImageCard: (p0) {},
                       imageUrl: album.firstAsset?.assetUrl,
                       description: album.albumName,
-                      rightIcon: RightIcon(
-                          onPressRightIcon: () => _handleNextPageAlbumDetail(album),
-                          rightIcon: Icons.arrow_forward),
+                      rightIcons: [
+                        RightIcon(
+                            onPressRightIcon: () =>
+                                _handleNextPageAlbumDetail(album),
+                            rightIcon: Icons.arrow_forward)
+                      ],
                     )
                   : VideoCard(
+                      showChecked: false,
+                      handleCheckedVideoCard: (p0) {},
                       shouldBePausedReset: (value) =>
                           setState(() => shouldBePaused = false),
                       shouldBePaused: shouldBePaused,
@@ -136,71 +143,81 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
                       description: album.albumName,
                       initialFavorite: false,
                       onFavoriteChanged: (bool _) {},
-                      rightIcon: RightIcon(
-                          onPressRightIcon: () => _handleNextPageAlbumDetail(album),
-                          rightIcon: Icons.arrow_forward),
+                      rightIcons: [
+                        RightIcon(
+                            onPressRightIcon: () =>
+                                _handleNextPageAlbumDetail(album),
+                            rightIcon: Icons.arrow_forward)
+                      ],
                     );
             },
           )
-        : Container(
-            height: Get.height - 100,
-            child: ReorderableListView(
-              onReorder: ((oldIndex, newIndex) async {
-                if (newIndex > oldIndex) newIndex--;
-                final album = albums.removeAt(oldIndex);
-                setState(() {
-                  albums.insert(newIndex, album);
-                });
-                final projectId = user?.project.projectId;
+        : ReorderableListView(
+            onReorder: ((oldIndex, newIndex) async {
+              if (newIndex > oldIndex) newIndex--;
+              final album = albums.removeAt(oldIndex);
+              setState(() {
+                albums.insert(newIndex, album);
+              });
+              final projectId = user?.project.projectId;
 
-                Album albumData1 = Album(
-                    projectId: int.tryParse(projectId!),
-                    albumId: albums[oldIndex].albumId,
-                    albumName: albums[oldIndex].albumName,
-                    position: oldIndex,
-                    isActive: true,
-                    assets: []);
+              Album albumData1 = Album(
+                  projectId: int.tryParse(projectId!),
+                  albumId: albums[oldIndex].albumId,
+                  albumName: albums[oldIndex].albumName,
+                  position: oldIndex,
+                  isActive: true,
+                  assets: []);
 
-                Album albumData2 = Album(
-                    projectId: int.tryParse(projectId),
-                    albumId: albums[newIndex].albumId,
-                    albumName: albums[newIndex].albumName,
-                    position: newIndex,
-                    isActive: true,
-                    assets: []);
-                await albumProvider.updateAlbum(albumData1);
-                await albumProvider.updateAlbum(albumData2);
-              }),
-              children: [
-                for (final album in albums)
-                  (album.firstAsset == null || album.firstAsset?.assetType == 2)
-                      ? ImageDescriptionCard(
-                          key: ValueKey(album.albumId),
-                          imageUrl: album.firstAsset?.assetUrl,
-                          description: album.albumName,
-                          rightIcon: RightIcon(
-                              onPressRightIcon: () =>
-                                  _handleNextPageMaintenanceAlbumDetails(album),
-                              rightIcon: Icons.arrow_forward))
-                      : VideoCard(
-                          key: ValueKey(album.albumId),
-                          shouldBePausedReset: (value) =>
-                              setState(() => shouldBePaused = false),
-                          shouldBePaused: shouldBePaused,
-                          mute: true,
-                          autoPlay: true,
-                          looping: true,
-                          videoUrl: album.firstAsset!.assetUrl,
-                          showFavorite: false,
-                          description: album.albumName,
-                          initialFavorite: false,
-                          onFavoriteChanged: (bool _) {},
-                          rightIcon: RightIcon(
-                              onPressRightIcon: () =>
-                                  _handleNextPageMaintenanceAlbumDetails(album),
-                              rightIcon: Icons.arrow_forward))
-              ],
-            ),
+              Album albumData2 = Album(
+                  projectId: int.tryParse(projectId),
+                  albumId: albums[newIndex].albumId,
+                  albumName: albums[newIndex].albumName,
+                  position: newIndex,
+                  isActive: true,
+                  assets: []);
+              await albumProvider.updateAlbum(albumData1);
+              await albumProvider.updateAlbum(albumData2);
+            }),
+            children: [
+              for (final album in albums)
+                (album.firstAsset == null || album.firstAsset?.assetType == 2)
+                    ? ImageDescriptionCard(
+                        showChecked: false,
+                        handleCheckedImageCard: (p0) {},
+                        key: ValueKey(album.albumId),
+                        imageUrl: album.firstAsset?.assetUrl,
+                        description: album.albumName,
+                        rightIcons: [
+                            RightIcon(
+                                onPressRightIcon: () =>
+                                    _handleNextPageMaintenanceAlbumDetails(
+                                        album),
+                                rightIcon: Icons.arrow_forward)
+                          ])
+                    : VideoCard(
+                        showChecked: false,
+                        handleCheckedVideoCard: (p0) {},
+                        key: ValueKey(album.albumId),
+                        shouldBePausedReset: (value) =>
+                            setState(() => shouldBePaused = false),
+                        shouldBePaused: shouldBePaused,
+                        mute: true,
+                        autoPlay: true,
+                        looping: true,
+                        videoUrl: album.firstAsset!.assetUrl,
+                        showFavorite: false,
+                        description: album.albumName,
+                        initialFavorite: false,
+                        onFavoriteChanged: (bool _) {},
+                        rightIcons: [
+                            RightIcon(
+                                onPressRightIcon: () =>
+                                    _handleNextPageMaintenanceAlbumDetails(
+                                        album),
+                                rightIcon: Icons.arrow_forward)
+                          ])
+            ],
           );
   }
 }
