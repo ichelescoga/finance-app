@@ -84,6 +84,7 @@ class _MarketingAlbumDetailPageState extends State<MarketingAlbumDetailPage> {
       checkedVideos = [];
     });
     resetCheckedVideos = true;
+    showShareVideos = false;
   }
 
   _shareImages() async {
@@ -96,6 +97,7 @@ class _MarketingAlbumDetailPageState extends State<MarketingAlbumDetailPage> {
       checkedImages = [];
     });
     resetCheckedImages = true;
+    showShareImages = false;
   }
 
   @override
