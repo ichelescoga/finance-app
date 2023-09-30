@@ -90,7 +90,8 @@ class HttpAdapter extends http.BaseClient {
         'Authorization': 'Bearer ${user.jwt}',
         ...headersApi ?? {},
       };
-
+      
+      print("PUT BODY 😎😎😎 $body");
       final response = await http.put(
         Uri.parse("$apiURL/$url"),
         body: body,

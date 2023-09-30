@@ -8,6 +8,7 @@ import 'package:developer_company/views/bank_executive/pages/bank_executive_stat
 import 'package:developer_company/views/bank_executive/pages/bank_executive_unit_status_page.dart';
 import 'package:developer_company/views/bank_executive/pages/client_detail_page.dart';
 import 'package:developer_company/views/bank_executive/pages/client_quote_page.dart';
+import 'package:developer_company/views/client/client_contact/quick_client_contact_list_page.dart';
 import 'package:developer_company/views/client/pages/client_bank_offers_page.dart';
 import 'package:developer_company/views/client/pages/client_credit_advance_page.dart';
 import 'package:developer_company/views/client/pages/client_credit_detail_page.dart';
@@ -78,13 +79,14 @@ class GetRoutes{
       GetPage(name: RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED, page: () => const CreditsReservedApproved()),
       
 
-      // MARKETING
+      // MARKETING 🖼️🖼️🎞️🎞️
       GetPage(name: RouterPaths.MARKETING_MAINTENANCE_ALBUMS, page: () => const MarketingAlbumsMaintenancePage()),
       GetPage(name: RouterPaths.MARKETING_MAINTENANCE_DETAIL_ALBUM, page: () => const MarketingAlbumDetailMaintenancePage()),
       GetPage(name: RouterPaths.MARKETING_CARROUSEL_ALBUMS, page: () => const MarketingCarrouselAlbumsPage(), transition: Transition.upToDown),
       GetPage(name: RouterPaths.MARKETING_DETAIL_ALBUM, page: () => const MarketingAlbumDetailPage()),
 
-
+      // QUICK CONTACTS 🧑‍🦰🧑‍🦰
+      GetPage(name: RouterPaths.QUICK_CONTACT_LIST_PAGE, page: () => const QuickClientContactListPage()),
       
     ];
   }

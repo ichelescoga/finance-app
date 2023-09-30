@@ -28,6 +28,11 @@ class _DashboardPageState extends State<DashboardPage> {
       icon: Icons.insert_emoticon_sharp,
       title: 'Mercadeo',
       route: RouterPaths.MARKETING_CARROUSEL_ALBUMS,
+    ),
+    SideBarItem(
+      icon: Icons.contacts,
+      title: 'Contactos',
+      route: RouterPaths.QUICK_CONTACT_LIST_PAGE,
     )
   ];
 

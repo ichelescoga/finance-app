@@ -34,8 +34,8 @@ class _AddNewAlbumState extends State<AddNewAlbum> {
   _handleAddNewAlbum() async {
     final projectId = user?.project.projectId;
 
-    setState(() => isLoading = true);
     if (_formKeyAddNewAlbum.currentState!.validate()) {
+      setState(() => isLoading = true);
       try {
         final Album albumData = Album(
             projectId: int.parse(projectId!),

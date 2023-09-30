@@ -38,8 +38,15 @@ class RouterPaths{
   static const String ADVISER_CREDITS_RESERVED_APPROVED = '/AdviserCreditsReservedApproved';
   
   
+  // MARKETING 🖼️🖼️🎞️🎞️
+
   static const String MARKETING_MAINTENANCE_ALBUMS = '/marketingMaintenanceAlbums';
   static const String MARKETING_MAINTENANCE_DETAIL_ALBUM = '/marketingMaintenanceDetailAlbum';
   static const String MARKETING_CARROUSEL_ALBUMS = '/marketingCarrouselAlbums';
   static const String MARKETING_DETAIL_ALBUM = '/marketingDetailAlbum';
+
+  // QUICK CONTACTS 🧑‍🦰🧑‍🦰
+
+  static const String QUICK_CONTACT_LIST_PAGE = "/quickContactListPage";
+
 }
