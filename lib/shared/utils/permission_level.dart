@@ -1,4 +1,7 @@
 class PermissionLevel {
+
+  static const String withoutPermission = '';
+
   static const String dashboardAddDevelopmentCard = 'dashboard_add_development_card';
   static const String dashboardAddAdvisersCard = 'dashboard_add_advisers_card';
   static const String dashboardAddExecutiveAndFinancialCard = 'dashboard_add_executive_and_financial_card';
@@ -12,5 +15,10 @@ class PermissionLevel {
   static const String adviserCreditsApprovedAndReserved = "adviser_credits_approved_and_reserved";
 
   static const String marketingMaintenance = "marketing_maintenance";
+
+  static const String sideBarContacts = "sideBar_contacts";
+  static const String sideBarMarketing = "sideBar_Marketing";
+  static const String marketingInitial = "MarketingInitial";
+
   // Add more permission levels as needed
 }

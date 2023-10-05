@@ -4,6 +4,8 @@ import 'package:developer_company/data/providers/user_provider.dart';
 import 'package:developer_company/data/repositories/user_repository.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
+import 'package:developer_company/shared/utils/permission_level.dart';
+import 'package:developer_company/utils/ask_permission.dart';
 import 'package:developer_company/views/home/controllers/login_page_controller.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/custom_style.dart';
@@ -234,7 +236,14 @@ class _LoginPageState extends State<LoginPage> {
                           EasyLoading.dismiss();
                           final loginResult = await _loginUser(container);
                           if (loginResult) {
-                            Get.toNamed(RouterPaths.MARKETING_CARROUSEL_ALBUMS);
+                            final haveAccess =
+                                AskPermission(PermissionLevel.marketingInitial);
+                            if (haveAccess) {
+                              Get.toNamed(
+                                  RouterPaths.MARKETING_CARROUSEL_ALBUMS);
+                            } else {
+                              Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+                            }
                           }
                           setState(() {
                             successLogin = loginResult;

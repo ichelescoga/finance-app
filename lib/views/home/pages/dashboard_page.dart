@@ -25,11 +25,15 @@ class _DashboardPageState extends State<DashboardPage> {
 
   final List<SideBarItem> sideBarList = [
     SideBarItem(
+      requestAction: PermissionLevel.sideBarMarketing,
+      id: "marketing",
       icon: Icons.insert_emoticon_sharp,
       title: 'Mercadeo',
       route: RouterPaths.MARKETING_CARROUSEL_ALBUMS,
     ),
     SideBarItem(
+      requestAction: PermissionLevel.sideBarContacts,
+      id: "contacts",
       icon: Icons.contacts,
       title: 'Contactos',
       route: RouterPaths.QUICK_CONTACT_LIST_PAGE,

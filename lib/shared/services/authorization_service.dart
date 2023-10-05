@@ -16,9 +16,23 @@ class AuthorizationService {
         PermissionLevel.dashboardQueryQuoteButton,
         PermissionLevel.dashboardAddQuoteButton,
         PermissionLevel.adviserCreditsApprovedAndReserved,
-        PermissionLevel.marketingMaintenance //! TEMP another role should be assigned
       ],
-      'Analista': [PermissionLevel.analystCreditByClient]
+      'Analista': [PermissionLevel.analystCreditByClient],
+      "AdminPruebas": [
+        PermissionLevel.marketingMaintenance,
+        PermissionLevel.dashboardQueryQuoteButton,
+        PermissionLevel.dashboardAddQuoteButton,
+        PermissionLevel.adviserCreditsApprovedAndReserved,
+        PermissionLevel.analystCreditByClient,
+        PermissionLevel.sideBarContacts,
+        PermissionLevel.sideBarMarketing,
+        PermissionLevel.marketingInitial
+      ],
+      "Mercadeo": [
+        PermissionLevel.marketingInitial,
+        PermissionLevel.marketingMaintenance,
+        PermissionLevel.sideBarMarketing,
+      ]
     };
 
     if(userRole == "Admin") return true;

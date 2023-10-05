@@ -13,5 +13,9 @@ class UserNotifier extends StateNotifier<User?> {
     return state!.token;
   }
 
+  String get role {
+    return state!.role;
+  }
+
   
 }

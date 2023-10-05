@@ -23,10 +23,12 @@ class _CreditApplicationPageState extends State<CreditApplicationPage> {
 
   final List<SideBarItem> sideBarList = [
     SideBarItem(
+        id: "unit_quote",
         icon: Icons.business,
         title: 'Cotización de unidad',
         route: RouterPaths.UNIT_QUOTE_PAGE),
     SideBarItem(
+      id: "credit_apply",
       icon: Icons.business,
       title: 'Aplicación a crédito',
       route: RouterPaths.CREDIT_APPLICATION_PAGE,

@@ -24,17 +24,23 @@ class _BankExecutivePageState extends State<BankExecutivePage> {
 
   final List<SideBarItem> sideBarList = [
     
-    SideBarItem(  icon: Icons.business,
+    SideBarItem(  
+      id:'Ejecutivo bancario',
+      icon: Icons.business,
       title: 'Ejecutivo bancario',
       route: RouterPaths.BANK_EXECUTIVE_PAGE,)
     ,
     
-    SideBarItem(  icon: Icons.business,
+    SideBarItem(  
+      id:'Consultas ejecutivo',
+      icon: Icons.business,
       title: 'Consultas ejecutivo',
       route: RouterPaths.BANK_EXECUTIVE_STATS_PAGE,)
     ,
     
-    SideBarItem(  icon: Icons.business,
+    SideBarItem(  
+      id:'Estado de unidades',
+      icon: Icons.business,
       title: 'Estado de unidades',
       route: RouterPaths.BANK_EXECUTIVE_UNIT_STATUS_PAGE,)
     ,

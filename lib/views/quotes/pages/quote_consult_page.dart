@@ -24,16 +24,19 @@ class _QuoteConsultPageState extends State<QuoteConsultPage> {
 
   final List<SideBarItem> sideBarList = [
     SideBarItem(
+      id:'Consulta de cotizaciones',
       icon: Icons.business,
       title: 'Consulta de cotizaciones',
       route: RouterPaths.QUOTE_CONSULT_PAGE,
     ),
     SideBarItem(
+      id:'Tipo de unidades',
       icon: Icons.business,
       title: 'Tipo de unidades',
       route: RouterPaths.QUOTE_STATS_PAGE,
     ),
     SideBarItem(
+      id:'Estado de unidades',
       icon: Icons.business,
       title: 'Estado de unidades',
       route: RouterPaths.QUOTE_UNIT_STATUS_PAGE,

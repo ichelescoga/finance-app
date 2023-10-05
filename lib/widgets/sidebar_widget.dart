@@ -1,4 +1,5 @@
 import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/utils/ask_permission.dart';
 import 'package:developer_company/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,19 +29,24 @@ class SideBarWidget extends StatelessWidget {
 
             final tileData =
                 listTiles[index - 1]; // Subtract 1 for the DrawerHeader
-            return ListTile(
-              leading: Icon(
-                tileData.icon,
-                color: Colors.black87,
-              ),
-              title: Text(
-                tileData.title,
-              ),
-              onTap: () {
-                Get.toNamed(tileData.route);
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right),
-            );
+
+            final haveAccess = AskPermission(tileData.requestAction);
+
+            return !haveAccess
+                ? Container()
+                : ListTile(
+                    leading: Icon(
+                      tileData.icon,
+                      color: Colors.black87,
+                    ),
+                    title: Text(
+                      tileData.title,
+                    ),
+                    onTap: () {
+                      Get.toNamed(tileData.route);
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                  );
           },
         ),
       ),
@@ -49,9 +55,16 @@ class SideBarWidget extends StatelessWidget {
 }
 
 class SideBarItem {
+  final String id;
   final IconData icon;
   final String title;
   final String route;
+  final String requestAction;
 
-  SideBarItem({required this.icon, required this.title, required this.route});
+  SideBarItem(
+      {required this.icon,
+      required this.title,
+      required this.route,
+      required this.id,
+      this.requestAction = ""});
 }
