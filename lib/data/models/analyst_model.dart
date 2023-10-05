@@ -13,7 +13,7 @@ class AnalystQuotation {
   final String executive;
   final String clientName;
   // Other properties you need
-  
+
   AnalystQuotation({
     required this.id,
     required this.unitId,
@@ -38,5 +38,17 @@ class AnalystQuotation {
       // Initialize other properties from the JSON response
     );
   }
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "unitId": unitId,
+      "unitName": unitName,
+      "statusId": statusId,
+      "sellPrice": sellPrice,
+      "buyPrice": buyPrice,
+      "executive": executive,
+      "clientName": clientName,
+    };
+  }
+}
