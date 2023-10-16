@@ -10,6 +10,7 @@ import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/widgets/add_new_quick_contact.dart";
 import "package:developer_company/widgets/app_bar_sidebar.dart";
 import "package:developer_company/widgets/data_table.dart";
+import "package:developer_company/widgets/filter_box.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
@@ -35,8 +36,11 @@ class _QuickClientContactListPageState
 
   List<QuickClientContacts> clientContacts = [];
   final AppColors appColors = AppColors();
+  bool isLoading = false;
+
 
   _fetchClientContacts() async {
+    isLoading = true;
     EasyLoading.show();
     final projectId = user?.project.projectId;
     clientContacts.clear();
@@ -44,6 +48,7 @@ class _QuickClientContactListPageState
         await quickClientContactProvider.fetchClientContact(projectId!);
     setState(() => clientContacts.addAll(contacts));
     EasyLoading.dismiss();
+    isLoading = false;
   }
 
   @override
@@ -66,7 +71,7 @@ class _QuickClientContactListPageState
     return Layout(
         sideBarList: const [],
         appBar: CustomAppBarSideBar(
-          title: "Lista de Contactos",
+          title: "Lista de contactos",
           rightActions: [
             IconButton(
                 icon: Icon(
@@ -79,10 +84,18 @@ class _QuickClientContactListPageState
         ),
         child: Column(
           children: [
+            FilterBox(
+              label: "Buscar Créditos",
+              hint: "Buscar",
+              elements: clientContacts,
+              isLoading: isLoading,
+              handleFilteredData: (List<QuickClientContacts> data) =>
+                  setState(() => clientContacts = data),
+            ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: CustomDataTable(
-                columns: ["Nombre", "Teléfono", "correo", "dirección", ""],
+                columns: ["Nombre", "Teléfono", "Correo", "Dirección", ""],
                 elements: clientContacts
                     .asMap()
                     .map((index, element) => MapEntry(

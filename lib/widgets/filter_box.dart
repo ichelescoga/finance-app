@@ -65,7 +65,7 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
       suffixIcon: IconButton(
         onPressed: () => filterBoxController.clear(),
         icon: const Icon(
-          Icons.search,
+          Icons.close,
           color: Colors.black,
         ),
       ),

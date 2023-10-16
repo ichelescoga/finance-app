@@ -145,7 +145,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         "idPlanFinanciero": null,
         "anioInicio": "2023",
         "anioFin": (2023 + yearOfEnd).toString(),
-        "ventaDescuento": extractNumber(finalSellPrice),
+        "ventaDescuento": extractNumber(finalSellPrice),  //TODO total value of unit please dont use the calculues value.
         "enganche": extractNumber(unitDetailPageController.startMoney.text),
         "mesesPlazo": months.toString(),
         "mesInicio": currentMonth.toString(),

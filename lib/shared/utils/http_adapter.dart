@@ -32,6 +32,7 @@ class HttpAdapter extends http.BaseClient {
       EasyLoading.showInfo(Strings.sessionExpired);
       throw Exception('Login Expired');
     } else {
+      print("🤖🤖🤖 ERROR IN _handleResponse 🤖🦔🦔 ${response.statusCode} ");
       throw Exception('Failed to load data');
     }
   }
@@ -64,7 +65,7 @@ class HttpAdapter extends http.BaseClient {
       final user = container.read(userProviderWithoutNotifier);
 
       final headers = {
-        'Authorization': 'Bearer ${user.jwt}',
+        'Authorization': 'bearer ${user.jwt}',
         ...headersApi ?? {},
       };
       print("POST BODY 😉😉 $body");

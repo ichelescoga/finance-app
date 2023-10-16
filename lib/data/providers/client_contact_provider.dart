@@ -23,10 +23,10 @@ class QuickClientContactProvider {
   }
 
   Future<bool> addNewClientContact(QuickClientContacts contact) async {
-    final response = await httpAdapter.postApi(
-        "orders/v1/crearContacto",
-        jsonEncode(contact.toJson()),
-        {'Content-Type': 'application/json'});
+    final response = await httpAdapter
+        .postApi("orders/v1/crearContacto", json.encode(contact.toJson()), {
+      'Content-Type': 'application/json',
+    });
 
     if (response.statusCode == 200) {
       return true;
