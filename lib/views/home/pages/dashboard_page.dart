@@ -355,16 +355,35 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
+          AuthorizationWrapper(
+            requestAction: PermissionLevel.discountsByQuote,
+            child: Column(
+              children: [
+                spaceButton,
+                CustomButtonWidget(
+                    text: "Descuentos",
+                    onTap: () => Get.toNamed(
+                        RouterPaths.DISCOUNTS_BY_QUOTE_PAGE,
+                        arguments: {"isWatchMode": false}),
+                    padding: defaultPadding),
+              ],
+            ),
+          ),
+          // AuthorizationWrapper(
+          //   requestAction: PermissionLevel.discountsByQuoteMaintenance,
+          //   child: Column(
+          //     children: [
+          //       spaceButton,
+          //       CustomButtonWidget(
+          //           text: "Mantenimiento de descuentos",
+          //           onTap: () => Get.toNamed(
+          //               RouterPaths.DISCOUNTS_BY_QUOTE_MAINTENANCE_PAGE,
+          //               arguments: {"isWatchMode": false}),
+          //           padding: defaultPadding),
+          //     ],
+          //   ),
+          // ),
 
-          // TODO REMOVE ME
-          // VideoCard(
-          //     autoPlay: true,
-          //     looping: true,
-          //     videoUrl: "https://www.youtube.com/watch?v=N211yi0cJJI",
-          //     showFavorite: true,
-          //     description: "Hello World",
-          //     initialFavorite: true,
-          //     onFavoriteChanged: (bool hey) {}),
 
           const SizedBox(height: Dimensions.heightSize),
           AuthorizationWrapper(

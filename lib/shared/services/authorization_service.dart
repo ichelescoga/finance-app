@@ -26,7 +26,10 @@ class AuthorizationService {
         PermissionLevel.analystCreditByClient,
         PermissionLevel.sideBarContacts,
         PermissionLevel.sideBarMarketing,
-        PermissionLevel.marketingInitial
+        PermissionLevel.marketingInitial,
+        // DISCOUNTS
+        PermissionLevel.discountsByQuote,
+        PermissionLevel.discountsByQuoteMaintenance,
       ],
       "Mercadeo": [
         PermissionLevel.marketingInitial,

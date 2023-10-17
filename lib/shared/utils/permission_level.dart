@@ -20,5 +20,10 @@ class PermissionLevel {
   static const String sideBarMarketing = "sideBar_Marketing";
   static const String marketingInitial = "MarketingInitial";
 
+  static const String discountsByQuote = "discounts_by_quote";
+  static const String discountDetailByQuote = "discount_detail_by_quote";
+  static const String discountsByQuoteMaintenance = "discounts_by_quote_maintenance";
+  static const String discountDetailByQuoteMaintenance = "discount_detail_by_quote_maintenance";
+
   // Add more permission levels as needed
 }

@@ -49,4 +49,12 @@ class RouterPaths{
 
   static const String QUICK_CONTACT_LIST_PAGE = "/quickContactListPage";
 
+
+  // DISCOUNTS
+
+  static const String DISCOUNT_DETAIL_BY_QUOTE_MAINTENANCE_PAGE = "/discountDetailByQuoteMaintenancePage";
+  static const String DISCOUNTS_BY_QUOTE_PAGE =  "/discountsByQuotePage";
+  static const String DISCOUNT_DETAIL_BY_QUOTE_PAGE =  "/discountDetailByQuotePage";
+  static const String DISCOUNTS_BY_QUOTE_MAINTENANCE_PAGE =  "/discountsByQuoteMaintenancePage";
 }
+

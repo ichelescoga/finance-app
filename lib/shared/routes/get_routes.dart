@@ -24,6 +24,10 @@ import 'package:developer_company/views/credit_request/pages/credits_reserved_ap
 import 'package:developer_company/views/credit_request/pages/unit_quote_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_page.dart';
 import 'package:developer_company/views/developer_company/pages/create_company_page.dart';
+import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_maintenance_page.dart';
+import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_page.dart';
+import 'package:developer_company/views/discounts/pages/discounts_by_quote_maintenance_page.dart';
+import 'package:developer_company/views/discounts/pages/discounts_by_quote_page.dart';
 import 'package:developer_company/views/financial_entity/pages/financial_entity_creation_page.dart';
 import 'package:developer_company/views/home/pages/dashboard_page.dart';
 import 'package:developer_company/views/home/pages/home_page.dart';
@@ -87,6 +91,12 @@ class GetRoutes{
 
       // QUICK CONTACTS 🧑‍🦰🧑‍🦰
       GetPage(name: RouterPaths.QUICK_CONTACT_LIST_PAGE, page: () => const QuickClientContactListPage()),
+
+      // DISCOUNTS
+      GetPage(name: RouterPaths.DISCOUNT_DETAIL_BY_QUOTE_MAINTENANCE_PAGE, page: () => const DiscountDetailByQuoteMaintenancePage()),
+      GetPage(name: RouterPaths.DISCOUNTS_BY_QUOTE_PAGE, page: () => const DiscountsByQuotePage()),
+      GetPage(name: RouterPaths.DISCOUNT_DETAIL_BY_QUOTE_PAGE, page: () => const DiscountDetailByQuotePage()),
+      GetPage(name: RouterPaths.DISCOUNTS_BY_QUOTE_MAINTENANCE_PAGE, page: () => const DiscountsByQuoteMaintenancePage()),
       
     ];
   }
