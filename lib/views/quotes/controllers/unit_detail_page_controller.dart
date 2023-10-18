@@ -3,6 +3,8 @@ import 'package:developer_company/shared/controllers/base_controller.dart';
 import 'package:flutter/material.dart';
 
 class UnitDetailPageController extends BaseController {
+  final List<String> statusOfDiscount = ["Solicitado", "Aceptado", "Rechazado"];
+
   TextEditingController detailCompany = TextEditingController();
   TextEditingController detailIncomes = TextEditingController();
   TextEditingController detailKindJob = TextEditingController();
@@ -20,7 +22,14 @@ class UnitDetailPageController extends BaseController {
   TextEditingController email = TextEditingController();
   TextEditingController startMoney = TextEditingController();
   TextEditingController priceWithDiscount = TextEditingController();
+
   TextEditingController discount = TextEditingController(text: "0");
+
+  bool applyDefaultDiscount = false;
+  TextEditingController seasonDiscount = TextEditingController(text: "0");
+  TextEditingController extraDiscount = TextEditingController(text: "0");
+  String? statusDiscount;
+
   TextEditingController bankHistory = TextEditingController();
   TextEditingController paymentMonths = TextEditingController();
   TextEditingController unitStatus = TextEditingController();
@@ -45,15 +54,24 @@ class UnitDetailPageController extends BaseController {
     link: "",
   );
 
+// quoteInfo?.extraDiscount.toString(),
+// quoteInfo.isActiveDiscount.toString(),
+// quoteInfo.statusDiscount.toString(),
   void updateController(
-      String? argsDiscount,
-      String? argsStartMoney,
-      String? argsPaymentMonths,
-      String? argsEmail,
-      String? argsClientName,
-      String? argsClientPhone,
-      ) {
-    discount.text = argsDiscount ?? "0";
+    String? argsExtraDiscount,
+    bool? argsIsActiveDiscount,
+    String? argsStatusDiscount,
+    String? argsStartMoney,
+    String? argsPaymentMonths,
+    String? argsEmail,
+    String? argsClientName,
+    String? argsClientPhone,
+  ) {
+    // discount.text = argsDiscount ?? "0";
+    extraDiscount.text = argsExtraDiscount!;
+    applyDefaultDiscount = argsIsActiveDiscount!;
+    statusDiscount = argsStatusDiscount!;
+
     clientName.text = argsClientName ?? "";
     clientPhone.text = argsClientPhone ?? "";
     email.text = argsEmail ?? "";
@@ -64,6 +82,12 @@ class UnitDetailPageController extends BaseController {
   void cleanController() {
     frontDpi.reset();
     reverseDpi.reset();
+    applyDefaultDiscount = false;
+
+    seasonDiscount.text = "0";
+    extraDiscount.text = "0";
+    statusDiscount = null;
+
 
     detailCompany.clear();
     detailIncomes.clear();
@@ -95,5 +119,18 @@ class UnitDetailPageController extends BaseController {
     unit.text = "Unidad de prueba";
     salePrice.text = "Q 450,000.00";
     unitStatus.text = "En proceso";
+  }
+
+  String getTextStatusDiscount() {
+    switch (statusDiscount) {
+      case null:
+        return "Solicitado";
+      case "1":
+        return "Aprobado";
+      case "0":
+        return "Rechazado";
+      default:
+        return "Solicitado";
+    }
   }
 }

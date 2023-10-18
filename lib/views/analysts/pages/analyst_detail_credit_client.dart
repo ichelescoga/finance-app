@@ -14,7 +14,6 @@ import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/shared/validations/not_empty.dart";
 import "package:developer_company/views/bank_executive/pages/form_detail_client.dart";
 import "package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart";
-// import "package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart";
 import 'package:developer_company/views/credit_request/forms/form_quote.dart';
 import "package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
@@ -68,7 +67,9 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
           await unitQuotationRepository.fetchQuotationById(quoteId.toString());
 
       unitDetailPageController.updateController(
-        quoteInfo?.discount.toString(),
+        quoteInfo?.extraDiscount.toString(),
+        quoteInfo?.isActiveDiscount,
+        quoteInfo?.statusDiscount.toString(),
         quoteInfo?.downPayment.toString(),
         quoteInfo?.termMonths.toString(),
         quoteInfo?.clientData?.email.toString(),
@@ -82,10 +83,9 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
       unitDetailPageController.isPayedTotal =
           quoteInfo?.cashPrice == 1 ? true : false;
 
-
       final startMoney = quoteInfo?.downPayment;
-      unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
-          arguments["finalPrice"], startMoney!);
+      unitDetailPageController.balanceToFinance.text =
+          handleBalanceToFinance(arguments["finalPrice"], startMoney!);
     } finally {
       EasyLoading.dismiss();
     }

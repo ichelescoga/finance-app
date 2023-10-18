@@ -27,6 +27,10 @@ class Quotation {
   final int? bonusCatorce;
   final String? createdAt;
   final String? updatedAt;
+  final String extraDiscount;
+  final bool isActiveDiscount;
+  final String? statusDiscount;
+
   final Client? clientData;
 
   Quotation({
@@ -51,7 +55,10 @@ class Quotation {
     required this.bonusCatorce,
     required this.createdAt,
     required this.updatedAt,
-    required this.clientData
+    required this.clientData,
+    required this.extraDiscount,
+    required this.isActiveDiscount,
+    required this.statusDiscount,
   });
 
   factory Quotation.fromJson(Map<String, dynamic> json) {
@@ -71,7 +78,7 @@ class Quotation {
       startYear: json['Anio_inicio'],
       endMonth: json['Mes_fin'],
       endYear: json['Anio_fin'],
-      discount: json['Descuento'],
+      discount: int.tryParse(json['Descuento'].toString()) ?? 0,
       saleDiscount: quetzalesCurrency(json['Venta_descuento'].toString()),
       cashPrice: json['Precio_contado'],
       aguinaldo: json['Aguinaldo'],
@@ -81,6 +88,9 @@ class Quotation {
       updatedAt:
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
       clientData: json['Id_cliente_CLIENTE'] != null ? Client.fromJson(json['Id_cliente_CLIENTE']) : null,
+      isActiveDiscount: json["Solicitud_descuento"].toString() == "1" ? true : false,
+      extraDiscount: json["Monto_descuento_soli"],
+      statusDiscount: json["Estado_descuento"]
     );
   }
 }

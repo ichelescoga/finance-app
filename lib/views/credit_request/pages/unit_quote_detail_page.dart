@@ -13,8 +13,6 @@ import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 
-import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
-
 import 'package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart';
 
 import 'package:developer_company/views/credit_request/forms/form_quote.dart';
@@ -66,10 +64,11 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
     try {
       EasyLoading.show(status: Strings.loading);
       if (quoteId != null) {
-        quoteInfo = await unitQuotationRepository
-            .fetchQuotationById(quoteId.toString());
+        quoteInfo = await unitQuotationRepository.fetchQuotationById(quoteId.toString());
         unitDetailPageController.updateController(
-          quoteInfo?.discount.toString(),
+          quoteInfo?.extraDiscount.toString(),
+          quoteInfo?.isActiveDiscount,
+          quoteInfo?.statusDiscount.toString(),
           quoteInfo?.downPayment.toString(),
           quoteInfo?.termMonths.toString(),
           quoteInfo?.clientData?.email.toString(),
@@ -133,29 +132,26 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
       int monthOfEnd = months % year;
 
-      // String finalSellPrice = calculateSellPriceDiscount(
-      //     unitDetailPageController.discount.text);
-
-      String finalSellPrice = calculateSellPriceDiscount(
-          unitDetailPageController.discount.text,
-          unitDetailPageController,
-          arguments["salePrice"]);
-
       final body = {
         "idPlanFinanciero": null,
         "anioInicio": "2023",
         "anioFin": (2023 + yearOfEnd).toString(),
-        "ventaDescuento": extractNumber(finalSellPrice),  //TODO total value of unit please dont use the calculues value.
+        "ventaDescuento": unitDetailPageController.salePrice
+            .text, //TODO total value of unit please dont use the calculues value.
         "enganche": extractNumber(unitDetailPageController.startMoney.text),
         "mesesPlazo": months.toString(),
         "mesInicio": currentMonth.toString(),
         "mesFin": monthOfEnd.toString(),
-        "descuento": unitDetailPageController.discount.text,
+        "descuento": "0",
         "precioContado": unitDetailPageController.isPayedTotal ? true : false,
         "aguinaldo": _isBonoSwitched ? "1" : "0",
         "bonoCatorce": _isAguinaldoSwitched ? "1" : "0",
         "idUnidad": unitId.toString(),
         "ingresoMensual": "0",
+        "comentario": null,
+        "montoDescuentSolicitado": unitDetailPageController.extraDiscount.text,
+        "solicitudDescuent":
+            unitDetailPageController.applyDefaultDiscount ? "1" : "0",
         "cliente": {
           "primerNombre": unitDetailPageController.clientName.text,
           "telefono": unitDetailPageController.clientPhone.text,

@@ -1,4 +1,9 @@
+import 'package:developer_company/data/implementations/discount_repository_impl.dart';
 import 'package:developer_company/data/models/unit_quotation_model.dart';
+import 'package:developer_company/data/providers/discount_provider.dart';
+import 'package:developer_company/data/repositories/discount_repository.dart';
+import 'package:developer_company/global_state/providers/user_provider_state.dart';
+import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/validations/email_validator.dart';
@@ -6,13 +11,12 @@ import 'package:developer_company/shared/validations/grater_than_number_validato
 import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
 import 'package:developer_company/shared/validations/not_empty.dart';
 import 'package:developer_company/shared/validations/string_length_validator.dart';
-import 'package:developer_company/shared/validations/percentage_validator.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
-import 'package:developer_company/widgets/admin_permission_modal.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
+import 'package:developer_company/widgets/elevated_custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -37,11 +41,31 @@ class _FormQuoteState extends State<FormQuote> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   UnitDetailPageController unitDetailPageController =
       Get.put(UnitDetailPageController());
-  bool _canEditDiscount = false;
+
+  final user = container.read(userProvider);
+
+  DiscountRepository _discountRepository =
+      DiscountRepositoryImpl(DiscountProvider());
+
+  // bool _canEditDiscount = false;
   int? quoteId;
 
   Quotation? quoteInfo;
   bool isFetchQuote = false;
+
+  retrieveDefaultDiscount() async {
+    final projectId = user?.project.projectId;
+    final _defaultDiscountData =
+        await _discountRepository.getSeasonDiscount(projectId!);
+    unitDetailPageController.seasonDiscount.text =
+        _defaultDiscountData.percentage.toString();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    retrieveDefaultDiscount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,35 +87,69 @@ class _FormQuoteState extends State<FormQuote> {
             label: "Precio de venta",
             hintText: "precio de venta",
             prefixIcon: Icons.person_outline),
-        CustomInputWidget(
-            enabled: widget.quoteEdit,
-            readOnly: !_canEditDiscount,
-            onTapOutside: (p0) {
-              setState(() {
-                _canEditDiscount = false;
-              });
-            },
-            onTap: () {
-              _showPermissionDialog(context);
-            },
-            onChange: (value) {
+        SwitchListTile(
+          title: const Text('Aplicar Descuento',
+              style: TextStyle(color: Colors.black)),
+          value: unitDetailPageController.applyDefaultDiscount,
+          onChanged: (bool value) {
+            if (value) {
               unitDetailPageController.finalSellPrice.text =
                   calculateSellPriceDiscount(
-                      value, unitDetailPageController, unitDetailPageController.salePrice.text);
-            },
-            validator: (value) {
-              if (value == "0") return null;
-              final percentageIsValid = percentageValidator(value);
-              if (!percentageIsValid) {
-                return "Valor debe de ser entre 0 y 25";
-              }
-              return null;
-            },
-            controller: unitDetailPageController.discount,
-            label: "Descuento",
-            hintText: "Descuento",
-            keyboardType: TextInputType.number,
-            prefixIcon: Icons.percent),
+                      unitDetailPageController.seasonDiscount.text,
+                      unitDetailPageController,
+                      unitDetailPageController.salePrice.text);
+            } else {
+              unitDetailPageController.finalSellPrice.text =
+                  unitDetailPageController.salePrice.text;
+            }
+
+            setState(
+                () => unitDetailPageController.applyDefaultDiscount = value);
+          },
+          activeColor: AppColors.secondaryMainColor,
+        ),
+
+        if (unitDetailPageController.applyDefaultDiscount)
+          Column(
+            children: [
+              CustomInputWidget(
+                  enabled: false,
+                  controller: unitDetailPageController.seasonDiscount,
+                  label: "Descuento de temporada",
+                  hintText: "Descuento de temporada",
+                  prefixIcon: Icons.percent),
+              if (unitDetailPageController.statusDiscount != null ||
+                  !widget.quoteEdit)
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Estado de la solicitud de descuento: " +
+                        unitDetailPageController.getTextStatusDiscount())),
+              CustomInputWidget(
+                  enabled: (widget.quoteEdit ||
+                      !(unitDetailPageController.statusDiscount == 1)),
+                  controller: unitDetailPageController.extraDiscount,
+                  label: "Solicitar descuento extra",
+                  hintText: "Solicitar descuento extra",
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (int.tryParse(value!) == null) {
+                      return "El porcentaje no es valido";
+                    }
+
+                    if (int.tryParse(value)! >= 100) {
+                      return "El porcentaje de descuento no puede ser mayor o igual a 100";
+                    }
+
+                    return null;
+                  },
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.question_mark_outlined),
+                    onPressed: () => _showInfoExtraDiscount(context),
+                  ),
+                  prefixIcon: Icons.percent),
+            ],
+          ),
+
         CustomInputWidget(
             validator: (value) => notEmptyFieldValidator(value),
             enabled: false,
@@ -129,7 +187,7 @@ class _FormQuoteState extends State<FormQuote> {
               if (!hasFocus) {
                 unitDetailPageController.startMoney.text =
                     quetzalesCurrency(unitDetailPageController.startMoney.text);
-              } 
+              }
             },
             validator: (value) {
               final enganche = extractNumber(value!);
@@ -214,18 +272,22 @@ class _FormQuoteState extends State<FormQuote> {
     );
   }
 
-  _showPermissionDialog(BuildContext context) {
+  _showInfoExtraDiscount(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return PermissionAdminModal(
-            alertHeight: 180,
-            alertWidth: 200,
-            onTapFunction: () {
-              setState(() {
-                _canEditDiscount = true;
-              });
-            },
+          return AlertDialog(
+            title: Text("Solicitud de descuento"),
+            content: Text(
+                "Es un porcentaje adicional de descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento"),
+            actions: [
+              ElevatedCustomButton(
+                color: AppColors.secondaryMainColor,
+                text: "Entendido",
+                isLoading: false,
+                onPress: () => Navigator.pop(context, false),
+              )
+            ],
           );
         });
   }

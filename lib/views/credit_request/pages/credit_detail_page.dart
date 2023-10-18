@@ -61,7 +61,9 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
           await unitQuotationRepository.fetchQuotationById(quoteId.toString());
 
       unitDetailPageController.updateController(
-        quoteInfo?.discount.toString(),
+        quoteInfo?.extraDiscount.toString(),
+        quoteInfo?.isActiveDiscount,
+        quoteInfo?.statusDiscount.toString(),
         quoteInfo?.downPayment.toString(),
         quoteInfo?.termMonths.toString(),
         quoteInfo?.clientData?.email.toString(),
