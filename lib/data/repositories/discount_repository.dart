@@ -5,4 +5,6 @@ abstract class DiscountRepository {
   Future<List<RequestedDiscount>> getRequestDiscounts(String projectId);
   Future<bool> acceptDiscount(String discountId);
   Future<bool> rejectDiscount(String discountId);
+  Future<List<RequestedDiscount>> getDiscountByResolution(
+      bool isApproved, String projectId);
 }

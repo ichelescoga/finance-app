@@ -26,4 +26,11 @@ class DiscountRepositoryImpl implements DiscountRepository {
   Future<bool> rejectDiscount(String discountId) async {
     return await discountProvider.rejectDiscount(discountId);
   }
+
+  @override
+  Future<List<RequestedDiscount>> getDiscountByResolution(
+      bool isApproved, String projectId) async {
+    return await discountProvider.getDiscountByResolution(
+        isApproved, projectId);
+  }
 }

@@ -27,7 +27,7 @@ class DiscountProvider {
 
   Future<List<RequestedDiscount>> getRequestDiscounts(String projectId) async {
     final response =
-        await httpAdapter.getApi("orders/v1/requeisitionSoliDesc", {});
+        await httpAdapter.getApi("orders/v1/requeisitionSoliDesc/$projectId", {});
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
@@ -58,6 +58,23 @@ class DiscountProvider {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<RequestedDiscount>> getDiscountByResolution(
+      bool isApproved, String projectId) async {
+    final response = await httpAdapter.getApi(
+        "orders/v1/stateDescuento/${isApproved ? "1" : "0"}/proyecto/$projectId",
+        {});
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final List<dynamic> jsonResponseList = jsonResponse["message"];
+      return jsonResponseList
+          .map((json) => RequestedDiscount.fromJson(json))
+          .toList();
+    } else {
+      throw Exception("Failed to get discount resolution 🥲");
     }
   }
 }

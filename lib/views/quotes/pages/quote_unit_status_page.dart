@@ -17,6 +17,7 @@ import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
+import 'package:developer_company/widgets/top_selector_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -50,7 +51,7 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     // }
   ];
 
-  List<Item> items = [
+  List<Item> options = [
     Item(id: "units", icon: Icons.home, title: 'Unidad', isSelected: true),
     // Item(
     //     id: "byClient",
@@ -59,17 +60,17 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     //     isSelected: false)
   ];
 
-  void selectItem(int index) {
-    setState(() {
-      for (int i = 0; i < items.length; i++) {
-        if (i == index) {
-          items[i].isSelected = true;
-        } else {
-          items[i].isSelected = false;
-        }
-      }
-    });
-  }
+  // void selectItem(int index) {
+  //   setState(() {
+  //     for (int i = 0; i < items.length; i++) {
+  //       if (i == index) {
+  //         items[i].isSelected = true;
+  //       } else {
+  //         items[i].isSelected = false;
+  //       }
+  //     }
+  //   });
+  // }
 
   void _fetchUnitProjects(String projectId) async {
     try {
@@ -103,7 +104,7 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
 
     retrieveData();
     quoteConsultPageController.startController();
-    itemSelected = items.first;
+    itemSelected = options.first;
   }
 
   @override
@@ -115,48 +116,17 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: Dimensions.heightSize),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: items
-                  .map(
-                    (item) => GestureDetector(
-                      onTap: () {
-                        selectItem(items.indexOf(item));
-                        quoteConsultPageController.update();
-                        itemSelected = item;
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: item.isSelected
-                              ? AppColors.softMainColor
-                              : AppColors.secondaryMainColor,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              item.icon,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              item.title,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
+            TopSelectorScreen(
+                items: options,
+                onTapOption: ((p0) {
+                  setState(() {
+                    itemSelected = p0;
+                    quoteConsultPageController.update();
+                  });
+                })),
             const SizedBox(height: Dimensions.heightSize),
             if (itemSelected.id == "units") unitsQuotes(context),
-            if(itemSelected.id == "byClient") Text("By Client :)")
+            if (itemSelected.id == "byClient") Text("By Client :)")
           ],
         ));
   }

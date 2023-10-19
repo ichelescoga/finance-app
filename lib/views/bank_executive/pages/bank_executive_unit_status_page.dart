@@ -3,6 +3,7 @@ import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/views/quotes/pages/quote_unit_status_page.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -44,9 +45,9 @@ class _BankExecutiveUnitStatusPageState
 
   List<Item> items = [
     Item(
-        icon: Icons.check_circle_outline, title: 'Aprobados', isSelected: true),
-    Item(icon: Icons.fact_check, title: 'Cotizados'),
-    Item(icon: Icons.av_timer_outlined, title: 'Pendientes'),
+        id:"as", icon: Icons.check_circle_outline, title: 'Aprobados', isSelected: true),
+    Item(id:"as", icon: Icons.fact_check, title: 'Cotizados'),
+    Item(id:"as",icon: Icons.av_timer_outlined, title: 'Pendientes'),
   ];
 
   void selectItem(int index) {
@@ -287,10 +288,10 @@ class _BankExecutiveUnitStatusPageState
   }
 }
 
-class Item {
-  final IconData icon;
-  final String title;
-  bool isSelected;
+// class Item {
+//   final IconData icon;
+//   final String title;
+//   bool isSelected;
 
-  Item({required this.icon, required this.title, this.isSelected = false});
-}
+//   Item({required this.icon, required this.title, this.isSelected = false});
+// }
