@@ -109,7 +109,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         unitDetailPageController.salePrice.text = arguments["salePrice"];
         unitDetailPageController.finalSellPrice.text =
             quetzalesCurrency(arguments["finalSellPrice"].toString());
-        unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
+        unitDetailPageController.balanceToFinance.text =  handleBalanceToFinance(
             unitDetailPageController.finalSellPrice.text,
             unitDetailPageController.startMoney.text);
       });

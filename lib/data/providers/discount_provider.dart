@@ -25,16 +25,39 @@ class DiscountProvider {
     }
   }
 
+  Future<List<RequestedDiscount>> getRequestDiscounts(String projectId) async {
+    final response =
+        await httpAdapter.getApi("orders/v1/requeisitionSoliDesc", {});
 
-  Future<List<RequestedDiscount>> getRequestDiscounts(String projectId)  async{
-
-    final response = await httpAdapter.getApi("orders/v1/requeisitionSoliDesc", {});
-
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
-      return jsonResponse.map((json) => RequestedDiscount.fromJson(json)).toList();
-    }else{
+      return jsonResponse
+          .map((json) => RequestedDiscount.fromJson(json))
+          .toList();
+    } else {
       throw Exception("Failed to fetch discounts for resolution");
+    }
+  }
+
+  Future<bool> acceptDiscount(String discountId) async {
+    final response = await httpAdapter
+        .putApi("orders/v1/aprobacionSolicitudDescuento/$discountId", {}, {});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> rejectDiscount(String discountId) async {
+    final response = await httpAdapter
+        .putApi("orders/v1/aprobacionSolicitudDescuento/$discountId", {}, {});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

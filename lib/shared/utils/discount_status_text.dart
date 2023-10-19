@@ -3,13 +3,13 @@ String getTextStatusDiscount(
   if (statusDiscount == "0" && extraDiscount == null) {
     return "";
   } else if (statusDiscount == "0" && extraDiscount != null) {
-    return "Descuento Solicitado";
+    return "descuento Solicitado";
   } else if (statusDiscount == "1" && resolutionDiscount == "0") {
-    return "Descuento Rechazado";
-  } else if (statusDiscount == "1" && resolutionDiscount == "0") {
-    return "Descuento Aprobado";
+    return "descuento Rechazado";
+  } else if (statusDiscount == "1" && resolutionDiscount == "1") {
+    return "descuento Aprobado";
   }
-  return "Descuento Solicitado";
+  return "descuento Solicitado";
 }
 
 bool isActiveDiscount(String? statusDiscount) {
@@ -21,7 +21,7 @@ bool isApprovedDiscount(
 
   if (statusDiscount == "1" && resolutionDiscount == "0") {
     return false;
-  } else if (statusDiscount == "1" && resolutionDiscount == "0") {
+  } else if (statusDiscount == "1" && resolutionDiscount == "1") {
     return true;
   }
   return false;

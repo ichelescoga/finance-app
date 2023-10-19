@@ -129,8 +129,10 @@ class _FormQuoteState extends State<FormQuote> {
                           unitDetailPageController.extraDiscount.text),
                     )),
               CustomInputWidget(
-                  enabled: (widget.quoteEdit ||
-                      !(unitDetailPageController.statusDiscount == 1)),
+                  enabled: (widget.quoteEdit &&
+                      !isApprovedDiscount(
+                          unitDetailPageController.statusDiscount,
+                          unitDetailPageController.resolutionDiscount)),
                   controller: unitDetailPageController.extraDiscount,
                   label: "Solicitar descuento extra",
                   hintText: "Solicitar descuento extra",

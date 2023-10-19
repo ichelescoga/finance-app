@@ -16,4 +16,14 @@ class DiscountRepositoryImpl implements DiscountRepository {
   Future<List<RequestedDiscount>> getRequestDiscounts(String projectId) async {
     return await discountProvider.getRequestDiscounts(projectId);
   }
+
+  @override
+  Future<bool> acceptDiscount(String discountId) async {
+    return await discountProvider.acceptDiscount(discountId);
+  }
+
+  @override
+  Future<bool> rejectDiscount(String discountId) async {
+    return await discountProvider.rejectDiscount(discountId);
+  }
 }

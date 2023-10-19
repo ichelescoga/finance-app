@@ -5,6 +5,7 @@ import 'package:developer_company/data/repositories/discount_repository.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/filter_box.dart';
@@ -77,6 +78,21 @@ class _DiscountsByQuotePageState extends State<DiscountsByQuotePage> {
                     .map((index, element) => MapEntry(
                         index,
                         DataRow(
+                          onSelectChanged: (value) async {
+                            final result = await Get.toNamed(
+                                RouterPaths.DISCOUNT_DETAIL_BY_QUOTE_PAGE,
+                                arguments: {
+                                  "quoteId": element.quotationId,
+                                  "statusId": element.statusId,
+                                  "unitName": element.unitName,
+                                  "sellPrice": element.sellPrice,
+                                  "finalPrice": element.buyPrice
+                                });
+
+                            if (result == true) {
+                              fetchRequestedDiscounts();
+                            }
+                          },
                           cells: [
                             DataCell(Text(element.unitName)),
                             DataCell(Text(element.clientName)),

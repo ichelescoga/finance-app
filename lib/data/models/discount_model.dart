@@ -1,3 +1,4 @@
+import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/discount_status_text.dart';
 
 class DiscountSeason {
@@ -48,6 +49,9 @@ class RequestedDiscount {
   double extraDiscount;
   int discountRequest;
   String? discountState;
+  int statusId;
+  String sellPrice;
+  String buyPrice;
 
   RequestedDiscount(
       {required this.quotationId,
@@ -65,7 +69,10 @@ class RequestedDiscount {
       required this.discountRequest,
       this.discountState,
       required this.clientName,
-      required this.unitName});
+      required this.unitName,
+      this.statusId = 0,
+      this.sellPrice = "",
+      this.buyPrice = ""});
 
   factory RequestedDiscount.fromJson(Map<String, dynamic> json) {
     return RequestedDiscount(
@@ -90,6 +97,11 @@ class RequestedDiscount {
           json['Solicitud_descuento'].toString(),
           json['Estado_descuento'].toString(),
           json['Monto_descuento_soli'].toString()),
+      statusId: json['Id_estado'],
+      sellPrice: quetzalesCurrency(json["UNIDAD_COTIZACIONs"][0]
+              ["Id_unidad_UNIDAD"]["Precio_Venta"]
+          .toString()),
+      buyPrice: quetzalesCurrency(json['Venta_descuento'].toString()),
     );
   }
 
@@ -114,3 +126,8 @@ class RequestedDiscount {
     };
   }
 }
+
+
+//  
+//  
+//  
