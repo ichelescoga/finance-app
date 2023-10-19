@@ -2,7 +2,7 @@ import 'package:developer_company/data/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
-class UserNotifier extends StateNotifier<User?> {
+class UserNotifier extends StateNotifier<User> {
   UserNotifier() : super(User(name: "", role: "", token: "", company: Company(companyId: "", companyName: "companyName"), project: Project(projectId: "1", projectName: "")));
 
   void setUser(User user) {
@@ -10,11 +10,11 @@ class UserNotifier extends StateNotifier<User?> {
   }
 
     String get jwt {
-    return state!.token;
+    return state.token;
   }
 
   String get role {
-    return state!.role;
+    return state.role;
   }
 
   

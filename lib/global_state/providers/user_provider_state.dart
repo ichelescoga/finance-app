@@ -4,6 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 var currentUser = UserNotifier();
 final userProvider =
-    StateNotifierProvider<UserNotifier, User?>((ref) => currentUser);
+    StateNotifierProvider<UserNotifier, User>((ref) => currentUser);
 
 final userProviderWithoutNotifier = Provider((_) => currentUser);

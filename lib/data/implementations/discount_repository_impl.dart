@@ -11,4 +11,9 @@ class DiscountRepositoryImpl implements DiscountRepository {
   Future<DiscountSeason> getSeasonDiscount(String projectId) async {
     return await discountProvider.getSeasonDiscount(projectId);
   }
+
+  @override
+  Future<List<RequestedDiscount>> getRequestDiscounts(String projectId) async {
+    return await discountProvider.getRequestDiscounts(projectId);
+  }
 }

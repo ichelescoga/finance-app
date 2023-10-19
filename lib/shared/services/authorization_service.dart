@@ -16,8 +16,12 @@ class AuthorizationService {
         PermissionLevel.dashboardQueryQuoteButton,
         PermissionLevel.dashboardAddQuoteButton,
         PermissionLevel.adviserCreditsApprovedAndReserved,
+        PermissionLevel.discountsByQuote,
       ],
-      'Analista': [PermissionLevel.analystCreditByClient],
+      'Analista': [
+        PermissionLevel.analystCreditByClient,
+        PermissionLevel.discountsByQuote,
+      ],
       "AdminPruebas": [
         PermissionLevel.marketingMaintenance,
         PermissionLevel.dashboardQueryQuoteButton,
@@ -38,8 +42,8 @@ class AuthorizationService {
       ]
     };
 
-    if(userRole == "Admin") return true;
-    
+    if (userRole == "Admin") return true;
+
     final allowedActions = allowedActionsByRole[userRole];
     return allowedActions != null && allowedActions.contains(action);
   }

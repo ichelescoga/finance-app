@@ -1,5 +1,6 @@
 import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/shared/controllers/base_controller.dart';
+import 'package:developer_company/shared/utils/discount_status_text.dart';
 import 'package:flutter/material.dart';
 
 class UnitDetailPageController extends BaseController {
@@ -24,11 +25,12 @@ class UnitDetailPageController extends BaseController {
   TextEditingController priceWithDiscount = TextEditingController();
 
   TextEditingController discount = TextEditingController(text: "0");
-
   bool applyDefaultDiscount = false;
   TextEditingController seasonDiscount = TextEditingController(text: "0");
   TextEditingController extraDiscount = TextEditingController(text: "0");
+  
   String? statusDiscount;
+  String? resolutionDiscount;
 
   TextEditingController bankHistory = TextEditingController();
   TextEditingController paymentMonths = TextEditingController();
@@ -59,8 +61,9 @@ class UnitDetailPageController extends BaseController {
 // quoteInfo.statusDiscount.toString(),
   void updateController(
     String? argsExtraDiscount,
-    bool? argsIsActiveDiscount,
     String? argsStatusDiscount,
+    String? argsResolutionDiscount, 
+
     String? argsStartMoney,
     String? argsPaymentMonths,
     String? argsEmail,
@@ -69,8 +72,9 @@ class UnitDetailPageController extends BaseController {
   ) {
     // discount.text = argsDiscount ?? "0";
     extraDiscount.text = argsExtraDiscount!;
-    applyDefaultDiscount = argsIsActiveDiscount!;
+    applyDefaultDiscount = isActiveDiscount(argsStatusDiscount);
     statusDiscount = argsStatusDiscount!;
+    resolutionDiscount = argsResolutionDiscount;
 
     clientName.text = argsClientName ?? "";
     clientPhone.text = argsClientPhone ?? "";
@@ -119,18 +123,5 @@ class UnitDetailPageController extends BaseController {
     unit.text = "Unidad de prueba";
     salePrice.text = "Q 450,000.00";
     unitStatus.text = "En proceso";
-  }
-
-  String getTextStatusDiscount() {
-    switch (statusDiscount) {
-      case null:
-        return "Solicitado";
-      case "1":
-        return "Aprobado";
-      case "0":
-        return "Rechazado";
-      default:
-        return "Solicitado";
-    }
   }
 }

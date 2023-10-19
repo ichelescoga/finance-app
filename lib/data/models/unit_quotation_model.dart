@@ -27,10 +27,9 @@ class Quotation {
   final int? bonusCatorce;
   final String? createdAt;
   final String? updatedAt;
-  final String extraDiscount;
-  final bool isActiveDiscount;
+  final String? extraDiscount;
   final String? statusDiscount;
-
+  final String? resolutionDiscount;
   final Client? clientData;
 
   Quotation({
@@ -57,8 +56,8 @@ class Quotation {
     required this.updatedAt,
     required this.clientData,
     required this.extraDiscount,
-    required this.isActiveDiscount,
     required this.statusDiscount,
+    required this.resolutionDiscount,
   });
 
   factory Quotation.fromJson(Map<String, dynamic> json) {
@@ -88,9 +87,9 @@ class Quotation {
       updatedAt:
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
       clientData: json['Id_cliente_CLIENTE'] != null ? Client.fromJson(json['Id_cliente_CLIENTE']) : null,
-      isActiveDiscount: json["Solicitud_descuento"].toString() == "1" ? true : false,
+      resolutionDiscount: json["Solicitud_descuento"],
       extraDiscount: json["Monto_descuento_soli"],
-      statusDiscount: json["Estado_descuento"]
+      statusDiscount: json["Estado_descuento"],
     );
   }
 }

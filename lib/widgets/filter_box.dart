@@ -44,9 +44,10 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
 
   filterByText() {
     List<T> suggestions = data.where((element) {
+      // encode depends on toJson method in each model, be aware of field do you want to include in the search,
+      // enhanced should be included in json.encode(element, functionToEncodable) to search another method to handle de values passed.
       final quote = json.encode(element).toLowerCase();
-
-      return (quote.contains(filterBoxController.text.toLowerCase()));
+      return quote.contains(filterBoxController.text.toLowerCase());
     }).toList();
 
     widget.handleFilteredData(suggestions);

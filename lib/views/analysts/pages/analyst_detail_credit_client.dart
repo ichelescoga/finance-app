@@ -68,8 +68,8 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
 
       unitDetailPageController.updateController(
         quoteInfo?.extraDiscount.toString(),
-        quoteInfo?.isActiveDiscount,
-        quoteInfo?.statusDiscount.toString(),
+        quoteInfo?.statusDiscount,
+        quoteInfo?.resolutionDiscount.toString(),
         quoteInfo?.downPayment.toString(),
         quoteInfo?.termMonths.toString(),
         quoteInfo?.clientData?.email.toString(),

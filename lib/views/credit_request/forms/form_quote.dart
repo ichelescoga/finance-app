@@ -6,6 +6,7 @@ import 'package:developer_company/global_state/providers/user_provider_state.dar
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
+import 'package:developer_company/shared/utils/discount_status_text.dart';
 import 'package:developer_company/shared/validations/email_validator.dart';
 import 'package:developer_company/shared/validations/grater_than_number_validator.dart';
 import 'package:developer_company/shared/validations/lower_than_number_validator%20copy.dart';
@@ -108,7 +109,6 @@ class _FormQuoteState extends State<FormQuote> {
           },
           activeColor: AppColors.secondaryMainColor,
         ),
-
         if (unitDetailPageController.applyDefaultDiscount)
           Column(
             children: [
@@ -122,8 +122,12 @@ class _FormQuoteState extends State<FormQuote> {
                   !widget.quoteEdit)
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Estado de la solicitud de descuento: " +
-                        unitDetailPageController.getTextStatusDiscount())),
+                    child: Text(
+                      getTextStatusDiscount(
+                          unitDetailPageController.statusDiscount,
+                          unitDetailPageController.resolutionDiscount,
+                          unitDetailPageController.extraDiscount.text),
+                    )),
               CustomInputWidget(
                   enabled: (widget.quoteEdit ||
                       !(unitDetailPageController.statusDiscount == 1)),
@@ -149,7 +153,6 @@ class _FormQuoteState extends State<FormQuote> {
                   prefixIcon: Icons.percent),
             ],
           ),
-
         CustomInputWidget(
             validator: (value) => notEmptyFieldValidator(value),
             enabled: false,

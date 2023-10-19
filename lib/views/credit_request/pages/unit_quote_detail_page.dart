@@ -64,11 +64,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
     try {
       EasyLoading.show(status: Strings.loading);
       if (quoteId != null) {
-        quoteInfo = await unitQuotationRepository.fetchQuotationById(quoteId.toString());
+        quoteInfo = await unitQuotationRepository
+            .fetchQuotationById(quoteId.toString());
         unitDetailPageController.updateController(
           quoteInfo?.extraDiscount.toString(),
-          quoteInfo?.isActiveDiscount,
-          quoteInfo?.statusDiscount.toString(),
+          quoteInfo?.statusDiscount,
+          quoteInfo?.resolutionDiscount.toString(),
           quoteInfo?.downPayment.toString(),
           quoteInfo?.termMonths.toString(),
           quoteInfo?.clientData?.email.toString(),

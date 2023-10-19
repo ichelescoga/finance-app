@@ -62,8 +62,9 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
 
       unitDetailPageController.updateController(
         quoteInfo?.extraDiscount.toString(),
-        quoteInfo?.isActiveDiscount,
-        quoteInfo?.statusDiscount.toString(),
+        quoteInfo?.statusDiscount,
+        quoteInfo?.resolutionDiscount.toString(),
+
         quoteInfo?.downPayment.toString(),
         quoteInfo?.termMonths.toString(),
         quoteInfo?.clientData?.email.toString(),
