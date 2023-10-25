@@ -87,9 +87,9 @@ class Quotation {
       updatedAt:
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
       clientData: json['Id_cliente_CLIENTE'] != null ? Client.fromJson(json['Id_cliente_CLIENTE']) : null,
-      resolutionDiscount: json["Solicitud_descuento"].toString(),
+      resolutionDiscount: json["Estado_descuento"].toString(),
       extraDiscount: json["Monto_descuento_soli"].toString(),
-      statusDiscount: json["Estado_descuento"].toString(),
+      statusDiscount: json["Solicitud_descuento"].toString(),
     );
   }
 }

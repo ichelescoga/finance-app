@@ -58,7 +58,7 @@ class _DiscountsByResolutionScreenState extends State<DiscountsByResolutionScree
   Widget build(BuildContext context) {
     return Column(
           children: [
-            FilterBox(
+          FilterBox(
               hint: "Buscar",
               label: "Buscar",
               isLoading: isLoading,

@@ -52,7 +52,7 @@ class DiscountProvider {
 
   Future<bool> rejectDiscount(String discountId) async {
     final response = await httpAdapter
-        .putApi("orders/v1/aprobacionSolicitudDescuento/$discountId", {}, {});
+        .putApi("orders/v1/denegarSolicitudDescuento/$discountId", {}, {});
 
     if (response.statusCode == 200) {
       return true;
@@ -65,7 +65,7 @@ class DiscountProvider {
       bool isApproved, String projectId) async {
     final response = await httpAdapter.getApi(
         "orders/v1/stateDescuento/${isApproved ? "1" : "0"}/proyecto/$projectId",
-        {});
+        {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);

@@ -284,7 +284,7 @@ class _FormQuoteState extends State<FormQuote> {
           return AlertDialog(
             title: Text("Solicitud de descuento"),
             content: Text(
-                "Es un porcentaje adicional de descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento"),
+                "Es un porcentaje descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento"),
             actions: [
               ElevatedCustomButton(
                 color: AppColors.secondaryMainColor,

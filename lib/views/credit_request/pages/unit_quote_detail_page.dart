@@ -11,6 +11,7 @@ import 'package:developer_company/data/repositories/unit_quotation_repository.da
 
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
+import 'package:developer_company/shared/utils/discount_status_text.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 
 import 'package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart';
@@ -109,7 +110,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         unitDetailPageController.salePrice.text = arguments["salePrice"];
         unitDetailPageController.finalSellPrice.text =
             quetzalesCurrency(arguments["finalSellPrice"].toString());
-        unitDetailPageController.balanceToFinance.text =  handleBalanceToFinance(
+        unitDetailPageController.balanceToFinance.text = handleBalanceToFinance(
             unitDetailPageController.finalSellPrice.text,
             unitDetailPageController.startMoney.text);
       });
@@ -137,8 +138,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         "idPlanFinanciero": null,
         "anioInicio": "2023",
         "anioFin": (2023 + yearOfEnd).toString(),
-        "ventaDescuento": unitDetailPageController.salePrice
-            .text, //TODO total value of unit please dont use the calculues value.
+        "ventaDescuento": unitDetailPageController.salePrice.text,
         "enganche": extractNumber(unitDetailPageController.startMoney.text),
         "mesesPlazo": months.toString(),
         "mesInicio": currentMonth.toString(),
@@ -152,7 +152,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         "comentario": null,
         "montoDescuentSolicitado": unitDetailPageController.extraDiscount.text,
         "solicitudDescuent":
-            unitDetailPageController.applyDefaultDiscount ? "1" : "0",
+            unitDetailPageController.applyDefaultDiscount ? "0" : null,
         "cliente": {
           "primerNombre": unitDetailPageController.clientName.text,
           "telefono": unitDetailPageController.clientPhone.text,
@@ -182,6 +182,15 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
           }
         } else {
           //EDIT QUOTE
+          if (!isApprovedDiscount(unitDetailPageController.statusDiscount,
+              unitDetailPageController.resolutionDiscount)) {
+            final bodyDiscount = {
+              "montoDescuento": unitDetailPageController.extraDiscount.text
+            };
+            await httpAdapter.putApi("orders/v1/solicitudDescuento/$quoteId",
+                json.encode(bodyDiscount), {'Content-Type': 'application/json'});
+          }
+
           await httpAdapter.putApi(
               "orders/v1/actualizarCotizacion/$quoteId", json.encode(body), {});
         }
