@@ -55,11 +55,11 @@ class _FormQuoteState extends State<FormQuote> {
   bool isFetchQuote = false;
 
   retrieveDefaultDiscount() async {
-    final projectId = user?.project.projectId;
+    final projectId = user.project.projectId;
     final _defaultDiscountData =
-        await _discountRepository.getSeasonDiscount(projectId!);
+        await _discountRepository.getSeasonDiscount(projectId);
     unitDetailPageController.seasonDiscount.text =
-        _defaultDiscountData.percentage.toString();
+        _defaultDiscountData.percentage;
   }
 
   @override
@@ -138,11 +138,12 @@ class _FormQuoteState extends State<FormQuote> {
                   hintText: "Solicitar descuento extra",
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (int.tryParse(value!) == null) {
-                      return "El porcentaje no es valido";
-                    }
+                    if (value == null) return "Ingrese un numero valido";
+                    if (double.tryParse(value) == null)
+                      return "Numero no valido";
 
-                    if (int.tryParse(value)! >= 100) {
+                    if (int.tryParse(value) != null &&
+                        int.tryParse(value)! >= 100) {
                       return "El porcentaje de descuento no puede ser mayor o igual a 100";
                     }
 

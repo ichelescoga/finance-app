@@ -18,7 +18,7 @@ class DiscountProvider {
             discountSeasonId: '0',
             projectId: '0',
             months: '0',
-            percentage: 0);
+            percentage: "0");
       return DiscountSeason.fromJson(jsonResponse[0]);
     } else {
       throw Exception('Failed to fetch season discount');

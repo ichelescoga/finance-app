@@ -134,6 +134,9 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
 
       int monthOfEnd = months % year;
 
+      double discountValue =
+          double.tryParse(unitDetailPageController.extraDiscount.text)!;
+
       final body = {
         "idPlanFinanciero": null,
         "anioInicio": "2023",
@@ -150,7 +153,11 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         "idUnidad": unitId.toString(),
         "ingresoMensual": "0",
         "comentario": null,
-        "montoDescuentSolicitado": unitDetailPageController.extraDiscount.text,
+        "montoDescuentSolicitado": unitDetailPageController.applyDefaultDiscount
+            ? discountValue.toInt() == 0
+                ? int.tryParse(unitDetailPageController.seasonDiscount.text)
+                : discountValue.toInt()
+            : "0",
         "solicitudDescuent":
             unitDetailPageController.applyDefaultDiscount ? "0" : null,
         "cliente": {
@@ -185,10 +192,16 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
           if (!isApprovedDiscount(unitDetailPageController.statusDiscount,
               unitDetailPageController.resolutionDiscount)) {
             final bodyDiscount = {
-              "montoDescuento": unitDetailPageController.extraDiscount.text
+              "montoDescuento": unitDetailPageController.applyDefaultDiscount
+            ? discountValue.toInt() == 0
+                ? int.tryParse(unitDetailPageController.seasonDiscount.text)
+                : discountValue.toInt()
+            : "0"
             };
-            await httpAdapter.putApi("orders/v1/solicitudDescuento/$quoteId",
-                json.encode(bodyDiscount), {'Content-Type': 'application/json'});
+            await httpAdapter.putApi(
+                "orders/v1/solicitudDescuento/$quoteId",
+                json.encode(bodyDiscount),
+                {'Content-Type': 'application/json'});
           }
 
           await httpAdapter.putApi(
@@ -227,7 +240,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
               "unitStatus": arguments["unitStatus"]
             });
       } catch (e) {
-        print(e);
+        print("ERROR: 🤖🤖🤖 $e");
         EasyLoading.showError(Strings.pleaseVerifyInputs);
       } finally {
         EasyLoading.dismiss();

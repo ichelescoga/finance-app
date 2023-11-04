@@ -6,7 +6,7 @@ class DiscountSeason {
   final String discountSeasonId;
   final String projectId;
   final String months;
-  final int percentage;
+  final String percentage;
 
   DiscountSeason({
     required this.discountId,
@@ -26,8 +26,7 @@ class DiscountSeason {
       discountSeasonId: json["Id_temporada_descuento"].toString(),
       projectId: json["Id_proyecto"].toString(),
       months: json["Meses"],
-      percentage:
-          int.tryParse(json["Porcentaje"].toString().replaceAll("%", ""))!,
+      percentage: json["Porcentaje"] == null ? "0" : json["Porcentaje"].toString().replaceAll("%", ""),
     );
   }
 }
