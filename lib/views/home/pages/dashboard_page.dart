@@ -28,7 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
       requestAction: PermissionLevel.sideBarMarketing,
       id: "marketing",
       icon: Icons.insert_emoticon_sharp,
-      title: 'Mercadeo',
+      title: 'Material Audio Visual',
       route: RouterPaths.MARKETING_CARROUSEL_ALBUMS,
     ),
     SideBarItem(
@@ -347,7 +347,7 @@ class _DashboardPageState extends State<DashboardPage> {
               children: [
                 spaceButton,
                 CustomButtonWidget(
-                    text: "Mercadeo",
+                    text: "Material Audio Visual",
                     onTap: () => Get.toNamed(
                         RouterPaths.MARKETING_MAINTENANCE_ALBUMS,
                         arguments: {"isWatchMode": false}),

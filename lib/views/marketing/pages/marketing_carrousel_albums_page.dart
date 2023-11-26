@@ -103,9 +103,9 @@ class _MarketingCarrouselAlbumsPageState
                 children: [
                   SizedBox(height: 15),
                   RoundedContainer(
-                      text: "Galería de Favoritos",
+                      text: "Material Audio Visual Favorito",
                       height: 40,
-                      width: Get.width / 2.40,
+                      width: Get.width / 2.00,
                       color: AppColors.officialWhite),
                   Container(
                     width: Get.width,
