@@ -1,3 +1,4 @@
+import 'package:developer_company/shared/resources/colors.dart';
 import 'package:flutter/material.dart';
 
 class GenericModal extends StatelessWidget {
@@ -13,6 +14,7 @@ class GenericModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.officialWhite,
       title: Text(title),
       content: SizedBox(
         height: alertHeight,

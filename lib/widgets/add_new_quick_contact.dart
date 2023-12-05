@@ -71,6 +71,7 @@ class _AddNewQuickContactState extends State<AddNewQuickContact> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.officialWhite,
       title: Text("Agregar Nuevo Contacto"),
       content: SingleChildScrollView(
         child: SizedBox(

@@ -58,6 +58,7 @@ class _AddNewAlbumState extends State<AddNewAlbum> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.officialWhite,
       title: Text("Agregar Nuevo Album"),
       content: SingleChildScrollView(
         child: SizedBox(

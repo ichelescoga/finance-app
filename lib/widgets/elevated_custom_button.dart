@@ -27,6 +27,6 @@ class ElevatedCustomButton extends StatelessWidget {
                 child: CircularProgressIndicator(
                     strokeWidth: 2, color: AppColors.officialWhite),
               )
-            : Text(text));
+            : Text(text, style: TextStyle(color: Colors.white)));
   }
 }

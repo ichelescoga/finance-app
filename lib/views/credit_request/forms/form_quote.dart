@@ -283,6 +283,7 @@ class _FormQuoteState extends State<FormQuote> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: AppColors.officialWhite,
             title: Text("Solicitud de descuento"),
             content: Text(
                 "Es un porcentaje descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento"),

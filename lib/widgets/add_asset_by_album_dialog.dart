@@ -171,6 +171,7 @@ class _AddAssetByAlbumDialogState extends State<AddAssetByAlbumDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.officialWhite,
       title:
           Text(widget.asset != null ? "Editar Album" : "Agregar Nuevo Album"),
       content: SingleChildScrollView(
