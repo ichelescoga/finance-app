@@ -30,7 +30,7 @@ class Quotation {
   final String? extraDiscount;
   final String? statusDiscount;
   final String? resolutionDiscount;
-  final Client? clientData;
+  final ClientModel? clientData;
 
   Quotation({
     required this.quotationId,
@@ -86,7 +86,7 @@ class Quotation {
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
       updatedAt:
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
-      clientData: json['Id_cliente_CLIENTE'] != null ? Client.fromJson(json['Id_cliente_CLIENTE']) : null,
+      clientData: json['Id_cliente_CLIENTE'] != null ? ClientModel.fromJson(json['Id_cliente_CLIENTE']) : null,
       resolutionDiscount: json["Estado_descuento"].toString(),
       extraDiscount: json["Monto_descuento_soli"] == null ? "" : json["Monto_descuento_soli"].toString(),
       statusDiscount: json["Solicitud_descuento"].toString(),
