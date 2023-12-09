@@ -1,8 +1,11 @@
 import "package:developer_company/controllers/quick_client_contact_dialog_controller.dart";
 import "package:developer_company/data/implementations/client_contact_impl.dart";
+import "package:developer_company/data/implementations/improve_client_contact_repository_impl.dart";
 import "package:developer_company/data/models/client_contact_model.dart";
 import "package:developer_company/data/providers/client_contact_provider.dart";
+import "package:developer_company/data/providers/improve_client_contact_provider.dart";
 import "package:developer_company/data/repositories/client_contact_repository.dart";
+import "package:developer_company/data/repositories/improve_client_contact_repository.dart";
 import "package:developer_company/global_state/providers/user_provider_state.dart";
 import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/colors.dart";
@@ -111,7 +114,7 @@ class _QuickClientContactListPageState
                               children: [
                                 IconButton(
                                     onPressed: () =>
-                                        _dialogImproveContact(context),
+                                        _dialogImproveContact(context, element),
                                     icon: Icon(Icons.description)),
                                 if (element.phone.length > 4)
                                   IconButton(
@@ -152,14 +155,19 @@ class _QuickClientContactListPageState
         ));
   }
 
-  _dialogImproveContact(BuildContext context) {
+  _dialogImproveContact(BuildContext context, QuickClientContacts client) {
+    ImproveClientContactRepository improveClientContact =
+        ImproveClientContactRepositoryImpl(ImproveClientContactProvider());
     return showDialog(
         context: context,
         builder: (context) {
           return PopScope(
               child: ImproveContactToClientDialog(
             isLoading: false,
-            onPressSave: () {},
+            onPressSave: () {
+              improveClientContact.existContactInClient(
+                  client.phone, client.fullName, client.email);
+            },
           ));
         });
   }
