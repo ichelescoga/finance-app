@@ -5,6 +5,7 @@ import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
+import 'package:developer_company/global_state/providers/client_provider_state.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -19,16 +20,17 @@ import 'package:developer_company/widgets/layout.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class UnitQuotePage extends StatefulWidget {
+class UnitQuotePage extends ConsumerStatefulWidget {
   const UnitQuotePage({Key? key}) : super(key: key);
 
   @override
-  State<UnitQuotePage> createState() => _UnitQuotePageState();
+  ConsumerState<UnitQuotePage> createState() => _UnitQuotePageState();
 }
 
-class _UnitQuotePageState extends State<UnitQuotePage> {
+class _UnitQuotePageState extends ConsumerState<UnitQuotePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   final CompanyRepository companyRepository =
@@ -91,11 +93,15 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   void retrieveData() async {
     try {
       EasyLoading.showToast(Strings.loading);
-      final projectId = user?.project.projectId;
-      _fetchUnitProjects(projectId!);
+      final projectId = user.project.projectId;
+      _fetchUnitProjects(projectId);
     } finally {
       EasyLoading.dismiss();
     }
+  }
+
+  void cleanSelectedContactToClient() {
+        ref.read(selectedContactToClientProviderState.notifier).state = null;
   }
 
   @override
@@ -105,9 +111,18 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   }
 
   @override
+  void dispose(){
+    super.dispose();
+    cleanSelectedContactToClient();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
     return Layout(
+      onBackFunction: () {
+       cleanSelectedContactToClient();
+      },
       sideBarList: sideBarList,
       appBar:
           const CustomAppBarSideBar(title: "Creación de Solicitud de crédito"),

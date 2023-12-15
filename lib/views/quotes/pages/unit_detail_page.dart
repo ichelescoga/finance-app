@@ -147,7 +147,7 @@ class _UnitDetailPageState extends State<UnitDetailPage> {
                             )),
                             DataCell(Container(
                               width: (Get.width / 3) - 20,
-                              child: Text(user!.name),
+                              child: Text(user.name),
                             )),
                             DataCell(Container(
                               width: (Get.width / 3) - 20,

@@ -2,6 +2,7 @@ import "package:developer_company/controllers/quick_client_contact_dialog_contro
 import "package:developer_company/data/implementations/client_contact_impl.dart";
 import "package:developer_company/data/implementations/improve_client_contact_repository_impl.dart";
 import "package:developer_company/data/models/client_contact_model.dart";
+import "package:developer_company/data/models/client_model.dart";
 import "package:developer_company/data/providers/client_contact_provider.dart";
 import "package:developer_company/data/providers/improve_client_contact_provider.dart";
 import "package:developer_company/data/repositories/client_contact_repository.dart";
@@ -164,9 +165,11 @@ class _QuickClientContactListPageState
           return PopScope(
               child: ImproveContactToClientDialog(
             isLoading: false,
-            onPressSave: () {
-              improveClientContact.existContactInClient(
+            onPressSave: () async {
+            ClientModel newClient = await improveClientContact.existContactInClient(
                   client.phone, client.fullName, client.email);
+            // Get.toNamed(RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE)
+              
             },
           ));
         });

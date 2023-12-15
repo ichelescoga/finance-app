@@ -55,3 +55,4 @@ https://docs.flutter.dev/cookbook/plugins/play-video
   <key>NSAllowsArbitraryLoads</key>
   <true/>
 </dict>
+

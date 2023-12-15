@@ -8,6 +8,7 @@ import 'package:developer_company/data/providers/loan_simulation_provider.dart';
 import 'package:developer_company/data/providers/unit_quotation_provider.dart';
 import 'package:developer_company/data/repositories/loan_simulation_repository.dart';
 import 'package:developer_company/data/repositories/unit_quotation_repository.dart';
+import 'package:developer_company/global_state/providers/client_provider_state.dart';
 
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/services/quetzales_currency.dart';
@@ -28,17 +29,19 @@ import 'package:developer_company/widgets/layout.dart';
 import 'package:developer_company/widgets/share_quote_action_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:get/get.dart';
 
-class UnitQuoteDetailPage extends StatefulWidget {
+class UnitQuoteDetailPage extends ConsumerStatefulWidget {
   const UnitQuoteDetailPage({Key? key}) : super(key: key);
 
   @override
-  State<UnitQuoteDetailPage> createState() => _UnitQuoteDetailPageState();
+  ConsumerState<UnitQuoteDetailPage> createState() =>
+      _UnitQuoteDetailPageState();
 }
 
-class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
+class _UnitQuoteDetailPageState extends ConsumerState<UnitQuoteDetailPage> {
   final httpAdapter = HttpAdapter();
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -193,10 +196,11 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
               unitDetailPageController.resolutionDiscount)) {
             final bodyDiscount = {
               "montoDescuento": unitDetailPageController.applyDefaultDiscount
-            ? discountValue.toInt() == 0
-                ? int.tryParse(unitDetailPageController.seasonDiscount.text)
-                : discountValue.toInt()
-            : "0"
+                  ? discountValue.toInt() == 0
+                      ? int.tryParse(
+                          unitDetailPageController.seasonDiscount.text)
+                      : discountValue.toInt()
+                  : "0"
             };
             await httpAdapter.putApi(
                 "orders/v1/solicitudDescuento/$quoteId",
@@ -256,6 +260,12 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
     Future.delayed(Duration.zero, () {
       start();
     });
+
+    final selectedContactToClient =
+        ref.read(selectedContactToClientProviderState);
+    if (selectedContactToClient != null) {
+      unitDetailPageController.updateClientInfo(selectedContactToClient);
+    }
   }
 
   @override
@@ -291,7 +301,7 @@ class _UnitQuoteDetailPageState extends State<UnitQuoteDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FormQuote(salePrice: arguments["salePrice"], quoteEdit: _quoteEdit),
+            FormQuote(salePrice: arguments["salePrice"], quoteEdit: _quoteEdit, isEditing: false),
             Column(
               children: <Widget>[
                 CustomButtonWidget(
