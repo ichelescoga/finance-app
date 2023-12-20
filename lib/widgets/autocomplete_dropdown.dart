@@ -1,5 +1,6 @@
 import 'package:developer_company/widgets/custom_input_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class DropDownOption {
   final String id;
@@ -7,6 +8,7 @@ class DropDownOption {
 
   DropDownOption({required this.id, required this.label});
 }
+
 typedef OnTextChangeCallback = Future<List<DropDownOption>> Function(String);
 
 class AutocompleteDropdownWidget extends StatefulWidget {
@@ -15,7 +17,7 @@ class AutocompleteDropdownWidget extends StatefulWidget {
   final String label;
   final String hintText;
   final Function(bool) onFocusChange;
-  final List<DropDownOption> Function(String) onTextChange;
+  final OnTextChangeCallback onTextChange;
 
   const AutocompleteDropdownWidget(
       {required this.listItems,
@@ -64,6 +66,49 @@ class _AutocompleteDropdownWidgetState
           label: widget.label,
           hintText: widget.hintText,
           prefixIcon: Icons.person_outline,
+        );
+      },
+      optionsViewBuilder: (BuildContext context,
+          AutocompleteOnSelected<DropDownOption> onSelected,
+          Iterable<DropDownOption> options) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            color: Colors.white,
+            elevation: 4.0,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 200),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: options.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final option = options.elementAt(index);
+                  return InkWell(
+                    onTap: () {
+                      widget.onSelected(option);
+                      onSelected(option);
+                    },
+                    child: Builder(builder: (BuildContext context) {
+                      final bool highlight =
+                          AutocompleteHighlightedOption.of(context) == index;
+                      if (highlight) {
+                        SchedulerBinding.instance
+                            .addPostFrameCallback((Duration timeStamp) {
+                          Scrollable.ensureVisible(context, alignment: 0.5);
+                        });
+                      }
+                      return Container(
+                        color: highlight ? Theme.of(context).focusColor : null,
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(option.label),
+                      );
+                    }),
+                  );
+                },
+              ),
+            ),
+          ),
         );
       },
     );

@@ -16,6 +16,7 @@ class ClientModel {
       name: json['Primer_nombre'],
       phone: json['Telefono'],
       email: json['Correo'],
+      id: json['Id_cliente']!
     );
   }
 

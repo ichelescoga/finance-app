@@ -163,7 +163,8 @@ class _UnitQuoteDetailPageState extends ConsumerState<UnitQuoteDetailPage> {
             : "0",
         "solicitudDescuent":
             unitDetailPageController.applyDefaultDiscount ? "0" : null,
-        "cliente": {
+        "clienteId": unitDetailPageController.clientId.text.length > 0 ? unitDetailPageController.clientId.text : null,
+        "cliente": unitDetailPageController.clientId.text.length > 0 ? null : {
           "primerNombre": unitDetailPageController.clientName.text,
           "telefono": unitDetailPageController.clientPhone.text,
           "correo": unitDetailPageController.email.text,

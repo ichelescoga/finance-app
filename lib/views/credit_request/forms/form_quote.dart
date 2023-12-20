@@ -6,7 +6,7 @@ import 'package:developer_company/data/providers/discount_provider.dart';
 import 'package:developer_company/data/providers/improve_client_contact_provider.dart';
 import 'package:developer_company/data/repositories/discount_repository.dart';
 import 'package:developer_company/data/repositories/improve_client_contact_repository.dart';
-import 'package:developer_company/global_state/providers/client_provider_state.dart';
+// import 'package:developer_company/global_state/providers/client_provider_state.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/strings.dart';
@@ -64,6 +64,8 @@ class _FormQuoteState extends State<FormQuote> {
 
   Quotation? quoteInfo;
   bool isFetchQuote = false;
+  List<ClientModel> dropdownClients = [];
+  List<DropDownOption> clientOptions = []; //! use as temp dropdown.
 
   retrieveDefaultDiscount() async {
     final projectId = user.project.projectId;
@@ -73,12 +75,21 @@ class _FormQuoteState extends State<FormQuote> {
         _defaultDiscountData.percentage;
   }
 
-  Future<List<DropDownOption>> handleSearchClients(String text) async{
-    List<ClientModel> clients =  await contactClientRepository.getClientsByKeyword(text, text);
-      // DropDownOption
+  Future<List<DropDownOption>> _handleSearchClients(String text) async {
+    if (text.length < 1) return clientOptions;
+
+    List<ClientModel> clients =
+        await contactClientRepository.getClientsByKeyword(text, text);
+    List<DropDownOption> newClientOptions = clients
+        .map((client) =>
+            DropDownOption(id: client.id.toString(), label: client.name!))
+        .toList();
+
+    dropdownClients = clients;
+    clientOptions = newClientOptions;
 
 
-    return [];
+    return newClientOptions;
   }
 
   @override
@@ -185,12 +196,18 @@ class _FormQuoteState extends State<FormQuote> {
         if (!widget.isEditing)
           AutocompleteDropdownWidget(
               listItems: [],
-              onSelected: (selected) {},
+              onSelected: (selected) {
+                final selectedClientDropdown = dropdownClients.firstWhere(
+                    (element) => element.id == int.parse(selected.id));
+                unitDetailPageController
+                    .updateClientInfo(selectedClientDropdown);
+              },
               label: "Búsqueda de clientes",
               hintText: "Escriba para buscar",
               onFocusChange: (p0) {},
-              onTextChange: (value) {
-                return [];
+              onTextChange: (value) async {
+                return Future.delayed(
+                    Duration(seconds: 1), () => _handleSearchClients(value));
               }),
         CustomInputWidget(
             validator: (value) => notEmptyFieldValidator(value),

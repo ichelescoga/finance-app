@@ -26,14 +26,14 @@ class ImproveClientContactProvider {
 
   Future<List<ClientModel>> getClientsByKeyword(
       String name, String email) async {
-    final response = await httpAdapter.putApi(
+    final response = await httpAdapter.postApi(
         "orders/v1/coincidenciasCredenciales",
-        json.encode({"name": name, "email": email}),
+        json.encode({"correo": name, "nombre": email}),
         {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
-      List<dynamic> clients = jsonResponse["body"];
+      List<dynamic> clients = jsonResponse["bodyContactos"];
 
       return clients
           .map((client) => ClientModel.fromJson(
