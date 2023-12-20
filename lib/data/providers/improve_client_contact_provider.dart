@@ -8,13 +8,17 @@ class ImproveClientContactProvider {
 
   Future<ClientModel> existContactInClient(
       String phone, String name, String email) async {
-    final response = await httpAdapter.getApi(
-        "orders/v1/correoCelExistente", {'Content-Type': 'application/json'});
+    final response = await httpAdapter.postApi(
+        "orders/v1/correoCelExistente", json.encode({
+          "telefono": phone,
+          "correo": email,
+          "nombre": name,
+        }),{'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       return ClientModel.fromJson(
-          jsonResponse["body"]["CLIENTE_HAS_CONTACTOs"]["Id_cliente_CLIENTE"]);
+          jsonResponse["body"]["CLIENTE_HAS_CONTACTOs"][0]["Id_cliente_CLIENTE"]);
     } else {
       throw Exception("Failed to get client Info");
     }

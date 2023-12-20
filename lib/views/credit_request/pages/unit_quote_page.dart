@@ -122,10 +122,11 @@ class _UnitQuotePageState extends ConsumerState<UnitQuotePage> {
     return Layout(
       onBackFunction: () {
        cleanSelectedContactToClient();
+       Get.offAllNamed(RouterPaths.DASHBOARD_PAGE);
       },
       sideBarList: sideBarList,
       appBar:
-          const CustomAppBarSideBar(title: "Creación de Solicitud de crédito"),
+          const CustomAppBarSideBar(title: "Creación de solicitud de crédito"),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

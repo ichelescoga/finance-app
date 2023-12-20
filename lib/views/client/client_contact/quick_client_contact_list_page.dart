@@ -7,10 +7,12 @@ import "package:developer_company/data/providers/client_contact_provider.dart";
 import "package:developer_company/data/providers/improve_client_contact_provider.dart";
 import "package:developer_company/data/repositories/client_contact_repository.dart";
 import "package:developer_company/data/repositories/improve_client_contact_repository.dart";
+import "package:developer_company/global_state/providers/client_provider_state.dart";
 import "package:developer_company/global_state/providers/user_provider_state.dart";
 import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
+import "package:developer_company/shared/routes/router_paths.dart";
 import "package:developer_company/widgets/add_new_quick_contact.dart";
 import "package:developer_company/widgets/app_bar_sidebar.dart";
 import "package:developer_company/widgets/data_table.dart";
@@ -19,9 +21,11 @@ import "package:developer_company/widgets/improve_contact_dialog.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:get/get.dart";
 import "package:url_launcher/url_launcher.dart";
 
-class QuickClientContactListPage extends StatefulWidget {
+class QuickClientContactListPage extends ConsumerStatefulWidget {
   const QuickClientContactListPage({Key? key}) : super(key: key);
 
   @override
@@ -30,7 +34,7 @@ class QuickClientContactListPage extends StatefulWidget {
 }
 
 class _QuickClientContactListPageState
-    extends State<QuickClientContactListPage> {
+    extends ConsumerState<QuickClientContactListPage> {
   final QuickClientContactDialogController _quickClientContactDialogController =
       QuickClientContactDialogController();
 
@@ -168,8 +172,10 @@ class _QuickClientContactListPageState
             onPressSave: () async {
             ClientModel newClient = await improveClientContact.existContactInClient(
                   client.phone, client.fullName, client.email);
-            // Get.toNamed(RouterPaths.ANALYST_CREDITS_BY_CLIENT_PAGE)
-              
+            ref.read(selectedContactToClientProviderState.notifier).state = newClient;
+            Navigator.pop(context, false);
+            Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE);
+
             },
           ));
         });

@@ -89,12 +89,14 @@ class UnitDetailPageController extends BaseController {
     clientId.text = client.id.toString();
     clientName.text = client.name!;
     clientPhone.text = client.phone!;
+    email.text = client.email!;
   }
 
   void cleanInfoClient(){
     clientId.clear();
     clientName.clear();
     clientPhone.clear();
+    email.clear();
   }
 
   void cleanController() {
