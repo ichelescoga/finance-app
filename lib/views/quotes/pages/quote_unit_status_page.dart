@@ -84,8 +84,8 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   void retrieveData() async {
     try {
       EasyLoading.show(status: "Cargando");
-      final projectId = user?.project.projectId;
-      _fetchUnitProjects(projectId!);
+      final projectId = user.project.projectId;
+      _fetchUnitProjects(projectId);
     } finally {
       EasyLoading.dismiss();
     }
