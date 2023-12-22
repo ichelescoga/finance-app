@@ -25,5 +25,7 @@ class PermissionLevel {
   static const String discountsByQuoteMaintenance = "discounts_by_quote_maintenance";
   static const String discountDetailByQuoteMaintenance = "discount_detail_by_quote_maintenance";
 
+  static const String manageCompany = "manage_company";
+
   // Add more permission levels as needed
 }

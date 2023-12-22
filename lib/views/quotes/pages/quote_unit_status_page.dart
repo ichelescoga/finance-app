@@ -76,7 +76,7 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
     try {
       List<Project> project =
           await projectRepository.fetchUnitsByProject(int.tryParse(projectId)!);
-      print(project[0].units);
+      print("hello world ${project[0].units}");
       setState(() {
         _projectUnits = project[0].units;
       });

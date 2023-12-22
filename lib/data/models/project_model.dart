@@ -24,8 +24,8 @@ class Unit {
       projectId: json['Id_proyecto'],
       unitName: json['Nombre_unidad'],
       salePrice: json['Precio_Venta'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: json['createdAt'] == null ? DateTime.now() : DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] == null ? DateTime.now() : DateTime.parse(json['updatedAt']),
     );
   }
 }

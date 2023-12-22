@@ -188,6 +188,18 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
+          AuthorizationWrapper(
+            requestAction: PermissionLevel.manageCompany,
+            child: Column(
+              children: [
+                spaceButton,
+                CustomButtonWidget(
+                    text: "Empresas",
+                    onTap: () => Get.toNamed(RouterPaths.LIST_COMPANIES_PAGE),
+                    padding: defaultPadding),
+              ],
+            ),
+          ),
         ],
       ),
     );

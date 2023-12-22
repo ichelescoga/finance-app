@@ -23,7 +23,8 @@ import 'package:developer_company/views/credit_request/pages/credit_user_applica
 import 'package:developer_company/views/credit_request/pages/credits_reserved_approved.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_page.dart';
-import 'package:developer_company/views/developer_company/pages/create_company_page.dart';
+import 'package:developer_company/views/developer_company/pages/list_companies_page.dart';
+import 'package:developer_company/views/developer_company/pages/manage_company_page.dart';
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_maintenance_page.dart';
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_page.dart';
 import 'package:developer_company/views/discounts/pages/discounts_by_quote_maintenance_page.dart';
@@ -51,7 +52,8 @@ class GetRoutes{
       GetPage(name: RouterPaths.LOGIN_PAGE, page: () => const LoginPage()),
       GetPage(name: RouterPaths.REGISTER_PAGE, page: () => const RegisterPage()),
       GetPage(name: RouterPaths.DASHBOARD_PAGE, page: () => const DashboardPage()),
-      GetPage(name: RouterPaths.CREATE_COMPANY_PAGE, page: () => const CreateCompanyPage()),
+      
+
       GetPage(name: RouterPaths.CREATE_ADVISER_PAGE, page: () => const CreateAdviserPage()),
       GetPage(name: RouterPaths.QUOTE_CONSULT_PAGE, page: () => const QuoteConsultPage()),
       GetPage(name: RouterPaths.QUOTE_STATS_PAGE, page: () => const QuoteStatsPage()),
@@ -97,6 +99,12 @@ class GetRoutes{
       GetPage(name: RouterPaths.DISCOUNTS_BY_QUOTE_PAGE, page: () => const DiscountsByQuotePage()),
       GetPage(name: RouterPaths.DISCOUNT_DETAIL_BY_QUOTE_PAGE, page: () => const DiscountDetailByQuotePage()),
       GetPage(name: RouterPaths.DISCOUNTS_BY_QUOTE_MAINTENANCE_PAGE, page: () => const DiscountsByQuoteMaintenancePage()),
+
+      // COMPANIES 🏢🏢
+
+      GetPage(name: RouterPaths.MANAGE_COMPANY_PAGE, page: () => const CreateCompanyPage()),
+      GetPage(name: RouterPaths.LIST_COMPANIES_PAGE, page: () => const ListCompanies()),
+      
       
     ];
   }
