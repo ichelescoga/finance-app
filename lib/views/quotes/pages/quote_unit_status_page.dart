@@ -1,9 +1,6 @@
-import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/implementations/project__repository_impl.dart';
 import 'package:developer_company/data/models/project_model.dart';
-import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
-import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
@@ -33,9 +30,6 @@ class _QuoteUnitStatusPageState extends State<QuoteUnitStatusPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   QuoteConsultPageController quoteConsultPageController =
       Get.put(QuoteConsultPageController());
-
-  final CompanyRepository companyRepository =
-      CompanyRepositoryImpl(CompanyProvider());
 
   final ProjectRepository projectRepository =
       ProjectRepositoryImpl(ProjectProvider());

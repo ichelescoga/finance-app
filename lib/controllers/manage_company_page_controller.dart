@@ -1,6 +1,6 @@
+import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/shared/controllers/base_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class CreateCompanyPageController extends BaseController {
   TextEditingController developerCompanyName = TextEditingController();
@@ -14,7 +14,24 @@ class CreateCompanyPageController extends BaseController {
   TextEditingController developerCompanySellManagerPhone =
       TextEditingController();
 
-  RxString filePath = ''.obs;
-  RxString projectFilePath = ''.obs;
-  RxString mapFilePath = ''.obs;
+  ImageToUpload developerCompanyLogo = ImageToUpload(
+    base64: null,
+    needUpdate: true,
+    link: "",
+  );
+
+  cleanDeveloperCompanyForm() {
+    developerCompanyName.clear();
+    developerCompanyDescription.clear();
+    developerCompanyDeveloper.clear();
+    developerCompanyNit.clear();
+    developerCompanyAddress.clear();
+    developerCompanyContactPhone.clear();
+    developerCompanyContactName.clear();
+    developerCompanySellManager.clear();
+    developerCompanySellManagerPhone.clear();
+    
+    developerCompanyLogo.reset();
+  }
+
 }

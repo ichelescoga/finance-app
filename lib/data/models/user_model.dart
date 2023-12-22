@@ -25,7 +25,7 @@ class User {
         project: Project.fromJson(json));
   }
 }
-
+// TODO: REMEMBER PUT THE COMPANY MODEL THIS IS ONLY A TEMP COMPANY MODEL FOR PROJECTS WORKS, FOR AVOID WORKINGS BAD
 class Company {
   final String companyId;
   final String companyName;
