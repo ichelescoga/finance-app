@@ -45,4 +45,34 @@ class CompanyProvider {
       throw Exception('Failed to add new company');
     }
   }
+
+  Future<bool> deleteCompany(int companyId) async {
+    final response = await httpAdapter.postApi(
+        "orders/v1/deleteCompany",
+        jsonEncode({
+          "id": companyId,
+          "updatedby": DateTime.now()
+        }),
+        {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception("Failed to delete company");
+    }
+  }
+
+  Future<Company> getCompanyById(int companyId) async {
+
+    final response = await httpAdapter.getApi("orders/v1/getCompanyById", {});
+    if(response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final companyDetails = convertArrayToObject(jsonResponse['details']);
+
+      return Company.fromJson({...jsonResponse, ...companyDetails});
+    }else {
+      throw Exception("Failed to get company");
+    }
+
+  }
 }
