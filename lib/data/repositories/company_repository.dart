@@ -1,6 +1,7 @@
-
 import 'package:developer_company/data/models/company_model.dart';
 
 abstract class CompanyRepository {
   Future<List<Company>> fetchCompanies();
+  Future<bool> createCompany(Company company);
+  Future<bool> editCompany(int companyId, Company company);
 }
