@@ -15,7 +15,7 @@ class CompanyProvider {
       return jsonResponse.map((json) {
         final companyDetails = convertArrayToObject(json['details']);
 
-        return Company.fromJson({...json, ...companyDetails});
+        return Company.fromJson({...json['company'], ...companyDetails});
       }).toList();
     } else {
       throw Exception('Failed to fetch companies');
@@ -36,7 +36,7 @@ class CompanyProvider {
   Future<bool> editCompany(int companyId, Company company) async {
     company.companyId = companyId;
 
-    final response = await httpAdapter.postApi("orders/v1/addCompany",
+    final response = await httpAdapter.postApi("orders/v1/editCompany",
         jsonEncode(company.toJson()), {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
@@ -47,11 +47,11 @@ class CompanyProvider {
   }
 
   Future<bool> deleteCompany(int companyId) async {
-    final response = await httpAdapter.postApi(
+    final response = await httpAdapter.putApi(
         "orders/v1/deleteCompany",
         jsonEncode({
-          "id": companyId,
-          "updatedby": DateTime.now()
+          "id": companyId.toString(),
+          "updatedby": DateTime.now().toIso8601String(),
         }),
         {'Content-Type': 'application/json'});
 
@@ -63,16 +63,14 @@ class CompanyProvider {
   }
 
   Future<Company> getCompanyById(int companyId) async {
-
     final response = await httpAdapter.getApi("orders/v1/getCompanyById", {});
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       final companyDetails = convertArrayToObject(jsonResponse['details']);
 
       return Company.fromJson({...jsonResponse, ...companyDetails});
-    }else {
+    } else {
       throw Exception("Failed to get company");
     }
-
   }
 }

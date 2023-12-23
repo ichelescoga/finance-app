@@ -4,4 +4,5 @@ abstract class CompanyRepository {
   Future<List<Company>> fetchCompanies();
   Future<bool> createCompany(Company company);
   Future<bool> editCompany(int companyId, Company company);
+  Future<bool> deleteCompany(int companyId);
 }

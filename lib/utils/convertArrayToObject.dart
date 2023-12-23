@@ -1,4 +1,4 @@
-Map<String, String> convertArrayToObject(List<Map<String, String>> data) {
+Map<String, String> convertArrayToObject(List<dynamic> data) {
   Map<String, String> result = {};
 
   for (var d in data) {

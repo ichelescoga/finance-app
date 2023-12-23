@@ -141,7 +141,6 @@ class _QuickClientContactListPageState
                                               phone: element.phone,
                                               email: element.email,
                                               address: element.address);
-                                      ;
                                       _quickClientContactDialogController
                                           .updateContact(contactInfo);
                                       _dialogNewEditQuickContact(context, true);
@@ -170,12 +169,13 @@ class _QuickClientContactListPageState
               child: ImproveContactToClientDialog(
             isLoading: false,
             onPressSave: () async {
-            ClientModel newClient = await improveClientContact.existContactInClient(
-                  client.phone, client.fullName, client.email);
-            ref.read(selectedContactToClientProviderState.notifier).state = newClient;
-            Navigator.pop(context, false);
-            Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE);
-
+              ClientModel newClient =
+                  await improveClientContact.existContactInClient(
+                      client.phone, client.fullName, client.email);
+              ref.read(selectedContactToClientProviderState.notifier).state =
+                  newClient;
+              Navigator.pop(context, false);
+              Get.toNamed(RouterPaths.UNIT_QUOTE_PAGE);
             },
           ));
         });

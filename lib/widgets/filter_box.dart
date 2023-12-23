@@ -13,14 +13,14 @@ class FilterBox<T> extends StatefulWidget {
   final String hint;
   final String label;
 
-  const FilterBox({
-    Key? key,
-    required this.elements,
-    required this.handleFilteredData,
-    required this.isLoading,
-    required this.hint,
-    required this.label,
-  }) : super(key: key);
+  const FilterBox(
+      {Key? key,
+      required this.elements,
+      required this.handleFilteredData,
+      required this.isLoading,
+      required this.hint,
+      required this.label})
+      : super(key: key);
 
   @override
   State<FilterBox<T>> createState() => _FilterBoxState<T>();
@@ -38,7 +38,11 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
     if (widget.elements.length > 0 && !hasUpdate) {
       data = widget.elements;
       hasUpdate = true;
+    } else if (data.length != widget.elements.length) {
+      hasUpdate = false;
+      filterBoxController.clear();
     }
+    
     super.didUpdateWidget(oldWidget);
   }
 

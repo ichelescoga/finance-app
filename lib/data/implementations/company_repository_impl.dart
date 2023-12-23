@@ -10,15 +10,21 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   @override
   Future<List<Company>> fetchCompanies() async {
-    return companyProvider.fetchCompanies();
+    return await companyProvider.fetchCompanies();
   }
 
   @override
   Future<bool> createCompany(Company company) async { 
-    return this.createCompany(company);
+    return await this.companyProvider.createCompany(company);
   }
+
   @override
   Future<bool> editCompany(int companyId, Company company) async { 
-    return this.editCompany(companyId, company);
+    return await this.companyProvider.editCompany(companyId, company);
   }
+
+  @override
+   Future<bool> deleteCompany(int companyId) async  {
+    return await this.companyProvider.deleteCompany(companyId);
+   }
 }
