@@ -32,7 +32,7 @@ class _ListCompaniesState extends State<ListCompanies> {
 
     setState(() {
       companies = tempCompanies;
-      filteredCompanies= tempCompanies;
+      filteredCompanies = tempCompanies;
     });
     EasyLoading.dismiss();
   }
@@ -50,8 +50,12 @@ class _ListCompaniesState extends State<ListCompanies> {
   }
 
   _handleManageCompany(int? companyId) async {
-    Get.toNamed(RouterPaths.MANAGE_COMPANY_PAGE,
+    final needUpdateListCompanies = await Get.toNamed(
+        RouterPaths.MANAGE_COMPANY_PAGE,
         arguments: {"companyId": companyId});
+    if (needUpdateListCompanies) {
+      _getCompanies();
+    }
   }
 
   @override
@@ -115,8 +119,8 @@ class _ListCompaniesState extends State<ListCompanies> {
                               DataCell(Row(
                                 children: [
                                   IconButton(
-                                      onPressed: () =>
-                                          _handleManageCompany(element.companyId),
+                                      onPressed: () => _handleManageCompany(
+                                          element.companyId),
                                       icon: Icon(Icons.edit_square)),
                                   IconButton(
                                       onPressed: () => _dialogDeleteCompany(
@@ -145,7 +149,7 @@ class _ListCompaniesState extends State<ListCompanies> {
         return PopScope(
           child: DeleteCompanyDialog(
             companyName: company.businessName,
-            companyId: company.companyId,
+            companyId: company.companyId!,
           ),
         );
       },

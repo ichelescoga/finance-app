@@ -8,16 +8,17 @@ import 'package:get/get.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart' as path;
 
 class LogoUploadWidget extends StatefulWidget {
-  final ImageToUpload? uploadImageController;
+  final ImageToUpload uploadImageController;
   final String text;
   final FormFieldValidator<Object>? validator;
   final bool enabled;
   final Icon icon;
 
   const LogoUploadWidget(
-      {this.uploadImageController,
+      {required this.uploadImageController,
       required this.text,
       required this.validator,
       this.enabled = true,
@@ -35,7 +36,7 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final String? linkImage = widget.uploadImageController?.link;
+    final String? linkImage = widget.uploadImageController.link;
 
     return FormField(
         validator: (value) => widget.validator!(controllerImage.value.isEmpty
@@ -69,7 +70,7 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                         const SizedBox(
                           width: 5,
                         ),
-                       widget.icon,
+                        widget.icon,
                       ],
                     ),
                   ),
@@ -83,6 +84,7 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                       await picker.getImage(source: ImageSource.gallery);
 
                   if (pickedFile != null) {
+                    String fileExtension = path.extension(pickedFile.path);
                     controllerImage.value = pickedFile.path;
                     final imageBytes = await pickedFile.readAsBytes();
 
@@ -97,7 +99,9 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                     String base64Image = base64Encode(compressedBytes);
                     setState(() {
                       widget.uploadImageController
-                          ?.updateBase64String(base64Image);
+                          .updateExtensionFile(fileExtension);
+                      widget.uploadImageController
+                          .updateBase64String(base64Image);
                     });
                   } else {
                     // No image selected.
@@ -117,7 +121,7 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                 ),
               ),
               const SizedBox(height: Dimensions.heightSize),
-              widget.uploadImageController?.needUpdate == false &&
+              widget.uploadImageController.needUpdate == false &&
                       linkImage != null
                   ? Image.network(linkImage)
                   : Obx(

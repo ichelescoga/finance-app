@@ -63,12 +63,13 @@ class CompanyProvider {
   }
 
   Future<Company> getCompanyById(int companyId) async {
-    final response = await httpAdapter.getApi("orders/v1/getCompanyById", {});
+    final response = await httpAdapter.getApi("orders/v1/getCompanyById/$companyId", {});
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      final companyDetails = convertArrayToObject(jsonResponse['details']);
+      
+      final companyDetails = convertArrayToObject(jsonResponse["company"]['details']);
 
-      return Company.fromJson({...jsonResponse, ...companyDetails});
+      return Company.fromJson({...jsonResponse["company"]["company"], ...companyDetails});
     } else {
       throw Exception("Failed to get company");
     }

@@ -10,7 +10,7 @@ import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/custom_dropdown_widget.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
-import 'package:developer_company/widgets/upload_button_widget.dart';
+// import 'package:developer_company/widgets/upload_button_widget.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -154,30 +154,30 @@ class _CreateAdviserPageState extends State<CreateAdviserPage> {
                 hintText: "Desarrollador",
                 validator: (value) => notEmptyFieldValidator(value),
                 prefixIcon: Icons.person_outline),
-            LogoUploadWidget(
-              text: "Logo",
-              validator: (value) {
-                if (value == null) {
-                  return "Seleccione un logo para desarrollador";
-                }
-                return null;
-              },
-            ),
+            // LogoUploadWidget(
+            //   text: "Logo",
+            //   validator: (value) {
+            //     if (value == null) {
+            //       return "Seleccione un logo para desarrollador";
+            //     }
+            //     return null;
+            //   },
+            // ),
             CustomInputWidget(
                 controller: createAdviserPageController.dpi,
                 label: "Proyecto",
                 hintText: "Proyecto",
                 validator: (value) => notEmptyFieldValidator(value),
                 prefixIcon: Icons.person_outline),
-            LogoUploadWidget(
-              text: "Logo",
-              validator: (value) {
-                if (value == null) {
-                  return "Seleccione un logo para Proyecto";
-                }
-                return null;
-              },
-            ),
+            // LogoUploadWidget(
+            //   text: "Logo",
+            //   validator: (value) {
+            //     if (value == null) {
+            //       return "Seleccione un logo para Proyecto";
+            //     }
+            //     return null;
+            //   },
+            // ),
             CustomButtonWidget(
                 text: "Siguiente".toUpperCase(),
                 onTap: () async {

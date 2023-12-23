@@ -1,26 +1,25 @@
 class Company {
-  int companyId;
+  int? companyId;
   final String businessName;
   final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool state;
   final String developer;
-  final String nit; 
+  final String nit;
   final String address;
   final String contact;
-  final String contactPhone; 
-  final String salesManager; 
-  final String managerPhone; 
+  final String contactPhone;
+  final String salesManager;
+  final String managerPhone;
   final String logo;
 
-
   Company({
-    this.companyId = 0,
+    this.companyId,
     required this.businessName,
     required this.description,
-    required this.createdAt,
-    required this.updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     this.state = false,
     required this.developer,
     required this.nit,
@@ -30,17 +29,17 @@ class Company {
     required this.salesManager,
     required this.managerPhone,
     required this.logo,
-  });
-
-
+  })  : createdAt = DateTime.now(),
+        updatedAt = DateTime.now();
 
   Map<String, dynamic> toJson() {
     return {
+      'id': companyId,
       'nombre': businessName,
       'descripcion': description,
       'createdby': createdAt.toIso8601String(),
       "updatedby": updatedAt.toIso8601String(),
-      'Desarrollador': developer,
+      'desarrollador': developer,
       'nit': nit,
       'direccion': address,
       'contacto': contact,
@@ -50,7 +49,6 @@ class Company {
       'logo': logo,
     };
   }
-
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(

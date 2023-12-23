@@ -27,4 +27,9 @@ class CompanyRepositoryImpl implements CompanyRepository {
    Future<bool> deleteCompany(int companyId) async  {
     return await this.companyProvider.deleteCompany(companyId);
    }
+
+   @override
+    Future<Company> getCompanyById(int companyId) async {
+      return await this.companyProvider.getCompanyById(companyId);
+    }
 }
