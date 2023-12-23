@@ -104,6 +104,18 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                   }
                 },
               ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    state.errorText ?? "",
+                    style: const TextStyle(
+                        color: AppColors.redColor,
+                        fontSize: Dimensions.smallTextSize),
+                  ),
+                ),
+              ),
               const SizedBox(height: Dimensions.heightSize),
               widget.uploadImageController?.needUpdate == false &&
                       linkImage != null
@@ -116,12 +128,6 @@ class _LogoUploadWidgetState extends State<LogoUploadWidget> {
                                 )
                               : null),
                     ),
-              Text(
-                state.errorText ?? "",
-                style: const TextStyle(
-                    color: AppColors.redColor,
-                    fontSize: Dimensions.smallTextSize),
-              ),
             ],
           );
         });

@@ -12,6 +12,7 @@ class Dimensions {
   static const double widthSize = 10.00;
   static const double radius = 10.00;
   static const double buttonHeight = 60.00;
+  static const double formSpaceBetweenButtons = 10;
 
   static double latitude = 38.9647;
   static double longitude = 35.2233;

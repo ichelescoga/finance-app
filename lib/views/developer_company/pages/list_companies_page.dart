@@ -49,9 +49,9 @@ class _ListCompaniesState extends State<ListCompanies> {
     EasyLoading.dismiss();
   }
 
-  _handleEdit(int companyId) async {
+  _handleManageCompany(int? companyId) async {
     Get.toNamed(RouterPaths.MANAGE_COMPANY_PAGE,
-        arguments: {companyId: companyId});
+        arguments: {"companyId": companyId});
   }
 
   @override
@@ -68,7 +68,7 @@ class _ListCompaniesState extends State<ListCompanies> {
                   size: Dimensions.topIconSizeH,
                 ),
                 onPressed: () {
-                  Get.toNamed(RouterPaths.MANAGE_COMPANY_PAGE);
+                  _handleManageCompany(null);
                 })
           ],
         ),
@@ -116,7 +116,7 @@ class _ListCompaniesState extends State<ListCompanies> {
                                 children: [
                                   IconButton(
                                       onPressed: () =>
-                                          _handleEdit(element.companyId),
+                                          _handleManageCompany(element.companyId),
                                       icon: Icon(Icons.edit_square)),
                                   IconButton(
                                       onPressed: () => _dialogDeleteCompany(
