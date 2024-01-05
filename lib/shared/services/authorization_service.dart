@@ -35,6 +35,7 @@ class AuthorizationService {
         PermissionLevel.discountsByQuote,
         PermissionLevel.discountsByQuoteMaintenance,
         PermissionLevel.manageCompany,
+        PermissionLevel.manageProjectCompany
       ],
       "Mercadeo": [
         PermissionLevel.marketingInitial,

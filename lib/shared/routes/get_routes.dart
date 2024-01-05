@@ -25,6 +25,8 @@ import 'package:developer_company/views/credit_request/pages/unit_quote_detail_p
 import 'package:developer_company/views/credit_request/pages/unit_quote_page.dart';
 import 'package:developer_company/views/developer_company/pages/list_companies_page.dart';
 import 'package:developer_company/views/developer_company/pages/manage_company_page.dart';
+import 'package:developer_company/views/developer_company_projects/pages/create_assign_project_to_company_page.dart';
+import 'package:developer_company/views/developer_company_projects/pages/list_projects_page.dart';
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_maintenance_page.dart';
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_page.dart';
 import 'package:developer_company/views/discounts/pages/discounts_by_quote_maintenance_page.dart';
@@ -104,6 +106,11 @@ class GetRoutes{
 
       GetPage(name: RouterPaths.MANAGE_COMPANY_PAGE, page: () => const CreateCompanyPage()),
       GetPage(name: RouterPaths.LIST_COMPANIES_PAGE, page: () => const ListCompanies()),
+
+      // PROJECTS 📐📐
+      GetPage(name: RouterPaths.LIST_PROJECTS_PAGE, page: () => const listProjectsPage()),
+      GetPage(name: RouterPaths.ASSIGN_PROJECT_TO_COMPANY_PAGE, page: () => const createAssignProjectToCompanyPage()),
+
       
       
     ];

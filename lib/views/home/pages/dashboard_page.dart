@@ -200,6 +200,18 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
+          AuthorizationWrapper(
+            requestAction: PermissionLevel.manageCompany,
+            child: Column(
+              children: [
+                spaceButton,
+                CustomButtonWidget(
+                    text: "Proyectos",
+                    onTap: () => Get.toNamed(RouterPaths.LIST_PROJECTS_PAGE),
+                    padding: defaultPadding),
+              ],
+            ),
+          ),
         ],
       ),
     );

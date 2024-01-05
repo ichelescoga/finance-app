@@ -60,5 +60,10 @@ class RouterPaths{
 
   static const String MANAGE_COMPANY_PAGE = '/manageCompanyPage';
   static const String LIST_COMPANIES_PAGE = '/listCompaniesPage';
+
+  // PROJECTS 📐📐
+
+  static const String LIST_PROJECTS_PAGE = "/listProjectsPage";
+  static const String ASSIGN_PROJECT_TO_COMPANY_PAGE = "/createAssignProjectToCompanyPage";
 }
 
