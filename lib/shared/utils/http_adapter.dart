@@ -38,7 +38,7 @@ class HttpAdapter extends http.BaseClient {
   }
 
   Future<http.Response> getApi(
-      String url, Map<String, String>? headersApi) async {
+      String url, Map<String, String>? headersApi, [Object? body = null]) async {
     final user = container.read(userProviderWithoutNotifier);
 
     try {
