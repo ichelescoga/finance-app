@@ -1,3 +1,5 @@
+import "dart:convert";
+
 import "package:developer_company/global_state/providers/user_provider_state.dart";
 
 import "package:developer_company/main.dart";
@@ -19,10 +21,14 @@ class HttpAdapter extends http.BaseClient {
   }
 
   http.Response _handleResponse(http.Response response) {
-    print("🚀🦔 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.body}" );
-    print("🚀🤖 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.contentLength}" );
-    print("🚀👁️ ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.statusCode}" );
-    print("🚀💧 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.request}" );
+    print(
+        "🚀🦔 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.body}");
+    print(
+        "🚀🤖 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.contentLength}");
+    print(
+        "🚀👁️ ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.statusCode}");
+    print(
+        "🚀💧 ~ file: http_adapter.dart:22 ~ HttpAdapter ~ http.Response_handleResponse ~ response: ${response.request}");
 // TODO Response always comes with message login expired please implemented here;
 
     if (response.statusCode == 200 || response.statusCode == 202) {
@@ -38,7 +44,7 @@ class HttpAdapter extends http.BaseClient {
   }
 
   Future<http.Response> getApi(
-      String url, Map<String, String>? headersApi, [Object? body = null]) async {
+      String url, Map<String, String>? headersApi) async {
     final user = container.read(userProviderWithoutNotifier);
 
     try {
@@ -51,6 +57,30 @@ class HttpAdapter extends http.BaseClient {
         Uri.parse("$apiURL/$url"),
         headers: headers,
       );
+
+      return _handleResponse(response);
+    } catch (e) {
+      print('Error GET 🗃️😭: $e');
+      throw Exception('Something went wrong');
+    }
+  }
+
+  Future<http.Response> getApiWithBody(
+      String url, Map<String, String>? headersApi, Map<String, dynamic>? body) async {
+    final user = container.read(userProviderWithoutNotifier);
+
+    try {
+      final headers = {
+        'Authorization': 'Bearer ${user.jwt}',
+        ...headersApi ?? {},
+      };
+
+      final jsonBody = jsonEncode(body);
+      final request = http.Request('GET', Uri.parse("$apiURL/$url"));
+      request.body = jsonBody;
+      request.headers.addAll(headers);
+      final streamResponse = await request.send();
+      final response = await http.Response.fromStream(streamResponse);
 
       return _handleResponse(response);
     } catch (e) {
@@ -91,7 +121,7 @@ class HttpAdapter extends http.BaseClient {
         'Authorization': 'Bearer ${user.jwt}',
         ...headersApi ?? {},
       };
-      
+
       print("PUT BODY 😎😎😎 $body");
       final response = await http.put(
         Uri.parse("$apiURL/$url"),

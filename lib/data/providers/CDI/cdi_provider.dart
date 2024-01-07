@@ -6,33 +6,32 @@ import 'package:developer_company/data/models/CDI/custom_input_model.dart';
 import 'package:developer_company/data/models/CDI/custom_table_model.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 
-class CDI_QTS_provider {
+class CDIProvider {
   final http = HttpAdapter();
 
-  Future<List<dynamic>> fetchCompanyTable(String type) async {
-    // You can customize the endpoint (EP) based on your requirements
-    final endpoint =
-        "https://example.com/api/$type"; // Replace with your actual API endpoint
+  Future<List<dynamic>> fetchCompanyTable() async {
+    final endpoint = "orders/v1/getComponentsByEntity";
 
     try {
-      final response = await http.getApi(endpoint, {}, {"id": 1});
+      final response = await http.getApiWithBody(endpoint, {'Content-Type': 'application/json'}, {"id": 1});
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         if (jsonData is List) {
           return jsonData.map((item) {
-            switch (type) {
-              case "QTS_Table":
-                return QTS_Table.fromJson(item);
-              case "QTS_input":
-                return QTS_input.fromJson(item);
-              case "QTS_image":
-                return QTS_image.fromJson(item);
-              case "QTS_dropdown":
-                return QTS_dropdown.fromJson(item);
-              default:
-                throw Exception("Unknown type: $type");
-            }
+            return item[0];
+            // switch (item[0]["Type"]) {
+            //   case "QTS_Table":
+            //     return QTS_Table.fromJson(item[0]);
+            //   case "QTS_Input":
+            //     return QTS_input.fromJson(item[0]);
+            //   case "QTS_Image":
+            //     return QTS_image.fromJson(item[0]);
+            //   case "QTS_Dropdown":
+            //     return QTS_dropdown.fromJson(item[0]);
+            //   default:
+            //     throw Exception("Unknown type: ");
+            // }
           }).toList();
         } else {
           throw Exception("Invalid response format");
