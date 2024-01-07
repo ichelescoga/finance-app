@@ -1,6 +1,3 @@
-// ignore_for_file: deprecated_member_use
-// import 'package:developer_company/shared/resources/colors.dart';
-// import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/controllers/manage_company_page_controller.dart';
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/implementations/upload_image_impl.dart';
@@ -13,16 +10,9 @@ import 'package:developer_company/data/repositories/upload_image_repository.dart
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/views/developer_company/forms/manage_company_form.dart';
-// import 'package:developer_company/shared/resources/colors.dart';
-// import 'package:developer_company/shared/resources/dimensions.dart';
-// import 'package:developer_company/shared/utils/responsive.dart';
-// import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
-// import 'package:developer_company/widgets/custom_button_widget.dart';
-// import 'package:developer_company/widgets/custom_input_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
-// import 'package:developer_company/widgets/upload_button_widget.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
