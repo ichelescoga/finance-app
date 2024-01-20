@@ -5,5 +5,5 @@ abstract class CompanyRepository {
   Future<bool> createCompany(Company company);
   Future<bool> editCompany(int companyId, Company company);
   Future<bool> deleteCompany(int companyId);
-   Future<Company> getCompanyById(int companyId);
+   Future<dynamic> getCompanyById(int companyId);
 }

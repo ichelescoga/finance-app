@@ -1,14 +1,18 @@
 import 'package:developer_company/controllers/manage_company_page_controller.dart';
+import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/implementations/upload_image_impl.dart';
-import 'package:developer_company/data/models/company_model.dart';
+// import 'package:developer_company/data/models/company_model.dart';
 import 'package:developer_company/data/models/image_model.dart';
+import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
 import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/upload_image.provider.dart';
+import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
+import 'package:developer_company/utils/retrieve_form_list_controllers.dart';
 import 'package:developer_company/views/developer_company/forms/manage_company_form.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
@@ -40,6 +44,19 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
       UploadImageRepositoryImpl(UploadImageProvider());
   final Map<String, dynamic> arguments = Get.arguments;
 
+  Map<String, TextEditingController> formControllers = {};
+
+  CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
+
+  List<dynamic> formWidgets = [];
+
+  _getFormCompany() async {
+    final result = await cdiRepository.fetchCompanyTable();
+    setState(() {
+      formWidgets = result;
+    });
+  }
+
   int? companyId;
   int activeStep = 0;
   double circleRadius = 20;
@@ -47,7 +64,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   @override
   void initState() {
     super.initState();
-
+    _getFormCompany();
     if (arguments["companyId"] != null) {
       companyId = arguments["companyId"];
     }
@@ -80,38 +97,51 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   }
 
   _handleSaveCompany() async {
-    EasyLoading.show();
-    await saveImage();
-    if (createCompanyPageController.developerCompanyLogo.link == null) {
-      EasyLoading.showInfo("Algo salio mal al subir la imagen");
-      throw new Exception("Something bad wrongs to upload image");
-    }
+    // EasyLoading.show();
+    // await saveImage();
+    // if (createCompanyPageController.developerCompanyLogo.link == null) {
+    //   EasyLoading.showInfo("Algo salio mal al subir la imagen");
+    //   throw new Exception("Something bad wrongs to upload image");
+    // }
 
-    Company companyData = Company(
-      businessName: createCompanyPageController.developerCompanyName.text,
-      description: createCompanyPageController.developerCompanyDescription.text,
-      developer: createCompanyPageController.developerCompanyDeveloper.text,
-      nit: createCompanyPageController.developerCompanyNit.text,
-      address: createCompanyPageController.developerCompanyAddress.text,
-      contact: createCompanyPageController.developerCompanyContactName.text,
-      contactPhone:
-          createCompanyPageController.developerCompanyContactPhone.text,
-      salesManager:
-          createCompanyPageController.developerCompanySellManager.text,
-      managerPhone:
-          createCompanyPageController.developerCompanySellManagerPhone.text,
-      logo: createCompanyPageController.developerCompanyLogo.link!,
-    );
+    // Company companyData = Company(
+    //   businessName: createCompanyPageController.developerCompanyName.text,
+    //   description: createCompanyPageController.developerCompanyDescription.text,
+    //   developer: createCompanyPageController.developerCompanyDeveloper.text,
+    //   nit: createCompanyPageController.developerCompanyNit.text,
+    //   address: createCompanyPageController.developerCompanyAddress.text,
+    //   contact: createCompanyPageController.developerCompanyContactName.text,
+    //   contactPhone:
+    //       createCompanyPageController.developerCompanyContactPhone.text,
+    //   salesManager:
+    //       createCompanyPageController.developerCompanySellManager.text,
+    //   managerPhone:
+    //       createCompanyPageController.developerCompanySellManagerPhone.text,
+    //   logo: createCompanyPageController.developerCompanyLogo.link!,
+    // );
 
-    bool result = false;
-    if (companyId != null) {
-      result = await companyProvider.editCompany(companyId!, companyData);
-    } else {
-      result = await companyProvider.createCompany(companyData);
-    }
-    if(result){
-      Get.back(closeOverlays: true, result: result);
-    }
+    // bool result = false;
+    // if (companyId != null) {
+    //   result = await companyProvider.editCompany(companyId!, companyData);
+    // } else {
+    //   result = await companyProvider.createCompany(companyData);
+    // }
+    // if (result) {
+    //   Get.back(closeOverlays: true, result: result);
+    // }
+
+    // 'nombre': businessName,
+    // 'descripcion': description,
+    // 'createdby': createdAt.toIso8601String(),
+    // "updatedby": updatedAt.toIso8601String(),
+    // 'desarrollador': developer,
+    // 'nit': nit,
+    // 'direccion': address,
+    // 'contacto': contact,
+    // 'telefonocontacto': contactPhone,
+    // 'gerenteventas': salesManager,
+    // 'telefonogerenteventas': managerPhone,
+    // 'logo': logo,
     EasyLoading.dismiss();
   }
 
@@ -126,10 +156,12 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
           key: manageCompanyFormKey,
           child: Column(
             children: [
-              ManageCompanyForm(
-                enable: true,
-                companyId: companyId,
-              ),
+              if (!formWidgets.length.isEqual(0))
+                ManageCompanyForm(
+                    controllers: formControllers,
+                    enable: true,
+                    companyId: companyId,
+                    formCustomWidgets: formWidgets),
               const SizedBox(
                 height: Dimensions.heightSize,
               ),
@@ -149,12 +181,19 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                     color: AppColors.blueColor,
                     text: "Guardar",
                     onTap: () {
-                      if (manageCompanyFormKey.currentState!.validate()) {
-                        _handleSaveCompany();
-                      } else {
-                        EasyLoading.showInfo(
-                            "Por favor verifique que los campos sean validos.");
-                      }
+                      print('manage_company_page 154  ${formControllers}');
+                      // formWidgets
+
+                      final values =
+                          retrieveFormControllers(formWidgets, formControllers);
+                      print('🤖 🤖 manage_company_page 186  ${values}');
+
+                      // if (manageCompanyFormKey.currentState!.validate()) {
+                      //   _handleSaveCompany();
+                      // } else {
+                      //   EasyLoading.showInfo(
+                      //       "Por favor verifique que los campos sean validos.");
+                      // }
                     },
                   )),
                 ],

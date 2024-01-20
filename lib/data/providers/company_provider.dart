@@ -62,16 +62,30 @@ class CompanyProvider {
     }
   }
 
-  Future<Company> getCompanyById(int companyId) async {
+  Future<dynamic> getCompanyById(int companyId) async {
     final response = await httpAdapter.getApi("orders/v1/getCompanyById/$companyId", {});
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       
       final companyDetails = convertArrayToObject(jsonResponse["company"]['details']);
 
-      return Company.fromJson({...jsonResponse["company"]["company"], ...companyDetails});
+      final companyData = {...jsonResponse["company"]["company"], ...companyDetails};
+      final transformedData = transformKeysToLowercaseAndRemoveSpaces(companyData);
+      return transformedData;
     } else {
       throw Exception("Failed to get company");
     }
   }
+}
+
+
+Map<String, dynamic> transformKeysToLowercaseAndRemoveSpaces(Map<dynamic, dynamic> data) {
+  final transformedData = <String, dynamic>{};
+  
+  data.forEach((key, value) {
+    final transformedKey = key.toLowerCase().replaceAll(' ', '');
+    transformedData[transformedKey] = value;
+  });
+
+  return transformedData;
 }

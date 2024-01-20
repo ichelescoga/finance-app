@@ -29,7 +29,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
    }
 
    @override
-    Future<Company> getCompanyById(int companyId) async {
+    Future<dynamic> getCompanyById(int companyId) async {
       return await this.companyProvider.getCompanyById(companyId);
     }
 }
