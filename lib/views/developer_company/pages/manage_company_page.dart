@@ -12,6 +12,8 @@ import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
+import 'package:developer_company/utils/handle_upload_image.dart';
+// import 'package:developer_company/utils/cdi_components.dart';
 import 'package:developer_company/utils/retrieve_form_list_controllers.dart';
 import 'package:developer_company/views/developer_company/forms/manage_company_form.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
@@ -45,6 +47,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   final Map<String, dynamic> arguments = Get.arguments;
 
   Map<String, TextEditingController> formControllers = {};
+  Map<String, ImageToUpload> imageControllers = {};
 
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
 
@@ -70,33 +73,43 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
     }
   }
 
-  Future saveImage() async {
-    final uid = uuid.v1();
-    final developerLogoBase64 =
-        createCompanyPageController.developerCompanyLogo.base64;
-    final needUpdateLogo =
-        createCompanyPageController.developerCompanyLogo.needUpdate;
+  // Future saveImage(ImageToUpload imageController) async {
+  //   final uid = uuid.v1();
+  //   final developerLogoBase64 =
+  //       createCompanyPageController.developerCompanyLogo.base64;
+  //   final needUpdateLogo =
+  //       createCompanyPageController.developerCompanyLogo.needUpdate;
 
-    if (developerLogoBase64 != null && needUpdateLogo) {
-      String developerName = createCompanyPageController
-                  .developerCompanyLogo.originalName !=
-              null
-          ? createCompanyPageController.developerCompanyLogo.originalName!
-          : "${createCompanyPageController.developerCompanyName.text}-${uid}${createCompanyPageController.developerCompanyLogo.extension}";
+  //   if (developerLogoBase64 != null && needUpdateLogo) {
+  //     String developerName = createCompanyPageController
+  //                 .developerCompanyLogo.originalName !=
+  //             null
+  //         ? createCompanyPageController.developerCompanyLogo.originalName!
+  //         : "${createCompanyPageController.developerCompanyName.text}-${uid}${createCompanyPageController.developerCompanyLogo.extension}";
 
-      final UploadImage logoRequestImage = UploadImage(
-          file: developerLogoBase64,
-          fileName: developerName,
-          transactionType: "developerLogo");
+  //     final UploadImage logoRequestImage = UploadImage(
+  //         file: developerLogoBase64,
+  //         fileName: developerName,
+  //         transactionType: "developerLogo");
 
-      ImageToUpload responseImage =
-          await uploadImageRepository.postImage(logoRequestImage);
-      final link = responseImage.link;
-      createCompanyPageController.developerCompanyLogo.updateLink(link!);
-    }
-  }
+  //     ImageToUpload responseImage =
+  //         await uploadImageRepository.postImage(logoRequestImage);
+  //     final link = responseImage.link;
+  //     createCompanyPageController.developerCompanyLogo.updateLink(link!);
+  //   }
+  // }
 
-  _handleSaveCompany() async {
+  _handleSaveCompany(
+      Map<String, dynamic> inputValues,
+      Map<String, ImageToUpload> imageValues,
+      Map<String, dynamic>
+          dropdownValues //TODO: should be receive the dynamicInputDropDownValues;
+
+      ) async {
+    print("inputValues ${inputValues}");
+    print(imageValues);
+    handleImagesToUpload(imageValues);
+
     // EasyLoading.show();
     // await saveImage();
     // if (createCompanyPageController.developerCompanyLogo.link == null) {
@@ -158,6 +171,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
             children: [
               if (!formWidgets.length.isEqual(0))
                 ManageCompanyForm(
+                    imageControllers: imageControllers,
                     controllers: formControllers,
                     enable: true,
                     companyId: companyId,
@@ -182,18 +196,23 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                     text: "Guardar",
                     onTap: () {
                       print('manage_company_page 154  ${formControllers}');
-                      // formWidgets
 
-                      final values =
-                          retrieveFormControllers(formWidgets, formControllers);
-                      print('🤖 🤖 manage_company_page 186  ${values}');
+                      final inputValues = retrieveFormControllersInput(
+                          formWidgets, formControllers);
+                      final imageValues = retrieveFormControllersImage(
+                          formWidgets, imageControllers);
 
-                      // if (manageCompanyFormKey.currentState!.validate()) {
-                      //   _handleSaveCompany();
-                      // } else {
-                      //   EasyLoading.showInfo(
-                      //       "Por favor verifique que los campos sean validos.");
-                      // }
+                      // print(
+                      //     '🤖 🤖 manage_company_page 193 inputValues ${inputValues}');
+                      // print(
+                      //     '🤖 🤖 manage_company_page 194 imageValues ${imageValues}');
+
+                      if (manageCompanyFormKey.currentState!.validate()) {
+                        _handleSaveCompany(inputValues, imageValues, {});
+                      } else {
+                        EasyLoading.showInfo(
+                            "Por favor verifique que los campos sean validos.");
+                      }
                     },
                   )),
                 ],

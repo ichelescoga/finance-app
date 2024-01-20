@@ -213,7 +213,14 @@ final Map<String, IconData> icons = {
 
 IconData selectedIcon(String? icon) {
   final IconData defaultIcon = Icons.app_blocking;
-  if(icon == null) return defaultIcon;
+  if (icon == null) return defaultIcon;
 
   return icons[icon] ?? defaultIcon;
+}
+
+Icon selectedIconForImage(String? icon) {
+  final Icon defaultIcon = Icon(Icons.upload);
+  if (icon == null) return defaultIcon;
+
+  return Icon(icons[icon]);
 }
