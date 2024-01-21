@@ -1,5 +1,5 @@
 import "package:developer_company/data/implementations/company_repository_impl.dart";
-import "package:developer_company/data/models/CDI/custom_image_model.dart";
+// import "package:developer_company/data/models/CDI/custom_image_model.dart";
 import "package:developer_company/data/models/image_model.dart";
 import "package:developer_company/data/providers/company_provider.dart";
 import "package:developer_company/data/repositories/company_repository.dart";
@@ -78,26 +78,31 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
     return Column(
       children: formWidgets.map((widgetEP) {
         String id = widgetEP["bodyKey"];
-        TextEditingController controller = TextEditingController(
-            text: widgetEP["defaultValue"] != null
-                ? widgetEP["defaultValue"]
-                : "");
 
-        ImageToUpload imageController = ImageToUpload(
-          base64: null,
-          needUpdate: true,
-          link:
-              widgetEP["defaultValue"] != null ? widgetEP["defaultValue"] : "",
-        );
-
+        //! IMAGE COMPONENT
         if (widgetEP["Type"] == CDIConstants.image) {
+          ImageToUpload imageController = ImageToUpload(
+            base64: null,
+            needUpdate: widgetEP["defaultValue"] != null,
+            link: "",
+          );
+
+          if (widgetEP["defaultValue"] != null) {
+            imageController.updateLink(widgetEP["defaultValue"]);
+          }
+
           widget.imageControllers[id] = imageController;
           return LogoUploadWidget(
               uploadImageController: imageController,
               text: widgetEP["Place_holder"],
               validator: (value) => null);
         }
+        //! INPUT COMPONENT
         if (widgetEP["Type"] == CDIConstants.input) {
+          TextEditingController controller = TextEditingController(
+              text: widgetEP["defaultValue"] != null
+                  ? widgetEP["defaultValue"]
+                  : "");
           widget.controllers[id] = controller;
           return CustomInputWidget(
             controller: controller,

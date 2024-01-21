@@ -5,7 +5,7 @@ import 'package:developer_company/data/repositories/upload_image_repository.dart
 import 'package:uuid/uuid.dart';
 
 Future<String> saveImage(
-    ImageToUpload imageController, String? imageName) async {
+    ImageToUpload imageController) async {
   var uuid = Uuid();
   final uid = uuid.v1();
 
@@ -16,9 +16,9 @@ Future<String> saveImage(
   final needUpdateLogo = imageController.needUpdate;
 
   if (developerLogoBase64 != null && needUpdateLogo) {
-    String developerName = imageName != null
+    String developerName = imageController.originalName != null
         ? imageController.originalName!
-        : "${imageName}-${uid}${imageController.extension}";
+        : "${uid}-${uid}${imageController.extension}";
 
     final UploadImage logoRequestImage = UploadImage(
         file: developerLogoBase64,
@@ -36,10 +36,15 @@ Future<String> saveImage(
 
 Future<Map<String, String>> handleImagesToUpload(
     Map<String, ImageToUpload> imagesInput) async {
-  imagesInput.forEach((key, value) {
-      print(key);
-      print(value);
-  });
+  Map<String, String> imagesValues = {};
 
-  return {};
+  for (var entry in imagesInput.entries) {
+    final key = entry.key;
+    final value = entry.value;
+
+    final linkResponse = await saveImage(value);
+    imagesValues[key] = linkResponse;
+  }
+
+  return imagesValues;
 }

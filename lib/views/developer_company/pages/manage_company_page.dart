@@ -104,11 +104,17 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
       Map<String, ImageToUpload> imageValues,
       Map<String, dynamic>
           dropdownValues //TODO: should be receive the dynamicInputDropDownValues;
-
       ) async {
-    print("inputValues ${inputValues}");
-    print(imageValues);
-    handleImagesToUpload(imageValues);
+
+    // print("inputValues ${inputValues}");
+    // print(imageValues);
+    final imagesResponse = await handleImagesToUpload(imageValues);
+    print("imagesResponse imagesResponse imagesResponse ${imagesResponse}");
+
+    // imagesResponse.forEach((key, value) {
+    //   print("key ${key}");
+    //   print("value ${value}");
+    //  });
 
     // EasyLoading.show();
     // await saveImage();
