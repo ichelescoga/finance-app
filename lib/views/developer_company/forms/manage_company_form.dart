@@ -76,7 +76,6 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
 
         if (response.statusCode == 200) {
           List<dynamic> jsonData = json.decode(response.body);
-          print(jsonData);
           final listKeys = element["listKeys"]!.split(",");
           List<DropDownOption> options = jsonData
               .map((e) => DropDownOption(
@@ -109,7 +108,6 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
         String id = widgetEP["bodyKey"];
 
         //! DROPDOWN COMPONENT
-
         if (widgetEP["Type"] == CDIConstants.dropdown) {
           TextEditingController controller = TextEditingController(
               text: widgetEP["defaultValue"] != null
@@ -140,7 +138,6 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
             },
           );
         }
-
         //! IMAGE COMPONENT
         if (widgetEP["Type"] == CDIConstants.image) {
           ImageToUpload imageController = ImageToUpload(
