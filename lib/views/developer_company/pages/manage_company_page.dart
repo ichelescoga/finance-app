@@ -73,32 +73,6 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
     }
   }
 
-  // Future saveImage(ImageToUpload imageController) async {
-  //   final uid = uuid.v1();
-  //   final developerLogoBase64 =
-  //       createCompanyPageController.developerCompanyLogo.base64;
-  //   final needUpdateLogo =
-  //       createCompanyPageController.developerCompanyLogo.needUpdate;
-
-  //   if (developerLogoBase64 != null && needUpdateLogo) {
-  //     String developerName = createCompanyPageController
-  //                 .developerCompanyLogo.originalName !=
-  //             null
-  //         ? createCompanyPageController.developerCompanyLogo.originalName!
-  //         : "${createCompanyPageController.developerCompanyName.text}-${uid}${createCompanyPageController.developerCompanyLogo.extension}";
-
-  //     final UploadImage logoRequestImage = UploadImage(
-  //         file: developerLogoBase64,
-  //         fileName: developerName,
-  //         transactionType: "developerLogo");
-
-  //     ImageToUpload responseImage =
-  //         await uploadImageRepository.postImage(logoRequestImage);
-  //     final link = responseImage.link;
-  //     createCompanyPageController.developerCompanyLogo.updateLink(link!);
-  //   }
-  // }
-
   _handleSaveCompany(
       Map<String, dynamic> inputValues,
       Map<String, ImageToUpload> imageValues,
@@ -106,8 +80,6 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
           dropdownValues //TODO: should be receive the dynamicInputDropDownValues;
       ) async {
 
-    // print("inputValues ${inputValues}");
-    // print(imageValues);
     final imagesResponse = await handleImagesToUpload(imageValues);
     print("imagesResponse imagesResponse imagesResponse ${imagesResponse}");
 

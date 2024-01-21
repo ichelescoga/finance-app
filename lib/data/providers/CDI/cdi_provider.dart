@@ -1,9 +1,5 @@
 import 'dart:convert';
 
-import 'package:developer_company/data/models/CDI/custom_dropdown_model.dart';
-import 'package:developer_company/data/models/CDI/custom_image_model.dart';
-import 'package:developer_company/data/models/CDI/custom_input_model.dart';
-import 'package:developer_company/data/models/CDI/custom_table_model.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 
 class CDIProvider {
@@ -20,18 +16,6 @@ class CDIProvider {
         if (jsonData is List) {
           return jsonData.map((item) {
             return item[0];
-            // switch (item[0]["Type"]) {
-            //   case "QTS_Table":
-            //     return QTS_Table.fromJson(item[0]);
-            //   case "QTS_Input":
-            //     return QTS_input.fromJson(item[0]);
-            //   case "QTS_Image":
-            //     return QTS_image.fromJson(item[0]);
-            //   case "QTS_Dropdown":
-            //     return QTS_dropdown.fromJson(item[0]);
-            //   default:
-            //     throw Exception("Unknown type: ");
-            // }
           }).toList();
         } else {
           throw Exception("Invalid response format");

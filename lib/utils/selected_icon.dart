@@ -1,6 +1,7 @@
+import 'package:developer_company/shared/resources/colors.dart';
 import 'package:flutter/material.dart';
 
-final Map<String, IconData> icons = {
+final Map<String, IconData> iconsInDatabase = {
   "rotate_left": Icons.rotate_left,
   "ac_unit": Icons.ac_unit,
   "access_alarm": Icons.access_alarm,
@@ -215,12 +216,12 @@ IconData selectedIcon(String? icon) {
   final IconData defaultIcon = Icons.app_blocking;
   if (icon == null) return defaultIcon;
 
-  return icons[icon] ?? defaultIcon;
+  return iconsInDatabase[icon] ?? defaultIcon;
 }
 
 Icon selectedIconForImage(String? icon) {
   final Icon defaultIcon = Icon(Icons.upload);
   if (icon == null) return defaultIcon;
 
-  return Icon(icons[icon]);
+  return Icon(iconsInDatabase[icon], color: AppColors.officialWhite);
 }

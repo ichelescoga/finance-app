@@ -1,3 +1,5 @@
+import "dart:convert";
+
 import "package:developer_company/data/implementations/company_repository_impl.dart";
 // import "package:developer_company/data/models/CDI/custom_image_model.dart";
 import "package:developer_company/data/models/image_model.dart";
@@ -9,6 +11,7 @@ import "package:developer_company/utils/cdi_components.dart";
 import "package:developer_company/utils/get_keyboard_type_from_string.dart";
 import "package:developer_company/utils/selected_icon.dart";
 import "package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart";
+import "package:developer_company/widgets/autocomplete_dropdown.dart";
 import "package:developer_company/widgets/custom_input_widget.dart";
 import "package:developer_company/widgets/upload_button_widget.dart";
 import "package:flutter/material.dart";
@@ -47,30 +50,56 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
 
   List<dynamic> formWidgets = [];
   dynamic company = {};
+  List<DropDownOption> dropdownElements = [];
 
-  UnitDetailPageController asdf = UnitDetailPageController();
-
-  _fetchCompanyById() async {
+  _fetchCompanyFormByID(fields) async {
     final companyId = widget.companyId;
-    formWidgets = widget.formCustomWidgets;
+    final customInputs = fields;
+
     if (companyId != null) {
-      EasyLoading.show();
       final companyResult = await companyRepository.getCompanyById(companyId);
       company = companyResult;
 
-      formWidgets.forEach((element) {
+      customInputs.forEach((element) {
         element["defaultValue"] = company[element["bodyKey"]];
       });
-      setState(() {});
-      EasyLoading.dismiss();
     }
+    return customInputs;
+  }
+
+  _processCompanyForm() async {
+    List<dynamic> inputs = widget.formCustomWidgets;
+
+    for (var element in inputs) {
+      if (element["Type"] == CDIConstants.dropdown) {
+        final response = await http.getApi(element["url"], {});
+
+        if (response.statusCode == 200) {
+          List<dynamic> jsonData = json.decode(response.body);
+          print(jsonData);
+          final listKeys = element["listKeys"]!.split(",");
+          List<DropDownOption> options = jsonData
+              .map((e) => DropDownOption(
+                  id: e[listKeys[0]].toString(), label: e[listKeys[1]]))
+              .toList();
+          element["dropdownValues"] = options;
+        } else {
+          throw Exception("Failed to load data");
+        }
+      }
+    }
+
+    final result = await _fetchCompanyFormByID(inputs);
+    setState(() {
+      formWidgets = result;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     enable = widget.enable;
-    _fetchCompanyById();
+    _processCompanyForm();
   }
 
   @override
@@ -79,11 +108,44 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
       children: formWidgets.map((widgetEP) {
         String id = widgetEP["bodyKey"];
 
+        //! DROPDOWN COMPONENT
+
+        if (widgetEP["Type"] == CDIConstants.dropdown) {
+          TextEditingController controller = TextEditingController(
+              text: widgetEP["defaultValue"] != null
+                  ? widgetEP["defaultValue"]
+                  : "");
+          widget.controllers[id] = controller;
+
+          return AutocompleteDropdownWidget(
+            listItems: widgetEP["dropdownValues"] as List<DropDownOption>,
+            onSelected: (selected) {
+              List<DropDownOption> options =
+                  widgetEP["dropdownValues"] as List<DropDownOption>;
+
+              final selectedClientDropdown = options.firstWhere(
+                  (element) => element.id == int.parse(selected.id));
+              controller.text = selectedClientDropdown.id;
+            },
+            label: "Empresas",
+            hintText: "Buscar Empresas",
+            onFocusChange: ((p0) {}),
+            onTextChange: (p0) async {
+              List<DropDownOption> options =
+                  widgetEP["dropdownValues"] as List<DropDownOption>;
+              return options
+                  .where((element) =>
+                      element.label.toLowerCase().contains(p0.toLowerCase()))
+                  .toList();
+            },
+          );
+        }
+
         //! IMAGE COMPONENT
         if (widgetEP["Type"] == CDIConstants.image) {
           ImageToUpload imageController = ImageToUpload(
             base64: null,
-            needUpdate: widgetEP["defaultValue"] != null,
+            needUpdate: true,
             link: "",
           );
 
@@ -95,6 +157,7 @@ class _ManageCompanyFormState extends State<ManageCompanyForm> {
           return LogoUploadWidget(
               uploadImageController: imageController,
               text: widgetEP["Place_holder"],
+              icon: selectedIconForImage(widgetEP["Icon"]),
               validator: (value) => null);
         }
         //! INPUT COMPONENT
