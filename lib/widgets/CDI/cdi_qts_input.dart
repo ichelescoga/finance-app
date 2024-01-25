@@ -1,10 +1,6 @@
-import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/utils/selected_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:developer_company/utils/cdi_components.dart';
-import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
-import 'package:developer_company/widgets/upload_button_widget.dart';
 
 
 

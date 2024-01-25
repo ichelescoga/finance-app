@@ -9,7 +9,8 @@ class CDIProvider {
     final endpoint = "orders/v1/getComponentsByEntity";
 
     try {
-      final response = await http.getApiWithBody(endpoint, {'Content-Type': 'application/json'}, {"id": 1});
+      final response = await http.getApiWithBody(
+          endpoint, {'Content-Type': 'application/json'}, {"id": 1});
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
@@ -25,6 +26,21 @@ class CDIProvider {
       }
     } catch (e) {
       throw Exception("Error: $e");
+    }
+  }
+
+  Future<List<dynamic>> fetchDataList(String endpoint) async {
+    final response = await http.getApi(endpoint, {});
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData is List) {
+        return jsonData;
+      } else {
+        throw Exception("Invalid response format");
+      }
+    } else {
+      throw Exception("Failed to load data");
     }
   }
 }

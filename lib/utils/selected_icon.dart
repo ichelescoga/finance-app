@@ -209,7 +209,9 @@ final Map<String, IconData> iconsInDatabase = {
   "phone": Icons.phone,
   "person_pin": Icons.person_pin,
   "supervised_user_circle": Icons.supervised_user_circle,
-  "person_outline": Icons.person_outline
+  "person_outline": Icons.person_outline,
+  "contact_page": Icons.contact_page,
+  "work": Icons.work,
 };
 
 IconData selectedIcon(String? icon) {

@@ -11,7 +11,22 @@ class CompanyProvider {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
+// TODO: now response with plain objects 
+/*
 
+{
+    "nombre": "Skyline Heights Realty",
+    "descripcion": "Elevando el estándar de vida en lo más alto de la ciudad.",
+    "desarrollador": "Altitude Developers",
+    "nit": "8901234",
+    "direccion": "Horizonte Urbano #901",
+    "contacto": "Laura Soto",
+    "telefonocontacto": "10987654",
+    "gerentedeventas": "Diego Muñoz",
+    "telefonogerente": "09876543",
+    "logo": "[Enlace al logo]"
+  }
+   */
       return jsonResponse.map((json) {
         final companyDetails = convertArrayToObject(json['details']);
 
@@ -66,7 +81,7 @@ class CompanyProvider {
     final response = await httpAdapter.getApi("orders/v1/getCompanyById/$companyId", {});
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      
+
       final companyDetails = convertArrayToObject(jsonResponse["company"]['details']);
 
       final companyData = {...jsonResponse["company"]["company"], ...companyDetails};

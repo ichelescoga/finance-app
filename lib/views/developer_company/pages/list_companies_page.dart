@@ -1,7 +1,10 @@
-import 'package:developer_company/data/implementations/company_repository_impl.dart';
-import 'package:developer_company/data/models/company_model.dart';
-import 'package:developer_company/data/providers/company_provider.dart';
-import 'package:developer_company/data/repositories/company_repository.dart';
+import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
+// import 'package:developer_company/data/models/company_model.dart';
+// import 'package:developer_company/data/implementations/company_repository_impl.dart';
+import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
+// import 'package:developer_company/data/providers/company_provider.dart';
+import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
+// import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
@@ -22,25 +25,45 @@ class ListCompanies extends StatefulWidget {
 }
 
 class _ListCompaniesState extends State<ListCompanies> {
-  CompanyRepository companyProvider = CompanyRepositoryImpl(CompanyProvider());
-  List<Company> companies = [];
-  List<Company> filteredCompanies = [];
+  // CompanyRepository companyProvider = CompanyRepositoryImpl(CompanyProvider());
+  CDIRepository cdiProvider = CDIRepositoryImpl(CDIProvider());
+  List<dynamic> companies = [];
+  List<dynamic> filteredCompanies = [];
 
   _getCompanies() async {
-    EasyLoading.show();
-    final tempCompanies = await companyProvider.fetchCompanies();
+    String COMPANY_ENDPOINT = "orders/v1/getCompanies";
+    final tempCompanies = await cdiProvider.fetchDataList(COMPANY_ENDPOINT);
 
-    setState(() {
-      companies = tempCompanies;
-      filteredCompanies = tempCompanies;
-    });
+    companies = tempCompanies;
+    filteredCompanies = tempCompanies;
+  }
+
+  CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
+
+  List<dynamic> columnsData = [];
+
+  _getFormCompany() async {
+    EasyLoading.show();
+    final result = await cdiRepository.fetchCompanyTable();
+    print(
+        'list_companies_page number of line 50  _getFormCompany  ${result} for choose the name');
+
+    columnsData = result
+        .where((e) => e["ShowInList"] == true || e["ShoInList"] == "true")
+        .toList();
+
+    // formWidgets = result;
+    // setState(() {
+    // });
+    await _getCompanies();
     EasyLoading.dismiss();
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    _getCompanies();
+    _getFormCompany();
   }
 
   @override
@@ -83,73 +106,63 @@ class _ListCompaniesState extends State<ListCompanies> {
               hint: "Buscar",
               elements: companies,
               isLoading: false,
-              handleFilteredData: (List<Company> data) =>
+              handleFilteredData: (List<dynamic> data) =>
                   setState(() => filteredCompanies = data),
             ),
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: CustomDataTable(
-                  columns: [
-                    "Nombre",
-                    "Desarrolladora",
-                    "Contacto",
-                    "Estado",
-                    ""
-                  ],
-                  elements: filteredCompanies
-                      .asMap()
-                      .map((index, element) => MapEntry(
-                          index,
-                          DataRow(
-                            cells: [
-                              DataCell(Text(element.businessName)),
-                              DataCell(ConstrainedBox(
-                                  constraints:
-                                      BoxConstraints(maxWidth: Get.width / 2),
-                                  child: Wrap(
-                                    children: [
-                                      Text(
-                                        element.developer,
-                                        overflow: TextOverflow.clip,
-                                      ),
-                                    ],
-                                  ))),
-                              DataCell(Text(element.contactPhone)),
-                              DataCell(Text("Activo")),
-                              DataCell(Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () => _handleManageCompany(
-                                          element.companyId),
-                                      icon: Icon(Icons.edit_square)),
-                                  IconButton(
-                                      onPressed: () => _dialogDeleteCompany(
-                                          context, element),
-                                      icon: Icon(Icons.delete))
-                                ],
-                              ))
-                            ],
-                            color: index % 2 == 0
-                                ? MaterialStateProperty.all<Color>(
-                                    AppColors.lightColor)
-                                : MaterialStateProperty.all<Color>(
-                                    AppColors.lightSecondaryColor),
-                          )))
-                      .values
-                      .toList(),
-                )),
+            if (columnsData.length > 0)
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: CustomDataTable(
+                    columns: [...columnsData]
+                        .map((e) => e["HintText"].toString())
+                        .toList()
+                      ..add(""),
+                    elements: filteredCompanies
+                        .asMap()
+                        .map((index, element) => MapEntry(
+                            index,
+                            DataRow(
+                              cells: [...columnsData]
+                                  .map((e) =>
+                                      DataCell(Text(element[e["bodyKey"]].toString())))
+                                  .toList()
+                                ..add(
+                                  DataCell(
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () =>
+                                                _handleManageCompany(
+                                                    element["id"]),
+                                            icon: Icon(Icons.edit_square)),
+                                        IconButton(
+                                            onPressed: () => _dialogDeleteCompany(context, element[columnsData[0]["bodyKey"]].toString(), element["id"]),
+                                            icon: Icon(Icons.delete))
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              color: index % 2 == 0
+                                  ? MaterialStateProperty.all<Color>(
+                                      AppColors.lightColor)
+                                  : MaterialStateProperty.all<Color>(
+                                      AppColors.lightSecondaryColor),
+                            )))
+                        .values
+                        .toList(),
+                  )),
           ],
         ));
   }
 
-  _dialogDeleteCompany(BuildContext context, Company company) {
+  _dialogDeleteCompany(BuildContext context, String name, int id) {
     showDialog(
       context: context,
       builder: (context) {
         return PopScope(
           child: DeleteCompanyDialog(
-            companyName: company.businessName,
-            companyId: company.companyId!,
+            companyName: name,
+            companyId: id,
           ),
         );
       },
@@ -161,3 +174,17 @@ class _ListCompaniesState extends State<ListCompanies> {
     });
   }
 }
+
+
+//  DataCell(Row(
+//                                 children: [
+//                                   IconButton(
+//                                       onPressed: () => _handleManageCompany(
+//                                           element.companyId),
+//                                       icon: Icon(Icons.edit_square)),
+//                                   IconButton(
+//                                       onPressed: () => _dialogDeleteCompany(
+//                                           context, element),
+//                                       icon: Icon(Icons.delete))
+//                                 ],
+//                               ))
