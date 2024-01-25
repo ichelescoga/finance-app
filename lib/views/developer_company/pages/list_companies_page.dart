@@ -174,17 +174,3 @@ class _ListCompaniesState extends State<ListCompanies> {
     });
   }
 }
-
-
-//  DataCell(Row(
-//                                 children: [
-//                                   IconButton(
-//                                       onPressed: () => _handleManageCompany(
-//                                           element.companyId),
-//                                       icon: Icon(Icons.edit_square)),
-//                                   IconButton(
-//                                       onPressed: () => _dialogDeleteCompany(
-//                                           context, element),
-//                                       icon: Icon(Icons.delete))
-//                                 ],
-//                               ))
