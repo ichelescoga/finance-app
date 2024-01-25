@@ -43,4 +43,26 @@ class CDIProvider {
       throw Exception("Failed to load data");
     }
   }
+
+  Future<bool> postData(String url, Map<String, dynamic> data) async {
+    final response = await http
+        .postApi(url, json.encode(data), {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> editData(String url, Map<String, dynamic> data) async {
+    final response = await http
+        .putApi(url, json.encode(data), {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

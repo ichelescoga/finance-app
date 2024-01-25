@@ -35,12 +35,6 @@ Map<String, ImageToUpload> retrieveFormControllersImage(
       if (controller == null)
         throw Exception("Controller doesn't have null. ${id}");
       values[id] = controller;
-
-      print("controller.base64 ${controller.base64}");
-      print("controller.link ${controller.link}");
-      print("controller.needUpdate ${controller.needUpdate}");
-      print("controller.originalName ${controller.originalName}");
-      print("controller.extension ${controller.extension}");
     }
   });
 

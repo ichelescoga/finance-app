@@ -12,7 +12,17 @@ class CDIRepositoryImpl implements CDIRepository {
   }
 
   @override
-  Future<List<dynamic>> fetchDataList(String endpoint) async{
+  Future<List<dynamic>> fetchDataList(String endpoint) async {
     return this.cdiProvider.fetchDataList(endpoint);
+  }
+
+  @override
+  Future<bool> postData(String url, Map<String, dynamic> data) async {
+    return this.cdiProvider.postData(url, data);
+  }
+
+  @override
+  Future<bool> editData(String url, Map<String, dynamic> data) async {
+    return this.cdiProvider.editData(url, data);
   }
 }

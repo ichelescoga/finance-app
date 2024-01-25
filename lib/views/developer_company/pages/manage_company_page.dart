@@ -79,16 +79,29 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
       Map<String, dynamic>
           dropdownValues //TODO: should be receive the dynamicInputDropDownValues;
       ) async {
-
+    EasyLoading.show();
     final imagesResponse = await handleImagesToUpload(imageValues);
     print("imagesResponse imagesResponse imagesResponse ${imagesResponse}");
 
+    EasyLoading.dismiss();
+    bool result = false;
+
+    if (companyId != null) {
+      // result = await companyProvider.editCompany(companyId!, companyData);
+      result = true;
+    } else {
+      // result = await companyProvider.createCompany(companyData);
+      result = false;
+    }
+
+    if (result) {
+      Get.back(closeOverlays: true, result: result);
+    }
     // imagesResponse.forEach((key, value) {
     //   print("key ${key}");
     //   print("value ${value}");
     //  });
 
-    // EasyLoading.show();
     // await saveImage();
     // if (createCompanyPageController.developerCompanyLogo.link == null) {
     //   EasyLoading.showInfo("Algo salio mal al subir la imagen");
@@ -110,16 +123,6 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
     //       createCompanyPageController.developerCompanySellManagerPhone.text,
     //   logo: createCompanyPageController.developerCompanyLogo.link!,
     // );
-
-    // bool result = false;
-    // if (companyId != null) {
-    //   result = await companyProvider.editCompany(companyId!, companyData);
-    // } else {
-    //   result = await companyProvider.createCompany(companyData);
-    // }
-    // if (result) {
-    //   Get.back(closeOverlays: true, result: result);
-    // }
 
     // 'nombre': businessName,
     // 'descripcion': description,
@@ -173,19 +176,11 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                     color: AppColors.blueColor,
                     text: "Guardar",
                     onTap: () {
-                      print('manage_company_page 154  ${formControllers}');
-
-                      final inputValues = retrieveFormControllersInput(
-                          formWidgets, formControllers);
-                      final imageValues = retrieveFormControllersImage(
-                          formWidgets, imageControllers);
-
-                      // print(
-                      //     '🤖 🤖 manage_company_page 193 inputValues ${inputValues}');
-                      // print(
-                      //     '🤖 🤖 manage_company_page 194 imageValues ${imageValues}');
-
                       if (manageCompanyFormKey.currentState!.validate()) {
+                        final inputValues = retrieveFormControllersInput(
+                            formWidgets, formControllers);
+                        final imageValues = retrieveFormControllersImage(
+                            formWidgets, imageControllers);
                         _handleSaveCompany(inputValues, imageValues, {});
                       } else {
                         EasyLoading.showInfo(
