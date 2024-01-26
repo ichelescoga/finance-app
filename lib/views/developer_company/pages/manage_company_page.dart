@@ -15,7 +15,8 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/utils/handle_upload_image.dart';
 // import 'package:developer_company/utils/cdi_components.dart';
 import 'package:developer_company/utils/retrieve_form_list_controllers.dart';
-import 'package:developer_company/views/developer_company/forms/manage_company_form.dart';
+// import 'package:developer_company/views/developer_company/forms/manage_company_form.dart';
+import 'package:developer_company/widgets/CDI/dynamic_form.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
@@ -81,61 +82,19 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
       ) async {
     EasyLoading.show();
     final imagesResponse = await handleImagesToUpload(imageValues);
-    print("imagesResponse imagesResponse imagesResponse ${imagesResponse}");
-
-    EasyLoading.dismiss();
     bool result = false;
 
     if (companyId != null) {
-      // result = await companyProvider.editCompany(companyId!, companyData);
-      result = true;
+      result = await cdiRepository.postData("orders/v1/editCompany",
+          {"id": companyId, ...inputValues, ...imagesResponse});
     } else {
-      // result = await companyProvider.createCompany(companyData);
-      result = false;
+      result = await cdiRepository
+          .postData("orders/v1/addCompany", {...inputValues, ...imagesResponse});
     }
-
     if (result) {
       Get.back(closeOverlays: true, result: result);
     }
-    // imagesResponse.forEach((key, value) {
-    //   print("key ${key}");
-    //   print("value ${value}");
-    //  });
-
-    // await saveImage();
-    // if (createCompanyPageController.developerCompanyLogo.link == null) {
-    //   EasyLoading.showInfo("Algo salio mal al subir la imagen");
-    //   throw new Exception("Something bad wrongs to upload image");
-    // }
-
-    // Company companyData = Company(
-    //   businessName: createCompanyPageController.developerCompanyName.text,
-    //   description: createCompanyPageController.developerCompanyDescription.text,
-    //   developer: createCompanyPageController.developerCompanyDeveloper.text,
-    //   nit: createCompanyPageController.developerCompanyNit.text,
-    //   address: createCompanyPageController.developerCompanyAddress.text,
-    //   contact: createCompanyPageController.developerCompanyContactName.text,
-    //   contactPhone:
-    //       createCompanyPageController.developerCompanyContactPhone.text,
-    //   salesManager:
-    //       createCompanyPageController.developerCompanySellManager.text,
-    //   managerPhone:
-    //       createCompanyPageController.developerCompanySellManagerPhone.text,
-    //   logo: createCompanyPageController.developerCompanyLogo.link!,
-    // );
-
-    // 'nombre': businessName,
-    // 'descripcion': description,
-    // 'createdby': createdAt.toIso8601String(),
-    // "updatedby": updatedAt.toIso8601String(),
-    // 'desarrollador': developer,
-    // 'nit': nit,
-    // 'direccion': address,
-    // 'contacto': contact,
-    // 'telefonocontacto': contactPhone,
-    // 'gerenteventas': salesManager,
-    // 'telefonogerenteventas': managerPhone,
-    // 'logo': logo,
+  
     EasyLoading.dismiss();
   }
 
@@ -151,11 +110,12 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
           child: Column(
             children: [
               if (!formWidgets.length.isEqual(0))
-                ManageCompanyForm(
+                DynamicDatabaseForm(
+                    callBackById: (p0) => companyProvider.getCompanyById(companyId!),
                     imageControllers: imageControllers,
                     controllers: formControllers,
                     enable: true,
-                    companyId: companyId,
+                    id: companyId,
                     formCustomWidgets: formWidgets),
               const SizedBox(
                 height: Dimensions.heightSize,

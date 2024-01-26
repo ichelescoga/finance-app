@@ -44,17 +44,12 @@ class _ListCompaniesState extends State<ListCompanies> {
 
   _getFormCompany() async {
     EasyLoading.show();
+    filteredCompanies.clear();
+    companies.clear();
     final result = await cdiRepository.fetchCompanyTable();
-    print(
-        'list_companies_page number of line 50  _getFormCompany  ${result} for choose the name');
-
     columnsData = result
         .where((e) => e["ShowInList"] == true || e["ShoInList"] == "true")
         .toList();
-
-    // formWidgets = result;
-    // setState(() {
-    // });
     await _getCompanies();
     EasyLoading.dismiss();
     setState(() {});
@@ -77,7 +72,7 @@ class _ListCompaniesState extends State<ListCompanies> {
         RouterPaths.MANAGE_COMPANY_PAGE,
         arguments: {"companyId": companyId});
     if (needUpdateListCompanies) {
-      _getCompanies();
+      _getFormCompany();
     }
   }
 
@@ -123,8 +118,8 @@ class _ListCompaniesState extends State<ListCompanies> {
                             index,
                             DataRow(
                               cells: [...columnsData]
-                                  .map((e) =>
-                                      DataCell(Text(element[e["bodyKey"]].toString())))
+                                  .map((e) => DataCell(
+                                      Text(element[e["bodyKey"]].toString())))
                                   .toList()
                                 ..add(
                                   DataCell(
@@ -136,7 +131,13 @@ class _ListCompaniesState extends State<ListCompanies> {
                                                     element["id"]),
                                             icon: Icon(Icons.edit_square)),
                                         IconButton(
-                                            onPressed: () => _dialogDeleteCompany(context, element[columnsData[0]["bodyKey"]].toString(), element["id"]),
+                                            onPressed: () =>
+                                                _dialogDeleteCompany(
+                                                    context,
+                                                    element[columnsData[0]
+                                                            ["bodyKey"]]
+                                                        .toString(),
+                                                    element["id"]),
                                             icon: Icon(Icons.delete))
                                       ],
                                     ),
