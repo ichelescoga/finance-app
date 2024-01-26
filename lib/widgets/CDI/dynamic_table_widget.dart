@@ -1,24 +1,31 @@
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
-// import 'package:developer_company/data/models/company_model.dart';
-// import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
-// import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
-// import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
-import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/shared/routes/router_paths.dart';
-import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/delete_company_dialog.dart';
 import 'package:developer_company/widgets/filter_box.dart';
-import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class dynamicTable extends StatefulWidget {
-  const dynamicTable({Key? key}) : super(key: key);
+  final String route;
+  final String entity;
+  final String endpointRoute;
+  final String filterBoxLabel;
+  final String filterHintLabel;
+
+
+  const dynamicTable(
+      {Key? key,
+      required this.route,
+      required this.entity,
+      required this.endpointRoute,
+      required this.filterBoxLabel,
+      required this.filterHintLabel,
+      })
+      : super(key: key);
 
   @override
   _dynamicTableState createState() => _dynamicTableState();
@@ -30,9 +37,7 @@ class _dynamicTableState extends State<dynamicTable> {
   List<dynamic> filteredData = [];
 
   getData() async {
-    String COMPANY_ENDPOINT = "orders/v1/getCompanies";
-    final tempData = await cdiProvider.fetchDataList(COMPANY_ENDPOINT);
-
+    final tempData = await cdiProvider.fetchDataList(widget.entity);
     data = tempData;
     filteredData = tempData;
   }
@@ -45,10 +50,9 @@ class _dynamicTableState extends State<dynamicTable> {
     EasyLoading.show();
     filteredData.clear();
     data.clear();
-    final String COMPANY_ENTITY = "1";
-    final result = await cdiRepository.fetchDataTable(COMPANY_ENTITY);
+    final result = await cdiRepository.fetchDataTable(widget.entity);
     columnsData = result
-        .where((e) => e["ShowInList"] == true || e["ShoInList"] == "true")
+        .where((e) => e["ShowInList"] == true || e["ShowInList"] == "true")
         .toList();
     await getData();
     EasyLoading.dismiss();
@@ -68,95 +72,77 @@ class _dynamicTableState extends State<dynamicTable> {
   }
 
   _handleManageData(int? id) async {
-    final needUpdateListCompanies = await Get.toNamed(
-        RouterPaths.MANAGE_COMPANY_PAGE,
-        arguments: {"dataId": id});
-    if (needUpdateListCompanies) {
+    final needUpdateListData =
+        await Get.toNamed(widget.route, arguments: {"dataId": id});
+    if (needUpdateListData) {
       getFormData();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Layout(
-        sideBarList: [],
-        appBar: CustomAppBarSideBar(
-          title: "Empresas",
-          rightActions: [
-            IconButton(
-                icon: Icon(
-                  Icons.add_circle_sharp,
-                  color: AppColors.softMainColor,
-                  size: Dimensions.topIconSizeH,
-                ),
-                onPressed: () {
-                  _handleManageData(null);
-                })
-          ],
+    return Column(
+      children: [
+        FilterBox(
+          label: widget.filterBoxLabel,
+          hint: widget.filterHintLabel,
+          elements: data,
+          isLoading: false,
+          handleFilteredData: (List<dynamic> data) =>
+              setState(() => filteredData = data),
         ),
-        child: Column(
-          children: [
-            FilterBox(
-              label: "Buscar Empresas",
-              hint: "Buscar",
-              elements: data,
-              isLoading: false,
-              handleFilteredData: (List<dynamic> data) =>
-                  setState(() => filteredData = data),
-            ),
-            if (columnsData.length > 0)
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: CustomDataTable(
-                    columns: [...columnsData]
-                        .map((e) => e["HintText"].toString())
-                        .toList()
-                      ..add(""),
-                    elements: filteredData
-                        .asMap()
-                        .map((index, element) => MapEntry(
-                            index,
-                            DataRow(
-                              cells: [...columnsData]
-                                  .map((e) => DataCell(
-                                      Text(element[e["bodyKey"]].toString())))
-                                  .toList()
-                                ..add(
-                                  DataCell(
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                            onPressed: () =>
-                                                _handleManageData(
-                                                    element["id"]),
-                                            icon: Icon(Icons.edit_square)),
-                                        IconButton(
-                                            onPressed: () =>
-                                                _dialogDeleteCompany(
-                                                    context,
-                                                    element[columnsData[0]
-                                                            ["bodyKey"]]
-                                                        .toString(),
-                                                    element["id"]),
-                                            icon: Icon(Icons.delete))
-                                      ],
-                                    ),
-                                  ),
+        if (columnsData.length > 0)
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: CustomDataTable(
+                columns: [...columnsData]
+                    .map((e) => e["HintText"].toString())
+                    .toList()
+                  ..add(""),
+                elements: filteredData
+                    .asMap()
+                    .map((index, element) => MapEntry(
+                        index,
+                        DataRow(
+                          cells: [...columnsData]
+                              .map((e) => DataCell(
+                                  Text(element[e["bodyKey"]].toString())))
+                              .toList()
+                            ..add(
+                              DataCell(
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () => _handleManageData(
+                                            element["id"]),
+                                        icon: Icon(Icons.edit_square)),
+                                    IconButton(
+                                        onPressed: () =>
+                                            _dialogDeleteDataById(
+                                                context,
+                                                element[columnsData[0]
+                                                        ["HintText"]!]
+                                                    .toString(),
+                                                element["id"]),
+                                        icon: Icon(Icons.delete))
+                                  ],
                                 ),
-                              color: index % 2 == 0
-                                  ? MaterialStateProperty.all<Color>(
-                                      AppColors.lightColor)
-                                  : MaterialStateProperty.all<Color>(
-                                      AppColors.lightSecondaryColor),
-                            )))
-                        .values
-                        .toList(),
-                  )),
-          ],
-        ));
+                              ),
+                            ),
+                          color: index % 2 == 0
+                              ? MaterialStateProperty.all<Color>(
+                                  AppColors.lightColor)
+                              : MaterialStateProperty.all<Color>(
+                                  AppColors.lightSecondaryColor),
+                        )))
+                    .values
+                    .toList(),
+              )),
+      ],
+    );
   }
 
-  _dialogDeleteCompany(BuildContext context, String name, int id) {
+  _dialogDeleteDataById(BuildContext context, String name, int id) {
     showDialog(
       context: context,
       builder: (context) {
