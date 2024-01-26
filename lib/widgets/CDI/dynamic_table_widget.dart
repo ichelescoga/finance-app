@@ -17,41 +17,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
-class ListCompanies extends StatefulWidget {
-  const ListCompanies({Key? key}) : super(key: key);
+class dynamicTable extends StatefulWidget {
+  const dynamicTable({Key? key}) : super(key: key);
 
   @override
-  _ListCompaniesState createState() => _ListCompaniesState();
+  _dynamicTableState createState() => _dynamicTableState();
 }
 
-class _ListCompaniesState extends State<ListCompanies> {
-  // CompanyRepository companyProvider = CompanyRepositoryImpl(CompanyProvider());
+class _dynamicTableState extends State<dynamicTable> {
   CDIRepository cdiProvider = CDIRepositoryImpl(CDIProvider());
-  List<dynamic> companies = [];
-  List<dynamic> filteredCompanies = [];
+  List<dynamic> data = [];
+  List<dynamic> filteredData = [];
 
-  _getCompanies() async {
+  getData() async {
     String COMPANY_ENDPOINT = "orders/v1/getCompanies";
-    final tempCompanies = await cdiProvider.fetchDataList(COMPANY_ENDPOINT);
+    final tempData = await cdiProvider.fetchDataList(COMPANY_ENDPOINT);
 
-    companies = tempCompanies;
-    filteredCompanies = tempCompanies;
+    data = tempData;
+    filteredData = tempData;
   }
 
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
 
   List<dynamic> columnsData = [];
 
-  _getFormCompany() async {
+  getFormData() async {
     EasyLoading.show();
-    filteredCompanies.clear();
-    companies.clear();
+    filteredData.clear();
+    data.clear();
     final String COMPANY_ENTITY = "1";
     final result = await cdiRepository.fetchDataTable(COMPANY_ENTITY);
     columnsData = result
         .where((e) => e["ShowInList"] == true || e["ShoInList"] == "true")
         .toList();
-    await _getCompanies();
+    await getData();
     EasyLoading.dismiss();
     setState(() {});
   }
@@ -59,7 +58,7 @@ class _ListCompaniesState extends State<ListCompanies> {
   @override
   void initState() {
     super.initState();
-    _getFormCompany();
+    getFormData();
   }
 
   @override
@@ -68,12 +67,12 @@ class _ListCompaniesState extends State<ListCompanies> {
     EasyLoading.dismiss();
   }
 
-  _handleManageCompany(int? companyId) async {
+  _handleManageData(int? id) async {
     final needUpdateListCompanies = await Get.toNamed(
         RouterPaths.MANAGE_COMPANY_PAGE,
-        arguments: {"companyId": companyId});
+        arguments: {"dataId": id});
     if (needUpdateListCompanies) {
-      _getFormCompany();
+      getFormData();
     }
   }
 
@@ -91,7 +90,7 @@ class _ListCompaniesState extends State<ListCompanies> {
                   size: Dimensions.topIconSizeH,
                 ),
                 onPressed: () {
-                  _handleManageCompany(null);
+                  _handleManageData(null);
                 })
           ],
         ),
@@ -100,10 +99,10 @@ class _ListCompaniesState extends State<ListCompanies> {
             FilterBox(
               label: "Buscar Empresas",
               hint: "Buscar",
-              elements: companies,
+              elements: data,
               isLoading: false,
               handleFilteredData: (List<dynamic> data) =>
-                  setState(() => filteredCompanies = data),
+                  setState(() => filteredData = data),
             ),
             if (columnsData.length > 0)
               SingleChildScrollView(
@@ -113,7 +112,7 @@ class _ListCompaniesState extends State<ListCompanies> {
                         .map((e) => e["HintText"].toString())
                         .toList()
                       ..add(""),
-                    elements: filteredCompanies
+                    elements: filteredData
                         .asMap()
                         .map((index, element) => MapEntry(
                             index,
@@ -128,7 +127,7 @@ class _ListCompaniesState extends State<ListCompanies> {
                                       children: [
                                         IconButton(
                                             onPressed: () =>
-                                                _handleManageCompany(
+                                                _handleManageData(
                                                     element["id"]),
                                             icon: Icon(Icons.edit_square)),
                                         IconButton(
@@ -170,7 +169,7 @@ class _ListCompaniesState extends State<ListCompanies> {
       },
     ).then((value) {
       if (value == true) {
-        _getCompanies();
+        getData();
         return;
       }
     });

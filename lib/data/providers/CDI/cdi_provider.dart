@@ -5,12 +5,12 @@ import 'package:developer_company/shared/utils/http_adapter.dart';
 class CDIProvider {
   final http = HttpAdapter();
 
-  Future<List<dynamic>> fetchCompanyTable() async {
+  Future<List<dynamic>> fetchDataTable(String entity) async {
     final endpoint = "orders/v1/getComponentsByEntity";
 
     try {
       final response = await http.getApiWithBody(
-          endpoint, {'Content-Type': 'application/json'}, {"id": 1});
+          endpoint, {'Content-Type': 'application/json'}, {"id": entity});
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

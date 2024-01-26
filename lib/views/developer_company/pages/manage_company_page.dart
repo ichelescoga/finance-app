@@ -55,7 +55,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   List<dynamic> formWidgets = [];
 
   _getFormCompany() async {
-    final result = await cdiRepository.fetchCompanyTable();
+    final String COMPANY_ENTITY = "1";
+    final result = await cdiRepository.fetchDataTable(COMPANY_ENTITY);
     setState(() {
       formWidgets = result;
     });
@@ -69,8 +70,8 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   void initState() {
     super.initState();
     _getFormCompany();
-    if (arguments["companyId"] != null) {
-      companyId = arguments["companyId"];
+    if (arguments["dataId"] != null) {
+      companyId = arguments["dataId"];
     }
   }
 

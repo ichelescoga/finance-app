@@ -7,8 +7,8 @@ class CDIRepositoryImpl implements CDIRepository {
   CDIRepositoryImpl(this.cdiProvider);
 
   @override
-  Future<List<dynamic>> fetchCompanyTable() async {
-    return this.cdiProvider.fetchCompanyTable();
+  Future<List<dynamic>> fetchDataTable(String entity) async {
+    return this.cdiProvider.fetchDataTable(entity);
   }
 
   @override
