@@ -21,8 +21,8 @@ Widget buildDropdownWidget(Map<String, dynamic> widgetEP, String id, Map<String,
           (element) => element.id == selected.id);
       controller.text = selectedClientDropdown.id;
     },
-    label: "Empresas",
-    hintText: "Buscar Empresas",
+    label: widgetEP["Place_holder"]!,
+    hintText: widgetEP["Place_holder"]!,
     onFocusChange: ((p0) {}),
     onTextChange: (p0) async {
       List<DropDownOption> options =
@@ -49,7 +49,7 @@ Widget buildImageWidget(Map<String, dynamic> widgetEP, String id, Map<String, Im
   imageControllers[id] = imageController;
   return LogoUploadWidget(
       uploadImageController: imageController,
-      text: widgetEP["Place_holder"],
+      text: widgetEP["Place_holder"]!,
       icon: selectedIconForImage(widgetEP["Icon"]),
       validator: (value) => null);
 }
@@ -60,8 +60,8 @@ Widget buildInputWidget(Map<String, dynamic> widgetEP, String id, Map<String, Te
   controllers[id] = controller;
   return CustomInputWidget(
     controller: controller,
-    label: widgetEP["Place_holder"],
-    hintText: widgetEP["Place_holder"],
+    label: widgetEP["Place_holder"]!,
+    hintText: widgetEP["Place_holder"]!,
     keyboardType: getKeyboardTypeFromString(widgetEP["InputType"]),
     prefixIcon: selectedIcon(widgetEP["Icon"]),
   );
