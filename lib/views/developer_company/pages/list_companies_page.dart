@@ -1,6 +1,3 @@
-import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
-import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
-import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/widgets/CDI/dynamic_table_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +14,7 @@ class _ListCompaniesState extends State<ListCompanies> {
   List<dynamic> companies = [];
   List<dynamic> filteredCompanies = [];
   List<dynamic> columnsData = [];
-  
-  CDIRepository cdiProvider = CDIRepositoryImpl(CDIProvider());
-  CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
+
   final String COMPANY_ENTITY = "1";
   String COMPANY_ENDPOINT = "orders/v1/getCompanies";
 
