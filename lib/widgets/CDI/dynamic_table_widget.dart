@@ -2,14 +2,17 @@ import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.d
 import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
 import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/shared/resources/dimensions.dart';
+import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/delete_company_dialog.dart';
 import 'package:developer_company/widgets/filter_box.dart';
+import 'package:developer_company/widgets/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
-class dynamicTable extends StatefulWidget {
+class dynamicTableWidget extends StatefulWidget {
   final String route;
   final String entity;
   final String endpointRoute;
@@ -17,7 +20,7 @@ class dynamicTable extends StatefulWidget {
   final String filterHintLabel;
 
 
-  const dynamicTable(
+  const dynamicTableWidget(
       {Key? key,
       required this.route,
       required this.entity,
@@ -28,16 +31,16 @@ class dynamicTable extends StatefulWidget {
       : super(key: key);
 
   @override
-  _dynamicTableState createState() => _dynamicTableState();
+  _dynamicTableWidgetState createState() => _dynamicTableWidgetState();
 }
 
-class _dynamicTableState extends State<dynamicTable> {
+class _dynamicTableWidgetState extends State<dynamicTableWidget> {
   CDIRepository cdiProvider = CDIRepositoryImpl(CDIProvider());
   List<dynamic> data = [];
   List<dynamic> filteredData = [];
 
   getData() async {
-    final tempData = await cdiProvider.fetchDataList(widget.entity);
+    final tempData = await cdiProvider.fetchDataList(widget.endpointRoute);
     data = tempData;
     filteredData = tempData;
   }
@@ -71,7 +74,7 @@ class _dynamicTableState extends State<dynamicTable> {
     EasyLoading.dismiss();
   }
 
-  _handleManageData(int? id) async {
+  handleManageData(int? id) async {
     final needUpdateListData =
         await Get.toNamed(widget.route, arguments: {"dataId": id});
     if (needUpdateListData) {
@@ -81,64 +84,81 @@ class _dynamicTableState extends State<dynamicTable> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        FilterBox(
-          label: widget.filterBoxLabel,
-          hint: widget.filterHintLabel,
-          elements: data,
-          isLoading: false,
-          handleFilteredData: (List<dynamic> data) =>
-              setState(() => filteredData = data),
+    return Layout(
+        sideBarList: [],
+        appBar: CustomAppBarSideBar(
+          title: "Empresas",
+          rightActions: [
+            IconButton(
+                icon: Icon(
+                  Icons.add_circle_sharp,
+                  color: AppColors.softMainColor,
+                  size: Dimensions.topIconSizeH,
+                ),
+                onPressed: () =>
+                  handleManageData(null)
+                )
+          ],
         ),
-        if (columnsData.length > 0)
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CustomDataTable(
-                columns: [...columnsData]
-                    .map((e) => e["HintText"].toString())
-                    .toList()
-                  ..add(""),
-                elements: filteredData
-                    .asMap()
-                    .map((index, element) => MapEntry(
-                        index,
-                        DataRow(
-                          cells: [...columnsData]
-                              .map((e) => DataCell(
-                                  Text(element[e["bodyKey"]].toString())))
-                              .toList()
-                            ..add(
-                              DataCell(
-                                Row(
-                                  children: [
-                                    IconButton(
-                                        onPressed: () => _handleManageData(
-                                            element["id"]),
-                                        icon: Icon(Icons.edit_square)),
-                                    IconButton(
-                                        onPressed: () =>
-                                            _dialogDeleteDataById(
-                                                context,
-                                                element[columnsData[0]
-                                                        ["HintText"]!]
-                                                    .toString(),
-                                                element["id"]),
-                                        icon: Icon(Icons.delete))
-                                  ],
+      child: Column(
+        children: [
+          FilterBox(
+            label: widget.filterBoxLabel,
+            hint: widget.filterHintLabel,
+            elements: data,
+            isLoading: false,
+            handleFilteredData: (List<dynamic> data) =>
+                setState(() => filteredData = data),
+          ),
+          if (columnsData.length > 0)
+            SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: CustomDataTable(
+                  columns: [...columnsData]
+                      .map((e) => e["HintText"].toString())
+                      .toList()
+                    ..add(""),
+                  elements: filteredData
+                      .asMap()
+                      .map((index, element) => MapEntry(
+                          index,
+                          DataRow(
+                            cells: [...columnsData]
+                                .map((e) => DataCell(
+                                    Text(element[e["bodyKey"]].toString())))
+                                .toList()
+                              ..add(
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () => handleManageData(
+                                              element["id"]),
+                                          icon: Icon(Icons.edit_square)),
+                                      IconButton(
+                                          onPressed: () =>
+                                              _dialogDeleteDataById(
+                                                  context,
+                                                  element[columnsData[0]
+                                                          ["HintText"]!]
+                                                      .toString(),
+                                                  element["id"]),
+                                          icon: Icon(Icons.delete))
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          color: index % 2 == 0
-                              ? MaterialStateProperty.all<Color>(
-                                  AppColors.lightColor)
-                              : MaterialStateProperty.all<Color>(
-                                  AppColors.lightSecondaryColor),
-                        )))
-                    .values
-                    .toList(),
-              )),
-      ],
+                            color: index % 2 == 0
+                                ? MaterialStateProperty.all<Color>(
+                                    AppColors.lightColor)
+                                : MaterialStateProperty.all<Color>(
+                                    AppColors.lightSecondaryColor),
+                          )))
+                      .values
+                      .toList(),
+                )),
+        ],
+      ),
     );
   }
 
