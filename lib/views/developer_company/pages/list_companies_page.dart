@@ -11,10 +11,6 @@ class ListCompanies extends StatefulWidget {
 }
 
 class _ListCompaniesState extends State<ListCompanies> {
-  List<dynamic> companies = [];
-  List<dynamic> filteredCompanies = [];
-  List<dynamic> columnsData = [];
-
   final String COMPANY_ENTITY = "1";
   String COMPANY_ENDPOINT = "orders/v1/getCompanies";
 
@@ -32,6 +28,7 @@ class _ListCompaniesState extends State<ListCompanies> {
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
+        tittlePage: "Empresas",
         route: RouterPaths.MANAGE_COMPANY_PAGE,
         entity: COMPANY_ENTITY,
         endpointRoute: COMPANY_ENDPOINT,

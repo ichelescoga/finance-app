@@ -18,7 +18,11 @@ class dynamicTableWidget extends StatefulWidget {
   final String endpointRoute;
   final String filterBoxLabel;
   final String filterHintLabel;
-
+  final bool showActionIcon;
+  final bool showDeleteAction;
+  final bool showAddAction;
+  final IconData navigationIcon;
+  final String tittlePage;
 
   const dynamicTableWidget(
       {Key? key,
@@ -27,7 +31,11 @@ class dynamicTableWidget extends StatefulWidget {
       required this.endpointRoute,
       required this.filterBoxLabel,
       required this.filterHintLabel,
-      })
+      required this.tittlePage,
+      this.showActionIcon = true,
+      this.showDeleteAction = true,
+      this.showAddAction = true,
+      this.navigationIcon = Icons.edit_square})
       : super(key: key);
 
   @override
@@ -85,21 +93,20 @@ class _dynamicTableWidgetState extends State<dynamicTableWidget> {
   @override
   Widget build(BuildContext context) {
     return Layout(
-        sideBarList: [],
-        appBar: CustomAppBarSideBar(
-          title: "Empresas",
-          rightActions: [
+      sideBarList: [],
+      appBar: CustomAppBarSideBar(
+        title: widget.tittlePage,
+        rightActions: [
+          if (widget.showAddAction)
             IconButton(
                 icon: Icon(
                   Icons.add_circle_sharp,
                   color: AppColors.softMainColor,
                   size: Dimensions.topIconSizeH,
                 ),
-                onPressed: () =>
-                  handleManageData(null)
-                )
-          ],
-        ),
+                onPressed: () => handleManageData(null))
+        ],
+      ),
       child: Column(
         children: [
           FilterBox(
@@ -131,19 +138,21 @@ class _dynamicTableWidgetState extends State<dynamicTableWidget> {
                                 DataCell(
                                   Row(
                                     children: [
-                                      IconButton(
-                                          onPressed: () => handleManageData(
-                                              element["id"]),
-                                          icon: Icon(Icons.edit_square)),
-                                      IconButton(
-                                          onPressed: () =>
-                                              _dialogDeleteDataById(
-                                                  context,
-                                                  element[columnsData[0]
-                                                          ["HintText"]!]
-                                                      .toString(),
-                                                  element["id"]),
-                                          icon: Icon(Icons.delete))
+                                      if (widget.showActionIcon)
+                                        IconButton(
+                                            onPressed: () =>
+                                                handleManageData(element["id"]),
+                                            icon: Icon(widget.navigationIcon)),
+                                      if (widget.showDeleteAction)
+                                        IconButton(
+                                            onPressed: () =>
+                                                _dialogDeleteDataById(
+                                                    context,
+                                                    element[columnsData[0]
+                                                            ["HintText"]!]
+                                                        .toString(),
+                                                    element["id"]),
+                                            icon: Icon(Icons.delete))
                                     ],
                                   ),
                                 ),
