@@ -31,7 +31,7 @@ class _CDIListPageState extends State<CDIListPage> {
     editEndpoint = arguments["editEndpoint"].toString();
     addEndpoint = arguments["addEndpoint"].toString();
     removeEndpoint = arguments["removeEndpoint"].toString();
-    removeEndpoint = arguments["getByIdEndpoint"].toString();
+    getByIdEndpoint = arguments["getByIdEndpoint"].toString();
   }
 
   @override

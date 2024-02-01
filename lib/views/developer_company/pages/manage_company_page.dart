@@ -106,7 +106,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                     imageControllers: imageControllers,
                     controllers: formControllers,
                     enable: true,
-                    id: companyId,
+                    id: companyId.toString(),
                     formCustomWidgets: formWidgets),
               const SizedBox(
                 height: Dimensions.heightSize,

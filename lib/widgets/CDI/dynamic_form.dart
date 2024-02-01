@@ -13,7 +13,7 @@ import "package:get/get.dart";
 
 class DynamicDatabaseForm extends StatefulWidget {
   final bool enable;
-  final int? id;
+  final String? id;
   final Map<String, TextEditingController> controllers;
   final Map<String, ImageToUpload> imageControllers;
   final List<dynamic> formCustomWidgets;

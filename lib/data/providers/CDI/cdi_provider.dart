@@ -47,7 +47,7 @@ class CDIProvider {
   Future<dynamic> getDataById(String endpoint, String id) async {
     final response = await http.getApi('${endpoint}/${id}', {});
     if (response.statusCode == 200) {
-      return response.body;
+      return json.decode(response.body);
     } else {
       throw Exception(
           'failed to get data by id ENDPOINT = ${endpoint} ID = ${id}');

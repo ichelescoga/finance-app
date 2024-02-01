@@ -46,14 +46,14 @@ class _CDIManagePageState extends State<CDIManagePage> {
   }
 
   _getImportantDataToCDI() async {
-    entityId = arguments["entityId"];
+    entityId = arguments["entityId"].toString();
     editEndpoint = arguments["editEndpoint"];
     addEndpoint = arguments["addEndpoint"];
     principalLabel = arguments["principalLabel"];
     getByIdEndpoint = arguments["getByIdEndpoint"];
   }
 
-  int? dataId;
+  String? dataId;
   int activeStep = 0;
   double circleRadius = 20;
 
@@ -63,7 +63,7 @@ class _CDIManagePageState extends State<CDIManagePage> {
     _getFormCDI();
     _getImportantDataToCDI();
     if (arguments["dataId"] != null) {
-      dataId = arguments["dataId"];
+      dataId = arguments["dataId"].toString();
     }
   }
 
@@ -105,7 +105,7 @@ class _CDIManagePageState extends State<CDIManagePage> {
               if (!formWidgets.length.isEqual(0))
                 DynamicDatabaseForm(
                     callBackById: (p0) =>
-                        cdiRepository.getDataById(getByIdEndpoint, "id"),
+                        cdiRepository.getDataById(getByIdEndpoint, dataId.toString()),
                     imageControllers: imageControllers,
                     controllers: formControllers,
                     enable: true,

@@ -109,7 +109,7 @@ class _createAssignProjectToCompanyPageState
                     imageControllers: imageControllers,
                     controllers: formControllers,
                     enable: true,
-                    id: projectId,
+                    id: projectId.toString(),
                     formCustomWidgets: formWidgets),
               const SizedBox(
                 height: Dimensions.heightSize,
