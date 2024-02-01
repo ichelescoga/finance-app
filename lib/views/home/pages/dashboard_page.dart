@@ -66,6 +66,12 @@ class _DashboardPageState extends State<DashboardPage> {
   final spaceButton = SizedBox(height: Dimensions.heightSize);
   final defaultPadding = EdgeInsets.only(left: 0, right: 0);
 
+  final List<Map<String, String>> cdi = [
+    {"id": "1", "label": "Empresas", "endpoint": "orders/v1/getCompanies"},
+    {"id": "2", "label": "Proyectos", "endpoint": "orders/v1/getProjectsByCompany"},
+    {"id": "3", "label": "Unidades", "endpoint": "orders/v1/"},
+  ];
+
   Future askPermission() async {
     await Permission.manageExternalStorage.request();
     var status = await Permission.manageExternalStorage.status;
@@ -207,11 +213,31 @@ class _DashboardPageState extends State<DashboardPage> {
                 spaceButton,
                 CustomButtonWidget(
                     text: "Proyectos",
-                    onTap: () => Get.toNamed(RouterPaths.LIST_PROJECTS_PAGE),
+                    onTap: () =>
+                        Get.toNamed(RouterPaths.LIST_COMPANY_PROJECTS_PAGE),
                     padding: defaultPadding),
               ],
             ),
           ),
+          ...cdi
+              .map((e) => AuthorizationWrapper(
+                    requestAction: PermissionLevel.list_cdi,
+                    child: Column(
+                      children: [
+                        spaceButton,
+                        CustomButtonWidget(
+                            text: e["label"].toString(),
+                            onTap: () => Get.toNamed(RouterPaths.LIST_CDI_PAGE,
+                                    arguments: {
+                                      "id": e["id"],
+                                      "label": e["label"],
+                                      "endpoint": e["endpoint"]
+                                    }),
+                            padding: defaultPadding),
+                      ],
+                    ),
+                  ))
+              .toList(),
         ],
       ),
     );

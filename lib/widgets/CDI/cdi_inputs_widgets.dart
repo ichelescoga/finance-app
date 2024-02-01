@@ -1,3 +1,4 @@
+import 'package:developer_company/widgets/departments_municipalities_dropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
@@ -64,5 +65,18 @@ Widget buildInputWidget(Map<String, dynamic> widgetEP, String id, Map<String, Te
     hintText: widgetEP["Place_holder"]!,
     keyboardType: getKeyboardTypeFromString(widgetEP["InputType"]),
     prefixIcon: selectedIcon(widgetEP["Icon"]),
+  );
+}
+
+Widget buildDepartmentMunicipalitiesDropdown(Map<String, dynamic> widgetEP,
+    String id, Map<String, TextEditingController> controllers) {
+  return DepartmentsMunicipalitiesDropdownWidget(
+    departments: [],
+    selectedDepartment: "",
+    onDepartmentSelected: (departmentId) {
+      // LOGIC FOR UPDATE THE CONTROLLER VALUE ON DEPARTMENT
+    },
+    onMunicipalitySelected: (municipalityId) {},
+      // LOGIC FOR UPDATE THE CONTROLLER VALUE ON MUNICIPALITY QTS_DepartmentMunicipality
   );
 }

@@ -63,7 +63,14 @@ class RouterPaths{
 
   // PROJECTS 📐📐
 
-  static const String LIST_PROJECTS_PAGE = "/listProjectsPage";
+  static const String LIST_COMPANY_PROJECTS_PAGE = "/listCompanyProjects";
+  static const String LIST_PROJECTS_BY_COMPANY_PAGE = "/listProjectsByCompanyPage";
   static const String ASSIGN_PROJECT_TO_COMPANY_PAGE = "/createAssignProjectToCompanyPage";
+
+
+  // CDI
+  static const String LIST_CDI_PAGE = "/listCDIPage";
+  static const String MANAGE_CDI_PAGE = "/manageCDIPage";
+  
 }
 

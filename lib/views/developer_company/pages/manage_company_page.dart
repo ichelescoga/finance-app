@@ -1,21 +1,14 @@
-import 'package:developer_company/controllers/manage_company_page_controller.dart';
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
-import 'package:developer_company/data/implementations/upload_image_impl.dart';
-// import 'package:developer_company/data/models/company_model.dart';
 import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
 import 'package:developer_company/data/providers/company_provider.dart';
-import 'package:developer_company/data/providers/upload_image.provider.dart';
 import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
 import 'package:developer_company/data/repositories/company_repository.dart';
-import 'package:developer_company/data/repositories/upload_image_repository.dart';
 import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/utils/handle_upload_image.dart';
-// import 'package:developer_company/utils/cdi_components.dart';
 import 'package:developer_company/utils/retrieve_form_list_controllers.dart';
-// import 'package:developer_company/views/developer_company/forms/manage_company_form.dart';
 import 'package:developer_company/widgets/CDI/dynamic_form.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
@@ -37,14 +30,11 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   var uuid = Uuid();
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  CreateCompanyPageController createCompanyPageController =
-      Get.put(CreateCompanyPageController());
   final GlobalKey<FormState> manageCompanyFormKey = GlobalKey<FormState>();
 
   final CompanyRepository companyProvider =
       CompanyRepositoryImpl(CompanyProvider());
-  UploadImageRepository uploadImageRepository =
-      UploadImageRepositoryImpl(UploadImageProvider());
+      
   final Map<String, dynamic> arguments = Get.arguments;
 
   Map<String, TextEditingController> formControllers = {};

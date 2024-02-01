@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
-class _ListProjectsByCompanyState extends StatefulWidget {
-  _ListProjectsByCompanyState({Key? key}) : super(key: key);
+class ListProjectsByCompanyState extends StatefulWidget {
+  const ListProjectsByCompanyState({Key? key}) : super(key: key);
 
   @override
-  __ListProjectsByCompanyStateState createState() =>
-      __ListProjectsByCompanyStateState();
+  _ListProjectsByCompanyStateState createState() =>
+      _ListProjectsByCompanyStateState();
 }
 
-class __ListProjectsByCompanyStateState
-    extends State<_ListProjectsByCompanyState> {
-
+class _ListProjectsByCompanyStateState
+    extends State<ListProjectsByCompanyState> {
   final Map<String, dynamic> arguments = Get.arguments;
-  final String COMPANY_ENTITY = "1";  
+  final String COMPANY_ENTITY = "2";
   String PROJECT_ENDPOINT = "orders/v1/getProjectsByCompany?id=DATA_ID";
 
   @override
@@ -27,21 +26,20 @@ class __ListProjectsByCompanyStateState
 
   @override
   void initState() {
-    final dataId = arguments['dataId'];
-    PROJECT_ENDPOINT.replaceFirst("DATA_ID", dataId);
     super.initState();
+    final dataId = arguments['dataId'];
+    PROJECT_ENDPOINT = PROJECT_ENDPOINT.replaceFirst("DATA_ID", dataId.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
-        tittlePage: "Proyectos",
-        showDeleteAction: false,
-        navigationIcon: Icons.business,
-        route: RouterPaths.MANAGE_COMPANY_PAGE,
-        entity: COMPANY_ENTITY,
-        endpointRoute: PROJECT_ENDPOINT,
-        filterBoxLabel: "Empresas",
-        filterHintLabel: "Empresas");
+      tittlePage: "Proyectos",
+      route: RouterPaths.ASSIGN_PROJECT_TO_COMPANY_PAGE,
+      entity: COMPANY_ENTITY,
+      endpointRoute: PROJECT_ENDPOINT,
+      filterBoxLabel: "Empresas",
+      filterHintLabel: "Empresas",
+    );
   }
 }

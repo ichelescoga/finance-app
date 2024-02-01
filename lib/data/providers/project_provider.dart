@@ -16,4 +16,16 @@ class ProjectProvider {
       throw Exception('Failed to fetch projects');
     }
   }
+
+  Future<dynamic> getProjectById(String projectId) async {
+    final response = await httpAdapter.getApi("orders/v1/getProjectById?id=${projectId}", {});
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+      
+    } else {
+      throw Exception('Failed to fetch projects');
+    }
+  }
+
 }

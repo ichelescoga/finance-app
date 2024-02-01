@@ -83,8 +83,8 @@ class _dynamicTableWidgetState extends State<dynamicTableWidget> {
   }
 
   handleManageData(int? id) async {
-    final needUpdateListData =
-        await Get.toNamed(widget.route, arguments: {"dataId": id});
+    final needUpdateListData = await Get.toNamed(widget.route,
+        arguments: {"dataId": id, "entityId": widget.entity});
     if (needUpdateListData) {
       getFormData();
     }

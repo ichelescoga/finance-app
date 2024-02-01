@@ -16,7 +16,7 @@ Future<List<Map<String, dynamic>>> fetchDataFormByID(
     final companyResult = await callBack(id);
     data = companyResult;
     customInputs.forEach((element) {
-      element["defaultValue"] = data[element["bodyKey"]];
+      element["defaultValue"] = data[element["bodyKey"]].toString();
     });
   }
   return customInputs;

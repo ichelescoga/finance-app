@@ -29,5 +29,7 @@ class PermissionLevel {
 
   static const String manageProjectCompany = "manage_project_company";
 
+  static const String list_cdi = "list_cdi";
+
   // Add more permission levels as needed
 }

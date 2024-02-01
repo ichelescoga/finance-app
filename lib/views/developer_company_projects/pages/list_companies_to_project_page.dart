@@ -23,10 +23,10 @@ class _listCompaniesToProjectsPageState extends State<listCompaniesToProjectsPag
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
-        tittlePage: "Proyectos",
+        tittlePage: "Proyectos 1",
         showDeleteAction: false,
         navigationIcon: Icons.business,
-        route: RouterPaths.MANAGE_COMPANY_PAGE,
+        route: RouterPaths.LIST_PROJECTS_BY_COMPANY_PAGE,
         entity: COMPANY_ENTITY,
         endpointRoute: COMPANY_ENDPOINT,
         filterBoxLabel: "Empresas",
