@@ -17,6 +17,11 @@ class CDIRepositoryImpl implements CDIRepository {
   }
 
   @override
+  Future<dynamic> getDataById(String endpoint, String id) async {
+    return this.cdiProvider.getDataById(endpoint, id);
+  }
+
+  @override
   Future<bool> postData(String url, Map<String, dynamic> data) async {
     return this.cdiProvider.postData(url, data);
   }

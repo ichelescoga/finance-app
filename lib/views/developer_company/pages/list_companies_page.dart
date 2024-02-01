@@ -28,10 +28,14 @@ class _ListCompaniesState extends State<ListCompanies> {
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
-        tittlePage: "Empresas",
+        titlePage: "Empresas",
+        editEndpoint: "",
+        addEndpoint: "",
+        removeEndpoint: "",
+        getByIdEndpoint: "",
         route: RouterPaths.MANAGE_COMPANY_PAGE,
         entity: COMPANY_ENTITY,
-        endpointRoute: COMPANY_ENDPOINT,
+        listEndpointRoute: COMPANY_ENDPOINT,
         filterBoxLabel: "Empresas",
         filterHintLabel: "Empresas");
   }

@@ -44,6 +44,16 @@ class CDIProvider {
     }
   }
 
+  Future<dynamic> getDataById(String endpoint, String id) async {
+    final response = await http.getApi('${endpoint}/${id}', {});
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception(
+          'failed to get data by id ENDPOINT = ${endpoint} ID = ${id}');
+    }
+  }
+
   Future<bool> postData(String url, Map<String, dynamic> data) async {
     final response = await http
         .postApi(url, json.encode(data), {'Content-Type': 'application/json'});

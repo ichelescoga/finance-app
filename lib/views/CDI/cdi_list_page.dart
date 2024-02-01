@@ -16,15 +16,22 @@ class _CDIListPageState extends State<CDIListPage> {
 
   String pageTitle = "";
   String entityId = "";
-  String endpoint = "";
+  String listEndpoint = "";
+  String editEndpoint = "";
+  String addEndpoint = "";
+  String removeEndpoint = "";
+  String getByIdEndpoint = "";
 
   @override
   void initState() {
     super.initState();
     pageTitle = arguments["label"].toString();
-    entityId = arguments["id"].toString();
-    endpoint = arguments["endpoint"].toString();
-
+    entityId = arguments["entityId"].toString();
+    listEndpoint = arguments["listEndpoint"].toString();
+    editEndpoint = arguments["editEndpoint"].toString();
+    addEndpoint = arguments["addEndpoint"].toString();
+    removeEndpoint = arguments["removeEndpoint"].toString();
+    removeEndpoint = arguments["getByIdEndpoint"].toString();
   }
 
   @override
@@ -36,10 +43,14 @@ class _CDIListPageState extends State<CDIListPage> {
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
-        tittlePage: pageTitle,
+        titlePage: pageTitle,
+        getByIdEndpoint: getByIdEndpoint,
         route: RouterPaths.MANAGE_CDI_PAGE,
+        editEndpoint: editEndpoint,
+        addEndpoint: addEndpoint,
+        removeEndpoint: removeEndpoint,
         entity: entityId,
-        endpointRoute: endpoint,
+        listEndpointRoute: listEndpoint,
         filterBoxLabel: pageTitle,
         filterHintLabel: "Buscar");
   }

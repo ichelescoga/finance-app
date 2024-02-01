@@ -23,12 +23,16 @@ class _listCompaniesToProjectsPageState extends State<listCompaniesToProjectsPag
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
-        tittlePage: "Proyectos 1",
+      editEndpoint: "",
+        addEndpoint: "",
+        removeEndpoint: "",
+        getByIdEndpoint: "",
+        titlePage: "Proyectos 1",
         showDeleteAction: false,
         navigationIcon: Icons.business,
         route: RouterPaths.LIST_PROJECTS_BY_COMPANY_PAGE,
         entity: COMPANY_ENTITY,
-        endpointRoute: COMPANY_ENDPOINT,
+        listEndpointRoute: COMPANY_ENDPOINT,
         filterBoxLabel: "Empresas",
         filterHintLabel: "Empresas");
   }

@@ -15,23 +15,31 @@ import 'package:get/get.dart';
 class dynamicTableWidget extends StatefulWidget {
   final String route;
   final String entity;
-  final String endpointRoute;
+  final String listEndpointRoute;
+  final String editEndpoint;
+  final String addEndpoint;
+  final String removeEndpoint;
+  final String getByIdEndpoint;
   final String filterBoxLabel;
   final String filterHintLabel;
   final bool showActionIcon;
   final bool showDeleteAction;
   final bool showAddAction;
   final IconData navigationIcon;
-  final String tittlePage;
+  final String titlePage;
 
   const dynamicTableWidget(
       {Key? key,
       required this.route,
       required this.entity,
-      required this.endpointRoute,
+      required this.listEndpointRoute,
+      required this.editEndpoint,
+      required this.addEndpoint,
+      required this.removeEndpoint,
+      required this.getByIdEndpoint,
       required this.filterBoxLabel,
       required this.filterHintLabel,
-      required this.tittlePage,
+      required this.titlePage,
       this.showActionIcon = true,
       this.showDeleteAction = true,
       this.showAddAction = true,
@@ -48,7 +56,7 @@ class _dynamicTableWidgetState extends State<dynamicTableWidget> {
   List<dynamic> filteredData = [];
 
   getData() async {
-    final tempData = await cdiProvider.fetchDataList(widget.endpointRoute);
+    final tempData = await cdiProvider.fetchDataList(widget.listEndpointRoute);
     data = tempData;
     filteredData = tempData;
   }
@@ -83,8 +91,14 @@ class _dynamicTableWidgetState extends State<dynamicTableWidget> {
   }
 
   handleManageData(int? id) async {
-    final needUpdateListData = await Get.toNamed(widget.route,
-        arguments: {"dataId": id, "entityId": widget.entity});
+    final needUpdateListData = await Get.toNamed(widget.route, arguments: {
+      "dataId": id,
+      "entityId": widget.entity,
+      "editEndpoint": widget.editEndpoint,
+      "addEndpoint": widget.addEndpoint,
+      "principalLabel": widget.titlePage,
+      "getByIdEndpoint": widget.getByIdEndpoint
+    });
     if (needUpdateListData) {
       getFormData();
     }
@@ -95,7 +109,7 @@ class _dynamicTableWidgetState extends State<dynamicTableWidget> {
     return Layout(
       sideBarList: [],
       appBar: CustomAppBarSideBar(
-        title: widget.tittlePage,
+        title: widget.titlePage,
         rightActions: [
           if (widget.showAddAction)
             IconButton(

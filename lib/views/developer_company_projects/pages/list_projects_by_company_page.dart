@@ -28,16 +28,21 @@ class _ListProjectsByCompanyStateState
   void initState() {
     super.initState();
     final dataId = arguments['dataId'];
-    PROJECT_ENDPOINT = PROJECT_ENDPOINT.replaceFirst("DATA_ID", dataId.toString());
+    PROJECT_ENDPOINT =
+        PROJECT_ENDPOINT.replaceFirst("DATA_ID", dataId.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
-      tittlePage: "Proyectos",
+      editEndpoint: "",
+      addEndpoint: "",
+      removeEndpoint: "",
+      getByIdEndpoint: "",
+      titlePage: "Proyectos",
       route: RouterPaths.ASSIGN_PROJECT_TO_COMPANY_PAGE,
       entity: COMPANY_ENTITY,
-      endpointRoute: PROJECT_ENDPOINT,
+      listEndpointRoute: PROJECT_ENDPOINT,
       filterBoxLabel: "Empresas",
       filterHintLabel: "Empresas",
     );

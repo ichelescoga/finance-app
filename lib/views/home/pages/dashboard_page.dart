@@ -67,9 +67,31 @@ class _DashboardPageState extends State<DashboardPage> {
   final defaultPadding = EdgeInsets.only(left: 0, right: 0);
 
   final List<Map<String, String>> cdi = [
-    {"id": "1", "label": "Empresas", "endpoint": "orders/v1/getCompanies"},
-    {"id": "2", "label": "Proyectos", "endpoint": "orders/v1/getProjectsByCompany"},
-    {"id": "3", "label": "Unidades", "endpoint": "orders/v1/"},
+    {
+      "entityId": "1",
+      "label": "Empresas",
+      "listEndpoint": "orders/v1/getCompanies",
+      "editEndpoint": "orders/v1/editCompany",
+      "addEndpoint": "orders/v1/addCompany",
+      "removeEndpoint": "orders/v1/getCompanies",
+      "getByIdEndpoint": "orders/v1/getCompanyById",
+    },
+    {
+      "entityId": "2",
+      "label": "Proyectos",
+      "listEndpoint": "orders/v1/getProjectsByCompany",
+      "editEndpoint": "orders/v1/getProjectsByCompany",
+      "addEndpoint": "orders/v1/getProjectsByCompany",
+      "removeEndpoint": "orders/v1/getProjectsByCompany"
+    },
+    {
+      "entityId": "3",
+      "label": "Unidades",
+      "listEndpoint": "orders/v1/getProjectsByCompany",
+      "editEndpoint": "orders/v1/getProjectsByCompany",
+      "addEndpoint": "orders/v1/getProjectsByCompany",
+      "removeEndpoint": "orders/v1/deleteCompany"
+    },
   ];
 
   Future askPermission() async {
@@ -229,9 +251,13 @@ class _DashboardPageState extends State<DashboardPage> {
                             text: e["label"].toString(),
                             onTap: () => Get.toNamed(RouterPaths.LIST_CDI_PAGE,
                                     arguments: {
-                                      "id": e["id"],
+                                      "entityId": e["entityId"],
                                       "label": e["label"],
-                                      "endpoint": e["endpoint"]
+                                      "listEndpoint": e["listEndpoint"],
+                                      "editEndpoint": e["editEndpoint"],
+                                      "addEndpoint": e["addEndpoint"],
+                                      "removeEndpoint": e["removeEndpoint"],
+                                      "getByIdEndpoint": e["getByIdEndpoint"],
                                     }),
                             padding: defaultPadding),
                       ],
