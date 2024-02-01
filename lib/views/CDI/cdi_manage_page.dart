@@ -79,10 +79,10 @@ class _CDIManagePageState extends State<CDIManagePage> {
 
     if (dataId != null) {
       result = await cdiRepository.postData(
-          addEndpoint, {"id": dataId, ...inputValues, ...imagesResponse});
+          editEndpoint, {"id": dataId, ...inputValues, ...imagesResponse});
     } else {
       result = await cdiRepository
-          .postData(editEndpoint, {...inputValues, ...imagesResponse});
+          .postData(addEndpoint, {...inputValues, ...imagesResponse});
     }
     if (result) {
       Get.back(closeOverlays: true, result: result);
