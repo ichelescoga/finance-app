@@ -36,10 +36,12 @@ class _CDIManagePageState extends State<CDIManagePage> {
   String addEndpoint = "";
   String principalLabel = "";
   String getByIdEndpoint = "";
+  String? dataId;
+  int activeStep = 0;
+  double circleRadius = 20;
 
   _getFormCDI() async {
-    final String COMPANY_ENTITY = "1";
-    final result = await cdiRepository.fetchDataTable(COMPANY_ENTITY);
+    final result = await cdiRepository.fetchDataTable(entityId);
     setState(() {
       formWidgets = result;
     });
@@ -51,20 +53,6 @@ class _CDIManagePageState extends State<CDIManagePage> {
     addEndpoint = arguments["addEndpoint"];
     principalLabel = arguments["principalLabel"];
     getByIdEndpoint = arguments["getByIdEndpoint"];
-  }
-
-  String? dataId;
-  int activeStep = 0;
-  double circleRadius = 20;
-
-  @override
-  void initState() {
-    super.initState();
-    _getFormCDI();
-    _getImportantDataToCDI();
-    if (arguments["dataId"] != null) {
-      dataId = arguments["dataId"].toString();
-    }
   }
 
   _handleSaveFormData(
@@ -92,11 +80,21 @@ class _CDIManagePageState extends State<CDIManagePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _getImportantDataToCDI();
+    _getFormCDI();
+    if (arguments["dataId"] != null) {
+      dataId = arguments["dataId"].toString();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Layout(
         sideBarList: [],
         appBar: CustomAppBarTitle(
-          title: "Gestión ${principalLabel}",
+          title: "Gestión de {principalLabel}",
         ),
         child: Form(
           key: manageCDIFormKey,
@@ -104,8 +102,8 @@ class _CDIManagePageState extends State<CDIManagePage> {
             children: [
               if (!formWidgets.length.isEqual(0))
                 DynamicDatabaseForm(
-                    callBackById: (p0) =>
-                        cdiRepository.getDataById(getByIdEndpoint, dataId.toString()),
+                    callBackById: (p0) => cdiRepository.getDataById(
+                        getByIdEndpoint, dataId.toString()),
                     imageControllers: imageControllers,
                     controllers: formControllers,
                     enable: true,

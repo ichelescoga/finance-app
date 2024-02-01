@@ -80,18 +80,20 @@ class _DashboardPageState extends State<DashboardPage> {
       "entityId": "2",
       "label": "Proyectos",
       "listEndpoint": "orders/v1/getProjectsByCompany",
-      "editEndpoint": "orders/v1/getProjectsByCompany",
-      "addEndpoint": "orders/v1/getProjectsByCompany",
-      "removeEndpoint": "orders/v1/getProjectsByCompany"
+      "editEndpoint": "orders/v1/editProyect",
+      "addEndpoint": "orders/v1/addProyect",
+      "removeEndpoint": "orders/v1/deleteProyect",
+      "getByIdEndpoint": "orders/v1/getProjectById",
     },
-    {
-      "entityId": "3",
-      "label": "Unidades",
-      "listEndpoint": "orders/v1/getProjectsByCompany",
-      "editEndpoint": "orders/v1/getProjectsByCompany",
-      "addEndpoint": "orders/v1/getProjectsByCompany",
-      "removeEndpoint": "orders/v1/deleteCompany"
-    },
+    // {
+    //   "entityId": "3",
+    //   "label": "Unidades",
+    //   "listEndpoint": "orders/v1/getProjectsByCompany",
+    //   "editEndpoint": "orders/v1/getProjectsByCompany",
+    //   "addEndpoint": "orders/v1/getProjectsByCompany",
+    //   "removeEndpoint": "orders/v1/deleteCompany",
+    //   "getByIdEndpoint": "orders/v1/getCompanyById",
+    // },
   ];
 
   Future askPermission() async {
@@ -216,31 +218,31 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
-          AuthorizationWrapper(
-            requestAction: PermissionLevel.manageCompany,
-            child: Column(
-              children: [
-                spaceButton,
-                CustomButtonWidget(
-                    text: "Empresas",
-                    onTap: () => Get.toNamed(RouterPaths.LIST_COMPANIES_PAGE),
-                    padding: defaultPadding),
-              ],
-            ),
-          ),
-          AuthorizationWrapper(
-            requestAction: PermissionLevel.manageCompany,
-            child: Column(
-              children: [
-                spaceButton,
-                CustomButtonWidget(
-                    text: "Proyectos",
-                    onTap: () =>
-                        Get.toNamed(RouterPaths.LIST_COMPANY_PROJECTS_PAGE),
-                    padding: defaultPadding),
-              ],
-            ),
-          ),
+          // AuthorizationWrapper(
+          //   requestAction: PermissionLevel.manageCompany,
+          //   child: Column(
+          //     children: [
+          //       spaceButton,
+          //       CustomButtonWidget(
+          //           text: "Empresas",
+          //           onTap: () => Get.toNamed(RouterPaths.LIST_COMPANIES_PAGE),
+          //           padding: defaultPadding),
+          //     ],
+          //   ),
+          // ),
+          // AuthorizationWrapper(
+          //   requestAction: PermissionLevel.manageCompany,
+          //   child: Column(
+          //     children: [
+          //       spaceButton,
+          //       CustomButtonWidget(
+          //           text: "Proyectos",
+          //           onTap: () =>
+          //               Get.toNamed(RouterPaths.LIST_COMPANY_PROJECTS_PAGE),
+          //           padding: defaultPadding),
+          //     ],
+          //   ),
+          // ),
           ...cdi
               .map((e) => AuthorizationWrapper(
                     requestAction: PermissionLevel.list_cdi,

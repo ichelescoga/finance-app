@@ -68,6 +68,13 @@ Widget buildInputWidget(Map<String, dynamic> widgetEP, String id, Map<String, Te
   );
 }
 
+Widget buildNoShowWidget(Map<String, dynamic> widgetEP, String id, Map<String, TextEditingController> controllers) {
+  TextEditingController controller = TextEditingController(
+      text: widgetEP["defaultValue"] != null ? widgetEP["defaultValue"] : "");
+  controllers[id] = controller;
+  return Container();
+}
+
 Widget buildDepartmentMunicipalitiesDropdown(Map<String, dynamic> widgetEP,
     String id, Map<String, TextEditingController> controllers) {
   return DepartmentsMunicipalitiesDropdownWidget(

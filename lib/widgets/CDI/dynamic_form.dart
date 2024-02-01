@@ -1,7 +1,4 @@
- import "package:developer_company/data/implementations/company_repository_impl.dart";
 import "package:developer_company/data/models/image_model.dart";
-import "package:developer_company/data/providers/company_provider.dart";
-import "package:developer_company/data/repositories/company_repository.dart";
 import 'package:developer_company/controllers/manage_company_page_controller.dart';
 import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/utils/cdi_components.dart";
@@ -40,9 +37,6 @@ class _DynamicDatabaseFormState extends State<DynamicDatabaseForm> {
 
   HttpAdapter http = HttpAdapter();
 
-  CompanyRepository companyRepository =
-      CompanyRepositoryImpl(CompanyProvider());
-
   List<dynamic> formWidgets = [];
   dynamic company = {};
   List<DropDownOption> dropdownElements = [];
@@ -51,8 +45,8 @@ class _DynamicDatabaseFormState extends State<DynamicDatabaseForm> {
     String? companyId = widget.id == null ? null : widget.id.toString();
     List<dynamic> fields = widget.formCustomWidgets;
 
-    final result = await processDataForm(fields, companyId,
-        (data) => widget.callBackById(widget.id!));
+    final result = await processDataForm(
+        fields, companyId, (data) => widget.callBackById(widget.id!));
     setState(() {
       formWidgets = result;
     });
@@ -70,6 +64,10 @@ class _DynamicDatabaseFormState extends State<DynamicDatabaseForm> {
     return Column(
       children: formWidgets.map((widgetEP) {
         String id = widgetEP["bodyKey"];
+
+        if (widgetEP["show"] == false || widgetEP["show"] == 0){
+          return buildNoShowWidget(widgetEP, id, widget.controllers);
+        }
 
         if (widgetEP["Type"] == CDIConstants.dropdown) {
           return buildDropdownWidget(widgetEP, id, widget.controllers);
