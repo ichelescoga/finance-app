@@ -66,7 +66,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final spaceButton = SizedBox(height: Dimensions.heightSize);
   final defaultPadding = EdgeInsets.only(left: 0, right: 0);
 
-  final List<Map<String, String>> cdi = [
+  final List<Map<String, String?>> cdi = [
     {
       "entityId": "1",
       "label": "Empresas",
@@ -85,15 +85,15 @@ class _DashboardPageState extends State<DashboardPage> {
       "removeEndpoint": "orders/v1/deleteProyect",
       "getByIdEndpoint": "orders/v1/getProjectById",
     },
-    // {
-    //   "entityId": "3",
-    //   "label": "Unidades",
-    //   "listEndpoint": "orders/v1/getProjectsByCompany",
-    //   "editEndpoint": "orders/v1/getProjectsByCompany",
-    //   "addEndpoint": "orders/v1/getProjectsByCompany",
-    //   "removeEndpoint": "orders/v1/deleteCompany",
-    //   "getByIdEndpoint": "orders/v1/getCompanyById",
-    // },
+    {
+      "entityId": "3",
+      "label": "Unidades",
+      "listEndpoint": "orders/v1/getTypes",
+      "editEndpoint": null,
+      "addEndpoint": "orders/v1/addType",
+      "removeEndpoint": null,
+      "getByIdEndpoint": null,
+    },
   ];
 
   Future askPermission() async {

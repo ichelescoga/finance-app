@@ -1,17 +1,11 @@
+import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class DropDownOption {
-  final String id;
-  final String label;
-
-  DropDownOption({required this.id, required this.label});
-}
-
 typedef OnTextChangeCallback = Future<List<DropDownOption>> Function(String);
 
-class AutocompleteDropdownWidget extends StatefulWidget {
+class AutocompleteDropdownWithController extends StatefulWidget {
   final List<DropDownOption> listItems;
   final Function(DropDownOption) onSelected;
   final String label;
@@ -19,10 +13,10 @@ class AutocompleteDropdownWidget extends StatefulWidget {
   final Function(bool) onFocusChange;
   final Function(bool)? resetClean;
   final OnTextChangeCallback onTextChange;
-  final TextEditingController? textController;
+  final TextEditingController textEditingController;
   final bool clean;
 
-  const AutocompleteDropdownWidget({
+  const AutocompleteDropdownWithController({
     Key? key,
     required this.listItems,
     required this.onSelected,
@@ -31,34 +25,28 @@ class AutocompleteDropdownWidget extends StatefulWidget {
     required this.onFocusChange,
     this.resetClean,
     required this.onTextChange,
-    this.textController,
+    required this.textEditingController,
     this.clean = true,
   }) : super(key: key);
 
   @override
-  State<AutocompleteDropdownWidget> createState() =>
-      _AutocompleteDropdownWidgetState();
+  State<AutocompleteDropdownWithController> createState() =>
+      _AutocompleteDropdownWithControllerState();
 }
 
-class _AutocompleteDropdownWidgetState
-    extends State<AutocompleteDropdownWidget> {
+class _AutocompleteDropdownWithControllerState
+    extends State<AutocompleteDropdownWithController> {
   DropDownOption? selectedOption;
-  TextEditingController textEditingController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    final widgetController = widget.textController;
-    if (widgetController != null) {
-      textEditingController = widgetController;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Autocomplete<DropDownOption>(
       optionsBuilder: (TextEditingValue textEditingValue) {
-        return widget.onTextChange(textEditingValue.text);
+        if (textEditingValue.text.length == 5) {
+          return const Iterable<DropDownOption>.empty();
+        } else {
+          return widget.onTextChange(textEditingValue.text);
+        }
       },
       onSelected: (DropDownOption option) {
         setState(() {

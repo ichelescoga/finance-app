@@ -1,53 +1,67 @@
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
 import 'package:developer_company/data/repositories/CDI/cdi_repository.dart';
+import 'package:developer_company/utils/cdi_functions.dart';
+import 'package:developer_company/widgets/CDI/autoComplete_with_controller.dart';
 import 'package:flutter/material.dart';
 // import 'package:developer_company/utils/cdi_components.dart';
 import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 
-class DepartmentsMunicipalitiesDropdownWidget extends StatefulWidget {
-  final List<DropDownOption> departments;
-  final String selectedDepartment;
-  final Function(String) onDepartmentSelected;
-  final Function(String) onMunicipalitySelected;
+class TwoDropdownCascade extends StatefulWidget {
+  final List<DropDownOption> fatherOptions;
+  final String onSelectedFather;
+  final Function(String) onFatherSelectedId;
+  final Function(String) onChildrenSelected;
+  final String childrenDropdownEndpoint;
+  final String childrenDropdownKeys;
+  final String defaultSelectedFather;
+  final TextEditingController childrenController;
 
-  const DepartmentsMunicipalitiesDropdownWidget({
-    required this.departments,
-    required this.selectedDepartment,
-    required this.onDepartmentSelected,
-    required this.onMunicipalitySelected,
-  });
+  const TwoDropdownCascade(
+      {required this.fatherOptions,
+      required this.onSelectedFather,
+      required this.onFatherSelectedId,
+      required this.onChildrenSelected,
+      required this.childrenDropdownEndpoint,
+      required this.childrenDropdownKeys,
+      required this.defaultSelectedFather,
+      required this.childrenController});
 
   @override
-  _DepartmentsMunicipalitiesDropdownWidgetState createState() =>
-      _DepartmentsMunicipalitiesDropdownWidgetState();
+  _TwoDropdownCascadeState createState() => _TwoDropdownCascadeState();
 }
 
-class _DepartmentsMunicipalitiesDropdownWidgetState
-    extends State<DepartmentsMunicipalitiesDropdownWidget> {
+class _TwoDropdownCascadeState extends State<TwoDropdownCascade> {
   String selectedSubDepartment = "";
-  late List<DropDownOption> subDepartments;
+  List<DropDownOption> childrenOptions = [];
 
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
+  String fatherId = "";
+  bool childrenClean = true;
+
+  resetValueChildren(p0) {
+    setState(
+      () {
+        childrenClean = true;
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     // Initialize subDepartments based on the initially selected department
-    updateSubDepartments(widget.selectedDepartment);
+    updateChildrenDropdownOptions(widget.onSelectedFather);
   }
 
-  void updateSubDepartments(String selectedDepartment) {
-    cdiRepository.fetchDataList("endpoint");
-    // Logic to fetch sub-departments based on the selected department
-    // For example, you can make an API call or use a predefined map
-    // Here, a simple example with a map is used
-    subDepartments = subDepartmentsMap[selectedDepartment] ?? [];
-    // Ensure that the selectedSubDepartment is a valid option
-    if (!subDepartments.contains(selectedSubDepartment)) {
-      selectedSubDepartment =
-          subDepartments.isNotEmpty ? subDepartments.first.id : "";
-    }
+  Future updateChildrenDropdownOptions(String fatherSelected) async {
+    List<DropDownOption> childrenOpts = await getDropdownOptions(
+        "${widget.childrenDropdownEndpoint}/${fatherId}",
+        widget.childrenDropdownKeys);
+    setState(() {
+      childrenOptions = childrenOpts;
+      // childrenOptions.clear();
+    });
   }
 
   @override
@@ -56,39 +70,50 @@ class _DepartmentsMunicipalitiesDropdownWidgetState
       children: [
         // First Dropdown for Departments
         AutocompleteDropdownWidget(
-          listItems: widget.departments,
-          onSelected: (selected) {
-            widget.onDepartmentSelected(selected.id);
-            updateSubDepartments(selected.id);
+          key: Key("fatherDropdown"),
+          listItems: widget.fatherOptions,
+          onSelected: (selected) async {
+            widget.onFatherSelectedId(selected.id);
             setState(() {
               // Reset the selected sub-department when the department changes
               selectedSubDepartment = "";
+              childrenOptions.clear();
+              childrenClean = false;
+              
+              widget.childrenController.clear();
             });
+            fatherId = selected.id;
+            await updateChildrenDropdownOptions(selected.id);
           },
           label: "Departments",
           hintText: "Select Department",
           onFocusChange: ((p0) {}),
           onTextChange: (p0) async {
-            return widget.departments
+            setState(() {
+              widget.childrenController.clear();
+            });
+            return widget.fatherOptions
                 .where((element) =>
                     element.label.toLowerCase().contains(p0.toLowerCase()))
                 .toList();
           },
         ),
         // Second Dropdown for Sub-Departments
-        AutocompleteDropdownWidget(
-          listItems: subDepartments,
+        AutocompleteDropdownWithController(
+          key: Key("childrenDropdown"),
+          textEditingController: widget.childrenController,
+          listItems: childrenOptions,
           onSelected: (selected) {
             setState(() {
               selectedSubDepartment = selected.id;
             });
-            widget.onMunicipalitySelected(selected.id);
+            widget.onChildrenSelected(selected.id);
           },
           label: "Sub-Departments",
           hintText: "Select Sub-Department",
           onFocusChange: ((p0) {}),
           onTextChange: (p0) async {
-            return subDepartments
+            return childrenOptions
                 .where((element) =>
                     element.label.toLowerCase().contains(p0.toLowerCase()))
                 .toList();
@@ -98,14 +123,3 @@ class _DepartmentsMunicipalitiesDropdownWidgetState
     );
   }
 }
-
-Map<String, List<DropDownOption>> subDepartmentsMap = {
-  "IT": [
-    DropDownOption(id: "it1", label: "IT Sub-Department 1"),
-    DropDownOption(id: "it2", label: "IT Sub-Department 2"),
-  ],
-  "HR": [
-    DropDownOption(id: "hr1", label: "HR Sub-Department 1"),
-    DropDownOption(id: "hr2", label: "HR Sub-Department 2"),
-  ],
-};

@@ -94,7 +94,7 @@ class _CDIManagePageState extends State<CDIManagePage> {
     return Layout(
         sideBarList: [],
         appBar: CustomAppBarTitle(
-          title: "Gestión de {principalLabel}",
+          title: "Gestión de ${principalLabel}",
         ),
         child: Form(
           key: manageCDIFormKey,

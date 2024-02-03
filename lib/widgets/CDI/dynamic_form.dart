@@ -78,6 +78,9 @@ class _DynamicDatabaseFormState extends State<DynamicDatabaseForm> {
         if (widgetEP["Type"] == CDIConstants.input) {
           return buildInputWidget(widgetEP, id, widget.controllers);
         }
+        if(widgetEP["Type"] == CDIConstants.twoCascadeDropdown && widgetEP["listKeys"].toString().contains("father")) {
+          return buildTwoDropDownCascade(widgetEP, id, widget.controllers, formWidgets);
+        }
 
         return Container();
       }).toList(),

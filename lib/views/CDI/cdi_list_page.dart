@@ -43,6 +43,9 @@ class _CDIListPageState extends State<CDIListPage> {
   @override
   Widget build(BuildContext context) {
     return dynamicTableWidget(
+        showAddAction: arguments["addEndpoint"] != null,
+        showDeleteAction: arguments["removeEndpoint"] != null,
+        showActionIcon: arguments["editEndpoint"] != null,
         titlePage: pageTitle,
         getByIdEndpoint: getByIdEndpoint,
         route: RouterPaths.MANAGE_CDI_PAGE,
