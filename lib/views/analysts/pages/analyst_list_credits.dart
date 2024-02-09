@@ -37,9 +37,10 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
     try {
       setState(() => isLoading = true);
       EasyLoading.show();
-      final projectId = user?.project.projectId;
+      final projectId = user.project.projectId;
       List<AnalystQuotation> listClients =
-          await analystRepository.fetchAllQuotesForAnalyst(projectId!);
+          await analystRepository.fetchAllQuotesForAnalyst(projectId);
+      print("LIST CLIENTS SDJFLKJDFLKJDFLK ${listClients}");
 
       setState(() {
         quotationsByClient = listClients;

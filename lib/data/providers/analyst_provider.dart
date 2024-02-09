@@ -12,9 +12,11 @@ class AnalystProvider {
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
 
-      return jsonResponse
+      final dataResult = jsonResponse
           .map((json) => AnalystQuotation.fromJson(json))
           .toList();
+
+      return dataResult;
     } else if (response.statusCode == 202) {
       return [];
     } else {

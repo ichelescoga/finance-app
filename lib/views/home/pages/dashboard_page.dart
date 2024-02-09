@@ -86,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
       "getByIdEndpoint": "orders/v1/getProjectById",
     },
     {
-      "entityId": "3",
+      "entityId": "7",
       "label": "Unidades",
       "listEndpoint": "orders/v1/getTypes",
       "editEndpoint": null,
@@ -94,6 +94,24 @@ class _DashboardPageState extends State<DashboardPage> {
       "removeEndpoint": null,
       "getByIdEndpoint": null,
     },
+    // {
+    //   "entityId": "4",
+    //   "label": "Unidades",
+    //   "listEndpoint": "orders/v1/getTypesByProyect/4",
+    //   "editEndpoint": null,
+    //   "addEndpoint": "orders/v1/addType",
+    //   "removeEndpoint": null,
+    //   "getByIdEndpoint": null,
+    // },
+    // {
+    //   "entityId": "5",
+    //   "label": "Unidades",
+    //   "listEndpoint": "orders/v1/getTypesByProyect/5",
+    //   "editEndpoint": null,
+    //   "addEndpoint": "orders/v1/addType",
+    //   "removeEndpoint": null,
+    //   "getByIdEndpoint": null,
+    // },
   ];
 
   Future askPermission() async {

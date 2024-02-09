@@ -82,9 +82,9 @@ class Quotation {
       cashPrice: json['Precio_contado'],
       aguinaldo: json['Aguinaldo'],
       bonusCatorce: json['Bono_catorce'],
-      createdAt:
+      createdAt: json['createdAt'] == null ? "" :
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
-      updatedAt:
+      updatedAt: json['updatedAt'] == null ? "" :
           DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
       clientData: json['Id_cliente_CLIENTE'] != null ? ClientModel.fromJson(json['Id_cliente_CLIENTE']) : null,
       resolutionDiscount: json["Estado_descuento"].toString(),
@@ -116,8 +116,8 @@ class UnitQuotation {
       unitQuotationId: json['Id_unidad_cotizacion'],
       quotationId: json['Id_cotizacion'],
       unitId: json['Id_unidad'],
-      createdAt: DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
-      updatedAt: DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
+      createdAt: json['createdAt'] == null ? "" :  DateFormat('dd/MM/yyyy').format(DateTime.parse(json['createdAt'])),
+      updatedAt: json['updatedAt'] == null ? "" : DateFormat('dd/MM/yyyy').format(DateTime.parse(json['updatedAt'])),
       quotation: Quotation.fromJson(json['Id_cotizacion_COTIZACION']),
     );
   }

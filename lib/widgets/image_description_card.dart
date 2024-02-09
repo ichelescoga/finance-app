@@ -184,6 +184,7 @@ class _ImageDescriptionCardState extends State<ImageDescriptionCard> {
     return AspectRatio(
       aspectRatio: 4 / 3,
       child: Card(
+        // color: AppColors.officialWhite,
         margin: EdgeInsets.only(bottom: 20),
         elevation: 5,
         shape: RoundedRectangleBorder(
