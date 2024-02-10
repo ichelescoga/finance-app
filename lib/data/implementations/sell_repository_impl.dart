@@ -9,33 +9,31 @@ class SellRepositoryImpl implements SellRepository {
 
   @override
   Future<MonetaryDownPayment> getMonetaryDownPayment(int unitId) async {
-    return getMonetaryDownPayment(unitId);
+    return this.sellProvider.getMonetaryDownPayment(unitId);
   }
 
   @override
   Future<BookModel> getBookModel(String unitId) async {
-    return getBookModel(unitId);
+    return this.sellProvider.getBookModel(unitId);
   }
 
   @override
   Future<PayTotalUnitModel> getPayTotalUnit(String unitId) async {
-    return getPayTotalUnit(unitId);
+    return this.sellProvider.getPayTotalUnit(unitId);
   }
 
   @override
-  Future<bool> postMonetaryDownPayment(DateTime initialDate, DateTime finalDate,
-      String projectId, String percentage) async {
-    return postMonetaryDownPayment(
-        initialDate, finalDate, projectId, percentage);
+  Future<bool> postMonetaryDownPayment(String unitId) async {
+    return this.sellProvider.postMonetaryDownPayment(unitId);
   }
 
   @override
   Future<bool> postBookModel(String unitId) async {
-    return postBookModel(unitId);
+    return this.sellProvider.postBookModel(unitId);
   }
 
   @override
   Future<bool> postPayTotalUnit(String unitId) async {
-    return postPayTotalUnit(unitId);
+    return this.sellProvider.postPayTotalUnit(unitId);
   }
 }

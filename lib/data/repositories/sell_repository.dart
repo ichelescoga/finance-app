@@ -2,11 +2,11 @@
 
 import 'package:developer_company/data/models/sell_models.dart';
 
-abstract class ProjectRepository {
+abstract class SellRepository {
   Future<MonetaryDownPayment> getMonetaryDownPayment(int unitId);
   Future<BookModel> getBookModel(String unitId);
   Future<PayTotalUnitModel> getPayTotalUnit(String unitId);
-  Future<bool> postMonetaryDownPayment(DateTime initialDate, DateTime finalDate,String projectId, String percentage);
+  Future<bool> postMonetaryDownPayment(String unitId);
   Future<bool> postBookModel(String unitId);
   Future<bool> postPayTotalUnit(String unitId);
 }

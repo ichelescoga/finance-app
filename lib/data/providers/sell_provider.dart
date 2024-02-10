@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:developer_company/data/models/sell_models.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 class SellProvider {
   final httpAdapter = HttpAdapter();
@@ -43,18 +43,10 @@ class SellProvider {
     }
   }
 
-  Future<bool> postMonetaryDownPayment(DateTime initialDate, DateTime finalDate, String projectId, String percentage) async {
-    String initialDateString = DateFormat('yyyy-MM-dd').format(initialDate);
-    String finalDateString = DateFormat('yyyy-MM-dd').format(finalDate);
-
+  Future<bool> postMonetaryDownPayment(String unitId) async {
     final response = await httpAdapter.postApi(
-        "orders/v1/createDetallePorcentajeEnganche",
-        json.encode({
-          "fechaInicial": initialDateString,
-          "fechaFinal": finalDateString,
-          "idProyecto": projectId,
-          "porcentaje": percentage
-        }),
+        "orders/v1/createDetallePorcentajeEnganche/$unitId",
+        {},
         {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
