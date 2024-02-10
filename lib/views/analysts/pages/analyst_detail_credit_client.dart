@@ -109,7 +109,7 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
         },
         sideBarList: const [],
         appBar:
-            const CustomAppBarTitle(title: "Detalle de Aplicación A Crédito"),
+            const CustomAppBarTitle(title: "Detalle de aplicación a crédito"),
         child: SizedBox(
           height: Get.height,
           child: Column(

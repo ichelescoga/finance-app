@@ -11,9 +11,9 @@ import "package:developer_company/views/bank_executive/pages/form_detail_client.
 import "package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart";
 import 'package:developer_company/views/credit_request/forms/form_quote.dart';
 import "package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart";
+import "package:developer_company/widgets/CustomTwoPartsCard.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
-import "package:developer_company/widgets/custom_card.dart";
 import "package:developer_company/widgets/custom_input_widget.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
@@ -64,7 +64,6 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
         quoteInfo?.extraDiscount.toString(),
         quoteInfo?.statusDiscount,
         quoteInfo?.resolutionDiscount.toString(),
-
         quoteInfo?.downPayment.toString(),
         quoteInfo?.termMonths.toString(),
         quoteInfo?.clientData?.email.toString(),
@@ -86,6 +85,13 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     }
   }
 
+  formalizeSell() {
+    Get.toNamed(RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE, arguments: {
+      "quoteId": parsedQuoteId,
+      "statusId": arguments["statusId"]
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -99,83 +105,91 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+        useScroll: false,
         onBackFunction: () {
           Get.back(closeOverlays: true, result: hideButtons);
         },
         sideBarList: const [],
         appBar:
-            const CustomAppBarTitle(title: "Detalle de Aplicación A Crédito"),
-        child: SizedBox(
-          height: Get.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Column(
-                children: [
-                  CustomCard(
-                      color: Colors.white,
-                      onTap: () => _showQuoteDialog(context),
-                      child: Container(
-                        width: (Get.width),
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Cotización",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+            const CustomAppBarTitle(title: "Detalle de aplicación a crédito"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () => _showCreditDialog(context),
+                  child: CustomTwoPartsCard(
+                      height: 80,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.person),
+                          SizedBox(width: 10),
+                          Text(
+                            'Aplicación a crédito',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                           ),
-                        ),
-                      )),
-                  CustomCard(
-                      color: Colors.white,
-                      onTap: () => _showCreditDialog(context),
-                      child: Container(
-                        width: (Get.width),
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Aplicación a crédito",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )),
-                ],
-              ),
-              SizedBox(
-                height: Get.height / 6,
-                child: Row(
-                  children: [
-                    hideButtons
-                        ? Expanded(
-                            child: CustomButtonWidget(
-                                text: "Regresar",
-                                onTap: () => Get.back(
-                                    closeOverlays: true, result: hideButtons)),
-                          )
-                        : Expanded(
-                            child: CustomButtonWidget(
-                                color: AppColors.SECONDARY_BUTTON,
-                                text: "Reservar",
-                                onTap: () => _showModalReserve(context))),
-                    Expanded(
-                        child: CustomButtonWidget(
-                            text: "Formalizar Venta",
-                            onTap: () => Get.toNamed(
-                                    RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE,
-                                    arguments: {
-                                      "quoteId": parsedQuoteId,
-                                      "statusId": arguments["statusId"]
-                                    })))
-                  ],
+                        ],
+                      ),
+                      bodyText: "Datos personales del cliente."),
                 ),
-              )
-            ],
-          ),
+                SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () => _showQuoteDialog(context),
+                  child: CustomTwoPartsCard(
+                      height: 80,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.document_scanner),
+                          SizedBox(width: 10),
+                          Text(
+                            'Cotización',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      bodyText:
+                          "Describe el precio de la unidad y datos básicos."),
+                ),
+              ],
+            ),
+            Column(children: [
+              if (!hideButtons)
+                CustomButtonWidget(
+                    color: AppColors.softMainColor,
+                    text: "Compra",
+                    onTap: () => _showModalReserve(context)),
+              SizedBox(height: 10),
+              if (!hideButtons)
+                CustomButtonWidget(
+                    color: AppColors.softMainColor,
+                    text: "Enganche",
+                    onTap: () => _showModalReserve(context)),
+              SizedBox(height: 10),
+              if (!hideButtons)
+                CustomButtonWidget(
+                    color: AppColors.softMainColor,
+                    text: "Reserva",
+                    onTap: () => _showModalReserve(context)),
+              SizedBox(height: 10),
+              if (!hideButtons)
+                CustomButtonWidget(
+                    color: AppColors.softMainColor,
+                    text: "Formalizar Venta",
+                    onTap: () => formalizeSell()),
+              SizedBox(height: 10),
+              CustomButtonWidget(
+                  text: Strings.backToPreviousScreen,
+                  onTap: () =>
+                      Get.back(closeOverlays: true, result: hideButtons)),
+            ]),
+          ],
         ));
   }
 
@@ -314,7 +328,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                           fontSize: Dimensions.extraLargeTextSize),
                     ),
                     const FormQuote(
-                      salePrice: "120000",
+                      salePrice: "",
                       quoteEdit: false,
                     ),
                     CustomButtonWidget(

@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: AppColors.mainColor,
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: AppColors.officialWhite,
-          onPrimary: Colors.red,
+          // onPrimary: Colors.red,
           // primaryContainer: Colors.red,
           // onPrimaryContainer: Colors.red,
           secondary: AppColors.softMainColor,

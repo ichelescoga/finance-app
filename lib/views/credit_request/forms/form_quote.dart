@@ -123,6 +123,7 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.applyDefaultDiscount,
           onChanged: (bool value) {
+            if(!widget.quoteEdit) return;
             if (value) {
               unitDetailPageController.finalSellPrice.text =
                   calculateSellPriceDiscount(
@@ -302,6 +303,7 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.isPayedTotal,
           onChanged: (bool value) {
+            if(!widget.quoteEdit) return;
             if (unitDetailPageController.paymentMonths.text.isEmpty) {
               EasyLoading.showInfo(Strings.termOfMonthsMin);
               return;
