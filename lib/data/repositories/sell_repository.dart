@@ -9,4 +9,5 @@ abstract class SellRepository {
   Future<bool> postMonetaryDownPayment(String unitId);
   Future<bool> postBookModel(String unitId);
   Future<bool> postPayTotalUnit(String unitId);
+  Future<StatusOfPayments> getStatusOfPayments(String quoteId);
 }

@@ -36,4 +36,9 @@ class SellRepositoryImpl implements SellRepository {
   Future<bool> postPayTotalUnit(String unitId) async {
     return this.sellProvider.postPayTotalUnit(unitId);
   }
+
+  @override
+  Future<StatusOfPayments> getStatusOfPayments(String quoteId) async {
+    return this.sellProvider.getStatusOfPayments(quoteId);
+  }
 }

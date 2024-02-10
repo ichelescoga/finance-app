@@ -1,9 +1,9 @@
 class BookModel {
   String moneyBook;
 
-  BookModel(
-      {required this.moneyBook,
-    });
+  BookModel({
+    required this.moneyBook,
+  });
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(
@@ -12,31 +12,28 @@ class BookModel {
   }
 }
 
-
 class MonetaryDownPayment {
   String downPayment;
 
-  MonetaryDownPayment(
-      {required this.downPayment,
-    });
+  MonetaryDownPayment({
+    required this.downPayment,
+  });
 
   factory MonetaryDownPayment.fromJson(Map<String, dynamic> json) {
     return MonetaryDownPayment(
       downPayment: json["data"].toString(),
     );
   }
-
 }
-
 
 class PayTotalUnitModel {
   String clientId;
   String firstName;
 
-  PayTotalUnitModel(
-      {required this.clientId,
-      required this.firstName,
-    });
+  PayTotalUnitModel({
+    required this.clientId,
+    required this.firstName,
+  });
 
   factory PayTotalUnitModel.fromJson(Map<String, dynamic> json) {
     return PayTotalUnitModel(
@@ -46,4 +43,22 @@ class PayTotalUnitModel {
   }
 }
 
+class StatusOfPayments {
+  bool book;
+  bool downPayment;
+  bool totalPayment;
 
+  StatusOfPayments({
+    required this.book,
+    required this.downPayment,
+    required this.totalPayment,
+  });
+
+  factory StatusOfPayments.fromJson(Map<String, dynamic> json) {
+    return StatusOfPayments(
+      book: json["book"],
+      downPayment: json["downPayment"],
+      totalPayment: json["totalPayment"],
+    );
+  }
+}

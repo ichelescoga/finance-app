@@ -32,8 +32,7 @@ class SellProvider {
   }
 
   Future<PayTotalUnitModel> getPayTotalUnit(String unitId) async {
-    final response =
-        await httpAdapter.getApi("orders/v1/asdf/$unitId", {});
+    final response = await httpAdapter.getApi("orders/v1/asdf/$unitId", {});
 
     if (response.statusCode == 200) {
       dynamic finalResponse = jsonDecode(response.body);
@@ -80,6 +79,18 @@ class SellProvider {
       return true;
     } else {
       throw Exception('Failed to fetch projects');
+    }
+  }
+
+  Future<StatusOfPayments> getStatusOfPayments(String quoteId) async {
+    final response = await httpAdapter.getApi(
+        "orders/v1/getStatusOfBookDownPaymentTotalPayment/${quoteId}", {});
+
+    if (response.statusCode == 200) {
+      dynamic data = response.body;
+      return StatusOfPayments.fromJson(data);
+    } else {
+      throw Exception("Failed to get status of payments");
     }
   }
 }
