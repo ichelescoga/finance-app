@@ -8,7 +8,7 @@ class SellRepositoryImpl implements SellRepository {
   SellRepositoryImpl(this.sellProvider);
 
   @override
-  Future<MonetaryDownPayment> getMonetaryDownPayment(int unitId) async {
+  Future<MonetaryDownPayment> getMonetaryDownPayment(String unitId) async {
     return this.sellProvider.getMonetaryDownPayment(unitId);
   }
 

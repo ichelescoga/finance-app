@@ -3,7 +3,7 @@
 import 'package:developer_company/data/models/sell_models.dart';
 
 abstract class SellRepository {
-  Future<MonetaryDownPayment> getMonetaryDownPayment(int unitId);
+  Future<MonetaryDownPayment> getMonetaryDownPayment(String unitId);
   Future<BookModel> getBookModel(String unitId);
   Future<PayTotalUnitModel> getPayTotalUnit(String unitId);
   Future<bool> postMonetaryDownPayment(String unitId);

@@ -7,7 +7,7 @@ import 'package:developer_company/shared/utils/http_adapter.dart';
 class SellProvider {
   final httpAdapter = HttpAdapter();
 
-  Future<MonetaryDownPayment> getMonetaryDownPayment(int unitId) async {
+  Future<MonetaryDownPayment> getMonetaryDownPayment(String unitId) async {
     final response =
         await httpAdapter.getApi("orders/v1/valorTotalEnganche/$unitId", {});
 
@@ -33,7 +33,7 @@ class SellProvider {
 
   Future<PayTotalUnitModel> getPayTotalUnit(String unitId) async {
     final response =
-        await httpAdapter.getApi("orders/v1/valorTotalReserva/$unitId", {});
+        await httpAdapter.getApi("orders/v1/asdf/$unitId", {});
 
     if (response.statusCode == 200) {
       dynamic finalResponse = jsonDecode(response.body);

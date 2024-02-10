@@ -1,6 +1,10 @@
+import "package:developer_company/data/implementations/sell_repository_impl.dart";
 import "package:developer_company/data/implementations/unit_quotation_repository_impl.dart";
+import "package:developer_company/data/models/sell_models.dart";
 import "package:developer_company/data/models/unit_quotation_model.dart";
+import "package:developer_company/data/providers/sell_provider.dart";
 import "package:developer_company/data/providers/unit_quotation_provider.dart";
+import "package:developer_company/data/repositories/sell_repository.dart";
 import "package:developer_company/data/repositories/unit_quotation_repository.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
@@ -14,7 +18,7 @@ import "package:developer_company/views/quotes/controllers/unit_detail_page_cont
 import "package:developer_company/widgets/CustomTwoPartsCard.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
-import "package:developer_company/widgets/custom_input_widget.dart";
+import "package:developer_company/widgets/dialog_accept_sell.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
@@ -36,16 +40,28 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
   final UnitQuotationRepository unitQuotationRepository =
       UnitQuotationRepositoryImpl(UnitQuotationProvider());
 
+  final SellRepository sellRepository = SellRepositoryImpl(SellProvider());
+
   final Map<String, dynamic> arguments = Get.arguments;
 
   bool hideButtons = false;
+  bool isLoadingModal = false;
 
   String? parsedQuoteId;
+  String extraDataModalBook = "";
+  String extraDataModalDownPayment = "";
 
   Future<void> start() async {
     final quoteId = arguments["quoteId"];
     bool approveStatus =
         arguments["statusId"].toString() == "5"; //unitStatus unit_status
+
+    BookModel responseBook =
+        await sellRepository.getBookModel(arguments["quoteId"]);
+    MonetaryDownPayment responseDownPayment =  await sellRepository.getMonetaryDownPayment(arguments["quoteId"]);
+
+    extraDataModalBook = responseBook.moneyBook;
+    extraDataModalDownPayment = responseDownPayment.downPayment;
 
     if (approveStatus) {
       setState(() {
@@ -164,19 +180,28 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                 CustomButtonWidget(
                     color: AppColors.softMainColor,
                     text: "Compra",
-                    onTap: () => _showModalReserve(context)),
+                    onTap: () {
+                      _showModalSell(context, "Compra", "compra",
+                          () async => {}, isLoadingModal, "");
+                    }),
               SizedBox(height: 10),
               if (!hideButtons)
                 CustomButtonWidget(
                     color: AppColors.softMainColor,
                     text: "Enganche",
-                    onTap: () => _showModalReserve(context)),
+                    onTap: () {
+                      _showModalSell(context, "Enganche", "enganche",
+                          () async => {}, isLoadingModal, extraDataModalDownPayment);
+                    }),
               SizedBox(height: 10),
               if (!hideButtons)
                 CustomButtonWidget(
                     color: AppColors.softMainColor,
                     text: "Reserva",
-                    onTap: () => _showModalReserve(context)),
+                    onTap: () {
+                      _showModalSell(context, "Reserva", "reserva",
+                          () async => {}, isLoadingModal, extraDataModalBook);
+                    }),
               SizedBox(height: 10),
               if (!hideButtons)
                 CustomButtonWidget(
@@ -193,84 +218,21 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
         ));
   }
 
-  _showModalReserve(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
-    final _formKeyComments = GlobalKey<FormState>();
-
-    return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return Center(
-            child: Container(
-              color: Colors.white,
-              height: Get.height / 3,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Form(
-                  key: _formKeyComments,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text("¿Desea Reservar este Crédito?",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: Dimensions.extraLargeTextSize,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                        CustomInputWidget(
-                            controller: commentController,
-                            validator: (value) {
-                              final reservedDays = int.tryParse(value!);
-
-                              if (reservedDays == null)
-                                return "Ingrese un numero valido.";
-                              if (reservedDays > 5) {
-                                return "La reserva no puede ser mayor a 5 Dias.";
-                              }
-
-                              return null;
-                            },
-                            keyboardType: TextInputType.number,
-                            label: "Dias de Reserva (máximo 5 Dias)",
-                            hintText: "Dias de Reserva (máximo 5 Dias)",
-                            prefixIcon: Icons.comment),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    text: "Reservar",
-                                    color: AppColors.SECONDARY_BUTTON,
-                                    onTap: () async {
-                                      if (_formKeyComments.currentState!
-                                          .validate()) {
-                                        // final body = {
-                                        //   "idEstado": "6",
-                                        //   "comentario": commentController.text,
-                                        // };
-                                        // await httpAdapter.putApi(
-                                        //     "orders/v1/cotizacionUpdEstado/$parsedQuoteId",
-                                        //     body, {});
-                                        // EasyLoading.showSuccess(
-                                        //     "Crédito Rechazado con éxito.");
-
-                                        // setState(() {
-                                        //   hideButtons = true;
-                                        // });
-                                        Navigator.of(context).pop();
-                                      }
-                                    })),
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    text: "Regresar",
-                                    onTap: () => Navigator.of(context).pop()))
-                          ],
-                        )
-                      ]),
-                ),
-              ),
-            ),
-          );
-        }));
+  _showModalSell(BuildContext context, String title, String text,
+      Function() onPress, bool isLoading, String extraData) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return PopScope(
+          child: DialogAcceptSell(
+              extraData: extraData,
+              onPressAccept: onPress,
+              isLoading: isLoading,
+              title: title,
+              text: "¿Esta seguro de aplicar la ${text}?"),
+        );
+      },
+    );
   }
 
   _showCreditDialog(BuildContext context) {

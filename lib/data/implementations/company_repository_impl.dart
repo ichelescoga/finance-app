@@ -10,7 +10,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   @override
   Future<List<Company>> fetchCompanies() async {
-    return await companyProvider.fetchCompanies();
+    return await this.companyProvider.fetchCompanies();
   }
 
   @override

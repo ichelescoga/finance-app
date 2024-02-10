@@ -1,34 +1,28 @@
 class BookModel {
-  String clientId;
-  String firstName;
+  String moneyBook;
 
   BookModel(
-      {required this.clientId,
-      required this.firstName,
+      {required this.moneyBook,
     });
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(
-      clientId: json["Id_cliente_CLIENTE"]["Id_cliente"].toString(),
-      firstName: json["Id_cliente_CLIENTE"]["Primer_nombre"],
+      moneyBook: json["data"].toString(),
     );
   }
 }
 
 
 class MonetaryDownPayment {
-  String clientId;
-  String firstName;
+  String downPayment;
 
   MonetaryDownPayment(
-      {required this.clientId,
-      required this.firstName,
+      {required this.downPayment,
     });
 
   factory MonetaryDownPayment.fromJson(Map<String, dynamic> json) {
     return MonetaryDownPayment(
-      clientId: json["Id_cliente_CLIENTE"]["Id_cliente"].toString(),
-      firstName: json["Id_cliente_CLIENTE"]["Primer_nombre"],
+      downPayment: json["data"].toString(),
     );
   }
 
