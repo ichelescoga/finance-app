@@ -88,7 +88,6 @@ class _FormQuoteState extends State<FormQuote> {
     dropdownClients = clients;
     clientOptions = newClientOptions;
 
-
     return newClientOptions;
   }
 
@@ -123,7 +122,7 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.applyDefaultDiscount,
           onChanged: (bool value) {
-            if(!widget.quoteEdit) return;
+            if (!widget.quoteEdit) return;
             if (value) {
               unitDetailPageController.finalSellPrice.text =
                   calculateSellPriceDiscount(
@@ -303,7 +302,7 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.isPayedTotal,
           onChanged: (bool value) {
-            if(!widget.quoteEdit) return;
+            if (!widget.quoteEdit) return;
             if (unitDetailPageController.paymentMonths.text.isEmpty) {
               EasyLoading.showInfo(Strings.termOfMonthsMin);
               return;
@@ -334,7 +333,9 @@ class _FormQuoteState extends State<FormQuote> {
             backgroundColor: AppColors.officialWhite,
             title: Text("Solicitud de descuento"),
             content: Text(
-                "Es un porcentaje descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento"),
+              "Es un porcentaje descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento",
+              style: TextStyle(color: Colors.black),
+            ),
             actions: [
               ElevatedCustomButton(
                 color: AppColors.secondaryMainColor,

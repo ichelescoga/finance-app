@@ -7,6 +7,18 @@ import 'package:developer_company/shared/utils/http_adapter.dart';
 class SellProvider {
   final httpAdapter = HttpAdapter();
 
+  Future<StatusOfPayments> getStatusOfPayments(String quoteId) async {
+    final response = await httpAdapter.getApi(
+        "orders/v1/getStatusOfBookDownPaymentTotalPayment/${quoteId}", {});
+
+    if (response.statusCode == 200) {
+      dynamic data = json.decode(response.body);
+      return StatusOfPayments.fromJson(data);
+    } else {
+      throw Exception("Failed to get status of payments");
+    }
+  }
+
   Future<MonetaryDownPayment> getMonetaryDownPayment(String unitId) async {
     final response =
         await httpAdapter.getApi("orders/v1/valorTotalEnganche/$unitId", {});
@@ -31,22 +43,11 @@ class SellProvider {
     }
   }
 
-  Future<PayTotalUnitModel> getPayTotalUnit(String unitId) async {
-    final response = await httpAdapter.getApi("orders/v1/asdf/$unitId", {});
-
-    if (response.statusCode == 200) {
-      dynamic finalResponse = jsonDecode(response.body);
-      return PayTotalUnitModel.fromJson(finalResponse);
-    } else {
-      throw Exception('Failed to fetch projects');
-    }
-  }
-
   Future<bool> postMonetaryDownPayment(String unitId) async {
     final response = await httpAdapter.postApi(
-        "orders/v1/createDetallePorcentajeEnganche/$unitId",
+        "orders/v1/createPagoEnganche/$unitId",
         {},
-        {'Content-Type': 'application/json'});
+        {});
 
     if (response.statusCode == 200) {
       return true;
@@ -59,21 +60,7 @@ class SellProvider {
     final response = await httpAdapter.postApi(
         "orders/v1/createPagoReserva/$unitId",
         {},
-        {'Content-Type': 'application/json'});
-
-    if (response.statusCode == 200) {
-      dynamic responseData = response.body;
-      return json.decode(responseData["data"]);
-    } else {
-      throw Exception('Failed to fetch projects');
-    }
-  }
-
-  Future<bool> postPayTotalUnit(String unitId) async {
-    final response = await httpAdapter.postApi(
-        "orders/v1/valorTotalReserva/$unitId",
-        {},
-        {'Content-Type': 'application/json'});
+        {});
 
     if (response.statusCode == 200) {
       return true;
@@ -82,15 +69,16 @@ class SellProvider {
     }
   }
 
-  Future<StatusOfPayments> getStatusOfPayments(String quoteId) async {
-    final response = await httpAdapter.getApi(
-        "orders/v1/getStatusOfBookDownPaymentTotalPayment/${quoteId}", {});
+  Future<bool> postMonetaryFee(String quoteId, String interestRate) async {
+    final response = await httpAdapter.postApi(
+        "orders/v1/valorTotalReserva/$quoteId",
+        json.encode({"interes": interestRate}),
+        {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
-      dynamic data = response.body;
-      return StatusOfPayments.fromJson(data);
+      return true;
     } else {
-      throw Exception("Failed to get status of payments");
+      throw Exception('Failed to fetch projects');
     }
   }
 }

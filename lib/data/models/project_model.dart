@@ -32,6 +32,16 @@ class Unit {
           : DateTime.parse(json['updatedAt']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+  return {
+    "unitId": unitId,
+    "estadoId": estadoId,
+    "projectId": projectId,
+    "unitName": unitName,
+    "salePrice": salePrice
+  };
+}
 }
 
 class Project {
@@ -51,5 +61,12 @@ class Project {
       projectId: json['Id_proyecto'],
       units: units,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "projectId": projectId,
+      "units": units,
+    };
   }
 }

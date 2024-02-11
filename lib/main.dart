@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: GoogleFonts.nunito().fontFamily,
         primaryColor: AppColors.mainColor,
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: AppColors.officialWhite,
+          primary: AppColors.softMainColor,
           // onPrimary: Colors.red,
           // primaryContainer: Colors.red,
           // onPrimaryContainer: Colors.red,

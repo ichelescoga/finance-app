@@ -24,6 +24,8 @@ class DialogAcceptSell extends StatefulWidget {
 }
 
 class _DialogAcceptSellState extends State<DialogAcceptSell> {
+  bool isLoadingButton = false;
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -39,7 +41,7 @@ class _DialogAcceptSellState extends State<DialogAcceptSell> {
                   widget.text,
                   style: TextStyle(color: Colors.black),
                 ),
-                Text("Su pago es de Q.${widget.extraData}")
+                Text(widget.extraData.length > 0 ? "Su pago es de ${widget.extraData}": "")
               ],
             )),
       ),
@@ -47,13 +49,13 @@ class _DialogAcceptSellState extends State<DialogAcceptSell> {
         ElevatedCustomButton(
           color: AppColors.softMainColor,
           text: "Aceptar",
-          isLoading: widget.isLoading,
+          isLoading: isLoadingButton,
           onPress: widget.onPressAccept,
         ),
         ElevatedCustomButton(
           color: AppColors.secondaryMainColor,
           text: "Cerrar",
-          isLoading: widget.isLoading,
+          isLoading: isLoadingButton,
           onPress: () => Navigator.pop(context, false),
         )
       ],

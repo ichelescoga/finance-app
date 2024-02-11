@@ -28,6 +28,7 @@ class _DiscountsApprovedScreenState extends State<DiscountsApprovedScreen> {
       DiscountRepositoryImpl(DiscountProvider());
 
   List<RequestedDiscount> discountsApproved = [];
+  List<RequestedDiscount> filteredDiscountsApproved = [];
 
   fetchApprovedDiscounts() async {
     final projectId = user.project.projectId;
@@ -38,6 +39,7 @@ class _DiscountsApprovedScreenState extends State<DiscountsApprovedScreen> {
           await discountRepository.getDiscountByResolution(true, projectId);
       setState(() {
         discountsApproved = listDiscounts;
+        filteredDiscountsApproved = listDiscounts;
       });
     } finally {
       EasyLoading.dismiss();
@@ -63,11 +65,11 @@ class _DiscountsApprovedScreenState extends State<DiscountsApprovedScreen> {
           isLoading: isLoading,
           elements: discountsApproved,
           handleFilteredData: ((List<RequestedDiscount> data) =>
-              setState(() => discountsApproved = data)),
+              setState(() => filteredDiscountsApproved = data)),
         ),
         CustomDataTable(
           columns: ["Nombre unidad", "Cliente", "Descuento\nSolicitado"],
-          elements: discountsApproved
+          elements: filteredDiscountsApproved
               .asMap()
               .map((index, element) => MapEntry(
                   index,

@@ -17,10 +17,6 @@ class SellRepositoryImpl implements SellRepository {
     return this.sellProvider.getBookModel(unitId);
   }
 
-  @override
-  Future<PayTotalUnitModel> getPayTotalUnit(String unitId) async {
-    return this.sellProvider.getPayTotalUnit(unitId);
-  }
 
   @override
   Future<bool> postMonetaryDownPayment(String unitId) async {
@@ -33,8 +29,8 @@ class SellRepositoryImpl implements SellRepository {
   }
 
   @override
-  Future<bool> postPayTotalUnit(String unitId) async {
-    return this.sellProvider.postPayTotalUnit(unitId);
+  Future<bool> postMonetaryFee(String unitId, String interestRate) async {
+    return this.sellProvider.postMonetaryFee(unitId, interestRate);
   }
 
   @override

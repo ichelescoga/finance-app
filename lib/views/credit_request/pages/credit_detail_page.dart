@@ -10,6 +10,7 @@ import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
+import "package:developer_company/shared/services/quetzales_currency.dart";
 import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/views/bank_executive/pages/form_detail_client.dart";
 import "package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart";
@@ -50,18 +51,26 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
   String? parsedQuoteId;
   String extraDataModalBook = "";
   String extraDataModalDownPayment = "";
+  StatusOfPayments statusOfPayments =
+      StatusOfPayments(book: false, downPayment: false, monetaryFee: false);
 
   Future<void> start() async {
+    EasyLoading.show();
     final quoteId = arguments["quoteId"];
     bool approveStatus =
         arguments["statusId"].toString() == "5"; //unitStatus unit_status
 
     BookModel responseBook =
         await sellRepository.getBookModel(arguments["quoteId"]);
-    MonetaryDownPayment responseDownPayment =  await sellRepository.getMonetaryDownPayment(arguments["quoteId"]);
+    MonetaryDownPayment responseDownPayment =
+        await sellRepository.getMonetaryDownPayment(arguments["quoteId"]);
+    statusOfPayments =
+        await sellRepository.getStatusOfPayments(arguments["quoteId"]);
 
-    extraDataModalBook = responseBook.moneyBook;
-    extraDataModalDownPayment = responseDownPayment.downPayment;
+    extraDataModalBook = quetzalesCurrency(responseBook.moneyBook);
+    extraDataModalDownPayment = quetzalesCurrency(responseDownPayment.downPayment);
+    
+    setState(() => {});
 
     if (approveStatus) {
       setState(() {
@@ -106,6 +115,43 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
       "quoteId": parsedQuoteId,
       "statusId": arguments["statusId"]
     });
+  }
+
+  doBookSell() async {
+    setState(() {
+      isLoadingModal = true;
+    });
+    statusOfPayments.book =
+        await sellRepository.postBookModel(arguments["quoteId"]);
+    setState(() {
+      isLoadingModal = false;
+    });
+  }
+
+  doMonetaryDownSell() async {
+    setState(() {
+      isLoadingModal = true;
+    });
+    setState(() {
+      isLoadingModal = true;
+    });
+    statusOfPayments.downPayment =
+        await sellRepository.postMonetaryDownPayment(arguments["quoteId"]);
+    setState(() {
+      isLoadingModal = false;
+    });
+  }
+
+  doFirstMonetaryFee() async {
+    setState(() {
+      isLoadingModal = true;
+    });
+    const String DEFAULT_INTEREST = "7"; //TODO: Would be EP consume, not ready yet.
+    statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(arguments["quoteId"], DEFAULT_INTEREST);
+    setState(() {
+      isLoadingModal = false;
+    });
+
   }
 
   @override
@@ -175,34 +221,90 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                 ),
               ],
             ),
+            Column(
+              children: [
+                if (statusOfPayments.monetaryFee)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (p0) => {},
+                      ),
+                      Text("Compra")
+                    ],
+                  ),
+                if (statusOfPayments.downPayment)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (p0) => {},
+                      ),
+                      Text("Enganche ${extraDataModalDownPayment}")
+                    ],
+                  ),
+                if (statusOfPayments.book)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (p0) => {},
+                      ),
+                      Text("Reserva ${extraDataModalBook}")
+                    ],
+                  ),
+              ],
+            ),
             Column(children: [
-              if (!hideButtons)
-                CustomButtonWidget(
-                    color: AppColors.softMainColor,
-                    text: "Compra",
-                    onTap: () {
-                      _showModalSell(context, "Compra", "compra",
-                          () async => {}, isLoadingModal, "");
-                    }),
-              SizedBox(height: 10),
-              if (!hideButtons)
-                CustomButtonWidget(
-                    color: AppColors.softMainColor,
-                    text: "Enganche",
-                    onTap: () {
-                      _showModalSell(context, "Enganche", "enganche",
-                          () async => {}, isLoadingModal, extraDataModalDownPayment);
-                    }),
-              SizedBox(height: 10),
-              if (!hideButtons)
-                CustomButtonWidget(
-                    color: AppColors.softMainColor,
-                    text: "Reserva",
-                    onTap: () {
-                      _showModalSell(context, "Reserva", "reserva",
-                          () async => {}, isLoadingModal, extraDataModalBook);
-                    }),
-              SizedBox(height: 10),
+              if (!statusOfPayments.monetaryFee)
+                Column(
+                  children: [
+                    CustomButtonWidget(
+                        color: AppColors.softMainColor,
+                        text: "Compra",
+                        onTap: () {
+                          _showModalSell(context, "Solicitud de compra",
+                              "la compra", () async => {}, isLoadingModal, "");
+                        }),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              if (!statusOfPayments.downPayment)
+                Column(
+                  children: [
+                    CustomButtonWidget(
+                        color: AppColors.softMainColor,
+                        text: "Enganche",
+                        onTap: () {
+                          _showModalSell(
+                              context,
+                              "Solicitud de enganche",
+                              "el enganche",
+                              doMonetaryDownSell,
+                              isLoadingModal,
+                              extraDataModalDownPayment);
+                        }),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              if (!statusOfPayments.book)
+                Column(
+                  children: [
+                    CustomButtonWidget(
+                        color: AppColors.softMainColor,
+                        text: "Reserva",
+                        onTap: () {
+                          _showModalSell(
+                              context,
+                              "Solicitud de reserva",
+                              "reserva",
+                              () => doBookSell(),
+                              isLoadingModal,
+                              extraDataModalBook);
+                        }),
+                    SizedBox(height: 10),
+                  ],
+                ),
               if (!hideButtons)
                 CustomButtonWidget(
                     color: AppColors.softMainColor,
@@ -226,10 +328,13 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
         return PopScope(
           child: DialogAcceptSell(
               extraData: extraData,
-              onPressAccept: onPress,
+              onPressAccept: () async {
+                await onPress();
+                Navigator.pop(context, false);
+              },
               isLoading: isLoading,
               title: title,
-              text: "¿Esta seguro de aplicar la ${text}?"),
+              text: "¿Esta seguro de aplicar ${text}?"),
         );
       },
     );

@@ -44,6 +44,7 @@ class _QuickClientContactListPageState
   final user = container.read(userProvider);
 
   List<QuickClientContacts> clientContacts = [];
+  List<QuickClientContacts> filteredClientContacts = [];
   final AppColors appColors = AppColors();
   bool isLoading = false;
 
@@ -54,7 +55,10 @@ class _QuickClientContactListPageState
     clientContacts.clear();
     final contacts =
         await quickClientContactProvider.fetchClientContact(projectId);
-    setState(() => clientContacts.addAll(contacts));
+    setState(() {
+      clientContacts.addAll(contacts);
+      filteredClientContacts.addAll(contacts);
+    });
     EasyLoading.dismiss();
     isLoading = false;
   }
@@ -93,18 +97,17 @@ class _QuickClientContactListPageState
         child: Column(
           children: [
             FilterBox(
-              label: "Buscar Créditos",
-              hint: "Buscar",
-              elements: clientContacts,
-              isLoading: isLoading,
-              handleFilteredData: (List<QuickClientContacts> data) =>
-                  setState(() => clientContacts = data),
-            ),
+                label: "Buscar Créditos",
+                hint: "Buscar",
+                elements: clientContacts,
+                isLoading: isLoading,
+                handleFilteredData: (List<QuickClientContacts> data) =>
+                    setState(() => filteredClientContacts = data)),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: CustomDataTable(
                 columns: ["Nombre", "Teléfono", "Correo", "Dirección", ""],
-                elements: clientContacts
+                elements: filteredClientContacts
                     .asMap()
                     .map((index, element) => MapEntry(
                         index,

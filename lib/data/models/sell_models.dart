@@ -26,39 +26,40 @@ class MonetaryDownPayment {
   }
 }
 
-class PayTotalUnitModel {
+class MonetaryFee {
   String clientId;
-  String firstName;
 
-  PayTotalUnitModel({
+  MonetaryFee({
     required this.clientId,
-    required this.firstName,
   });
 
-  factory PayTotalUnitModel.fromJson(Map<String, dynamic> json) {
-    return PayTotalUnitModel(
+  factory MonetaryFee.fromJson(Map<String, dynamic> json) {
+    return MonetaryFee(
       clientId: json["Id_cliente_CLIENTE"]["Id_cliente"].toString(),
-      firstName: json["Id_cliente_CLIENTE"]["Primer_nombre"],
     );
   }
+
+
 }
 
 class StatusOfPayments {
   bool book;
   bool downPayment;
-  bool totalPayment;
+  bool monetaryFee;
 
   StatusOfPayments({
     required this.book,
     required this.downPayment,
-    required this.totalPayment,
+    required this.monetaryFee,
   });
 
   factory StatusOfPayments.fromJson(Map<String, dynamic> json) {
     return StatusOfPayments(
       book: json["book"],
       downPayment: json["downPayment"],
-      totalPayment: json["totalPayment"],
+      monetaryFee: json["totalPayment"],
     );
   }
 }
+
+
