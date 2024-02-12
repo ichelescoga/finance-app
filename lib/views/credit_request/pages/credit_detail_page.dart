@@ -1,3 +1,5 @@
+import "dart:convert";
+
 import "package:developer_company/data/implementations/sell_repository_impl.dart";
 import "package:developer_company/data/implementations/unit_quotation_repository_impl.dart";
 import "package:developer_company/data/models/sell_models.dart";
@@ -6,6 +8,8 @@ import "package:developer_company/data/providers/sell_provider.dart";
 import "package:developer_company/data/providers/unit_quotation_provider.dart";
 import "package:developer_company/data/repositories/sell_repository.dart";
 import "package:developer_company/data/repositories/unit_quotation_repository.dart";
+import "package:developer_company/global_state/providers/user_provider_state.dart";
+import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
@@ -47,12 +51,34 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
 
   bool hideButtons = false;
   bool isLoadingModal = false;
+  final user = container.read(userProvider);
 
   String? parsedQuoteId;
   String extraDataModalBook = "";
   String extraDataModalDownPayment = "";
   StatusOfPayments statusOfPayments =
       StatusOfPayments(book: false, downPayment: false, monetaryFee: false);
+
+  String defaultInterest = "7";
+
+  retrieveInterest() async {
+    HttpAdapter http = HttpAdapter();
+    final projectId = user.project.projectId;
+
+    dynamic interestResponse =
+        await http.getApi("orders/v1/detallePorcentajeInteres/${projectId}", {});
+    final List<dynamic> jsonResponse = jsonDecode(interestResponse.body);
+    if (jsonResponse.length > 0) {
+      if (int.tryParse(jsonResponse[0]["Porcentaje"]) == null) {
+        return EasyLoading.showInfo("INTERÉS NO CONFIGURADO, 7",
+            duration: Duration(seconds: 70));
+      }
+      defaultInterest = jsonResponse[0]["Porcentaje"].toString();
+    } else {
+      return EasyLoading.showInfo("INTERÉS NO CONFIGURADO, 7",
+          duration: Duration(seconds: 70));
+    }
+  }
 
   Future<void> start() async {
     EasyLoading.show();
@@ -70,7 +96,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     extraDataModalBook = quetzalesCurrency(responseBook.moneyBook);
     extraDataModalDownPayment =
         quetzalesCurrency(responseDownPayment.downPayment);
-
+    await retrieveInterest();
     setState(() => {});
 
     if (approveStatus) {
@@ -149,10 +175,9 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     setState(() {
       isLoadingModal = true;
     });
-    const String DEFAULT_INTEREST =
-        "7"; //TODO: Would be EP consume, not ready yet.
+
     statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(
-        arguments["quoteId"], DEFAULT_INTEREST);
+        arguments["quoteId"], defaultInterest);
     hideButtons = true;
     setState(() {
       isLoadingModal = false;
@@ -165,6 +190,12 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     Future.delayed(Duration.zero, () {
       start();
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    EasyLoading.dismiss();
   }
 
   HttpAdapter httpAdapter = HttpAdapter();
