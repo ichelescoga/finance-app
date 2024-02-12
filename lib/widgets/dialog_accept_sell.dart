@@ -24,7 +24,6 @@ class DialogAcceptSell extends StatefulWidget {
 }
 
 class _DialogAcceptSellState extends State<DialogAcceptSell> {
-  bool isLoadingButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +48,13 @@ class _DialogAcceptSellState extends State<DialogAcceptSell> {
         ElevatedCustomButton(
           color: AppColors.softMainColor,
           text: "Aceptar",
-          isLoading: isLoadingButton,
+          isLoading: widget.isLoading,
           onPress: widget.onPressAccept,
         ),
         ElevatedCustomButton(
           color: AppColors.secondaryMainColor,
           text: "Cerrar",
-          isLoading: isLoadingButton,
+          isLoading: widget.isLoading,
           onPress: () => Navigator.pop(context, false),
         )
       ],

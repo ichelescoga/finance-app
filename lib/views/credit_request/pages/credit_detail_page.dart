@@ -68,8 +68,9 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
         await sellRepository.getStatusOfPayments(arguments["quoteId"]);
 
     extraDataModalBook = quetzalesCurrency(responseBook.moneyBook);
-    extraDataModalDownPayment = quetzalesCurrency(responseDownPayment.downPayment);
-    
+    extraDataModalDownPayment =
+        quetzalesCurrency(responseDownPayment.downPayment);
+
     setState(() => {});
 
     if (approveStatus) {
@@ -123,6 +124,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     });
     statusOfPayments.book =
         await sellRepository.postBookModel(arguments["quoteId"]);
+    hideButtons = true;
     setState(() {
       isLoadingModal = false;
     });
@@ -137,6 +139,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     });
     statusOfPayments.downPayment =
         await sellRepository.postMonetaryDownPayment(arguments["quoteId"]);
+    hideButtons = true;
     setState(() {
       isLoadingModal = false;
     });
@@ -146,12 +149,14 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     setState(() {
       isLoadingModal = true;
     });
-    const String DEFAULT_INTEREST = "7"; //TODO: Would be EP consume, not ready yet.
-    statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(arguments["quoteId"], DEFAULT_INTEREST);
+    const String DEFAULT_INTEREST =
+        "7"; //TODO: Would be EP consume, not ready yet.
+    statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(
+        arguments["quoteId"], DEFAULT_INTEREST);
+    hideButtons = true;
     setState(() {
       isLoadingModal = false;
     });
-
   }
 
   @override
@@ -263,8 +268,13 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                         color: AppColors.softMainColor,
                         text: "Compra",
                         onTap: () {
-                          _showModalSell(context, "Solicitud de compra",
-                              "la compra", () async => {}, isLoadingModal, "");
+                          _showModalSell(
+                              context,
+                              "Solicitud de compra",
+                              "la compra",
+                              () async => doFirstMonetaryFee(),
+                              isLoadingModal,
+                              "");
                         }),
                     SizedBox(height: 10),
                   ],
@@ -280,7 +290,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                               context,
                               "Solicitud de enganche",
                               "el enganche",
-                              doMonetaryDownSell,
+                              () => doMonetaryDownSell(),
                               isLoadingModal,
                               extraDataModalDownPayment);
                         }),

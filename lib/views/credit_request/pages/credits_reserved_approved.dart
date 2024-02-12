@@ -106,7 +106,7 @@ class _CreditsReservedApprovedState extends State<CreditsReservedApproved> {
                               constraints:
                                   BoxConstraints(maxWidth: Get.width / 3),
                               child:
-                                  Text(unitStatus[element.unitStatusId].toString()),
+                                  Text(getUnitStatus(element.unitStatusId)),
                             )),
                             DataCell(Container(
                               constraints:

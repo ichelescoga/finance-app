@@ -71,7 +71,7 @@ class SellProvider {
 
   Future<bool> postMonetaryFee(String quoteId, String interestRate) async {
     final response = await httpAdapter.postApi(
-        "orders/v1/valorTotalReserva/$quoteId",
+        "orders/v1/createCuotas/$quoteId",
         json.encode({"interes": interestRate}),
         {'Content-Type': 'application/json'});
 
