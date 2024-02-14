@@ -36,8 +36,7 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
   _fetchAlbums() async {
     albums.clear();
     EasyLoading.show();
-    final projectId = user?.project.projectId;
-    if (projectId == null) return [];
+    final projectId = user.project.projectId;
 
     if (widget.isWatchMode == false) {
       final assetsDisables = await albumProvider.getAlbums(projectId, false);
@@ -159,10 +158,10 @@ class _MarketingAlbumsState extends State<MarketingAlbums> {
               setState(() {
                 albums.insert(newIndex, album);
               });
-              final projectId = user?.project.projectId;
+              final projectId = user.project.projectId;
 
               Album albumData1 = Album(
-                  projectId: int.tryParse(projectId!),
+                  projectId: int.tryParse(projectId),
                   albumId: albums[oldIndex].albumId,
                   albumName: albums[oldIndex].albumName,
                   position: oldIndex,

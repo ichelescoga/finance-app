@@ -18,6 +18,9 @@ class CustomDataTable<T> extends StatelessWidget {
     Responsive responsive = Responsive.of(context);
 
     return DataTable(
+        columnSpacing: 30.0,
+        dataRowMinHeight: 40,     
+        dataRowMaxHeight: double.infinity,
         showCheckboxColumn: false,
         headingRowHeight: responsive.hp(6),
         headingRowColor:

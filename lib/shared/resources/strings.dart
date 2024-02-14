@@ -55,5 +55,7 @@ class Strings {
 
 
   static String termOfMonthsMin = "Para activar es necesario que el plazo en meses sea menor a 12";
+
+  static String backToPreviousScreen = "Atrás";
   
 }

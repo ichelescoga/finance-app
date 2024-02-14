@@ -24,10 +24,24 @@ class Unit {
       projectId: json['Id_proyecto'],
       unitName: json['Nombre_unidad'],
       salePrice: json['Precio_Venta'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: json['createdAt'] == null
+          ? DateTime.now()
+          : DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] == null
+          ? DateTime.now()
+          : DateTime.parse(json['updatedAt']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+  return {
+    "unitId": unitId,
+    "estadoId": estadoId,
+    "projectId": projectId,
+    "unitName": unitName,
+    "salePrice": salePrice
+  };
+}
 }
 
 class Project {
@@ -41,10 +55,18 @@ class Project {
 
   factory Project.fromJson(Map<String, dynamic> json) {
     final List<dynamic> unitList = json['UNIDADs'];
-    final List<Unit> units = unitList.map((unitJson) => Unit.fromJson(unitJson)).toList();
+    final List<Unit> units =
+        unitList.map((unitJson) => Unit.fromJson(unitJson)).toList();
     return Project(
       projectId: json['Id_proyecto'],
       units: units,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "projectId": projectId,
+      "units": units,
+    };
   }
 }

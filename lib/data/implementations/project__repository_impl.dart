@@ -11,4 +11,9 @@ class ProjectRepositoryImpl implements ProjectRepository {
   Future<List<Project>> fetchUnitsByProject(int companyId) async {
     return await projectProvider.fetchUnitsByProject(companyId);
   }
+
+  @override
+  Future<dynamic> getProjectById(String projectId) async {
+    return await projectProvider.getProjectById(projectId);
+  }
 }

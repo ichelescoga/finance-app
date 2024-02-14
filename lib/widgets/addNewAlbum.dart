@@ -32,13 +32,13 @@ class _AddNewAlbumState extends State<AddNewAlbum> {
   final AlbumRepository albumProvider = AlbumRepositoryImpl(AlbumProvider());
 
   _handleAddNewAlbum() async {
-    final projectId = user?.project.projectId;
+    final projectId = user.project.projectId;
 
     if (_formKeyAddNewAlbum.currentState!.validate()) {
       setState(() => isLoading = true);
       try {
         final Album albumData = Album(
-            projectId: int.parse(projectId!),
+            projectId: int.parse(projectId),
             albumId: 0,
             albumName: albumNameController.text,
             position: widget.albumsLength + 1,
@@ -58,6 +58,7 @@ class _AddNewAlbumState extends State<AddNewAlbum> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.officialWhite,
       title: Text("Agregar Nuevo Album"),
       content: SingleChildScrollView(
         child: SizedBox(

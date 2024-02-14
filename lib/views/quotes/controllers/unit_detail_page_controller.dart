@@ -1,3 +1,4 @@
+import 'package:developer_company/data/models/client_model.dart';
 import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/shared/controllers/base_controller.dart';
 import 'package:developer_company/shared/utils/discount_status_text.dart';
@@ -23,6 +24,7 @@ class UnitDetailPageController extends BaseController {
   TextEditingController email = TextEditingController();
   TextEditingController startMoney = TextEditingController();
   TextEditingController priceWithDiscount = TextEditingController();
+  TextEditingController clientId = TextEditingController();
 
   TextEditingController discount = TextEditingController(text: "0");
   bool applyDefaultDiscount = false;
@@ -81,6 +83,20 @@ class UnitDetailPageController extends BaseController {
     email.text = argsEmail ?? "";
     startMoney.text = argsStartMoney ?? "";
     paymentMonths.text = argsPaymentMonths ?? "";
+  }
+
+  void updateClientInfo(ClientModel client){
+    clientId.text = client.id.toString();
+    clientName.text = client.name!;
+    clientPhone.text = client.phone!;
+    email.text = client.email!;
+  }
+
+  void cleanInfoClient(){
+    clientId.clear();
+    clientName.clear();
+    clientPhone.clear();
+    email.clear();
   }
 
   void cleanController() {

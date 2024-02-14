@@ -1,20 +1,29 @@
+import "dart:convert";
+
+import "package:developer_company/data/implementations/sell_repository_impl.dart";
 import "package:developer_company/data/implementations/unit_quotation_repository_impl.dart";
+import "package:developer_company/data/models/sell_models.dart";
 import "package:developer_company/data/models/unit_quotation_model.dart";
+import "package:developer_company/data/providers/sell_provider.dart";
 import "package:developer_company/data/providers/unit_quotation_provider.dart";
+import "package:developer_company/data/repositories/sell_repository.dart";
 import "package:developer_company/data/repositories/unit_quotation_repository.dart";
+import "package:developer_company/global_state/providers/user_provider_state.dart";
+import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/colors.dart";
 import "package:developer_company/shared/resources/dimensions.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
+import "package:developer_company/shared/services/quetzales_currency.dart";
 import "package:developer_company/shared/utils/http_adapter.dart";
 import "package:developer_company/views/bank_executive/pages/form_detail_client.dart";
 import "package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart";
 import 'package:developer_company/views/credit_request/forms/form_quote.dart';
 import "package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart";
+import "package:developer_company/widgets/CustomTwoPartsCard.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
-import "package:developer_company/widgets/custom_card.dart";
-import "package:developer_company/widgets/custom_input_widget.dart";
+import "package:developer_company/widgets/dialog_accept_sell.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
@@ -36,16 +45,59 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
   final UnitQuotationRepository unitQuotationRepository =
       UnitQuotationRepositoryImpl(UnitQuotationProvider());
 
+  final SellRepository sellRepository = SellRepositoryImpl(SellProvider());
+
   final Map<String, dynamic> arguments = Get.arguments;
 
   bool hideButtons = false;
+  bool isLoadingModal = false;
+  final user = container.read(userProvider);
 
   String? parsedQuoteId;
+  String extraDataModalBook = "";
+  String extraDataModalDownPayment = "";
+  StatusOfPayments statusOfPayments =
+      StatusOfPayments(book: false, downPayment: false, monetaryFee: false);
+
+  String defaultInterest = "7";
+
+  retrieveInterest() async {
+    HttpAdapter http = HttpAdapter();
+    final projectId = user.project.projectId;
+
+    dynamic interestResponse =
+        await http.getApi("orders/v1/detallePorcentajeInteres/${projectId}", {});
+    final List<dynamic> jsonResponse = jsonDecode(interestResponse.body);
+    if (jsonResponse.length > 0) {
+      if (int.tryParse(jsonResponse[0]["Porcentaje"]) == null) {
+        return EasyLoading.showInfo("INTERÉS NO CONFIGURADO, 7",
+            duration: Duration(seconds: 70));
+      }
+      defaultInterest = jsonResponse[0]["Porcentaje"].toString();
+    } else {
+      return EasyLoading.showInfo("INTERÉS NO CONFIGURADO, 7",
+          duration: Duration(seconds: 70));
+    }
+  }
 
   Future<void> start() async {
+    EasyLoading.show();
     final quoteId = arguments["quoteId"];
     bool approveStatus =
         arguments["statusId"].toString() == "5"; //unitStatus unit_status
+
+    BookModel responseBook =
+        await sellRepository.getBookModel(arguments["quoteId"]);
+    MonetaryDownPayment responseDownPayment =
+        await sellRepository.getMonetaryDownPayment(arguments["quoteId"]);
+    statusOfPayments =
+        await sellRepository.getStatusOfPayments(arguments["quoteId"]);
+
+    extraDataModalBook = quetzalesCurrency(responseBook.moneyBook);
+    extraDataModalDownPayment =
+        quetzalesCurrency(responseDownPayment.downPayment);
+    await retrieveInterest();
+    setState(() => {});
 
     if (approveStatus) {
       setState(() {
@@ -64,7 +116,6 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
         quoteInfo?.extraDiscount.toString(),
         quoteInfo?.statusDiscount,
         quoteInfo?.resolutionDiscount.toString(),
-
         quoteInfo?.downPayment.toString(),
         quoteInfo?.termMonths.toString(),
         quoteInfo?.clientData?.email.toString(),
@@ -86,6 +137,53 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     }
   }
 
+  formalizeSell() {
+    Get.toNamed(RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE, arguments: {
+      "quoteId": parsedQuoteId,
+      "statusId": arguments["statusId"]
+    });
+  }
+
+  doBookSell() async {
+    setState(() {
+      isLoadingModal = true;
+    });
+    statusOfPayments.book =
+        await sellRepository.postBookModel(arguments["quoteId"]);
+    hideButtons = true;
+    setState(() {
+      isLoadingModal = false;
+    });
+  }
+
+  doMonetaryDownSell() async {
+    setState(() {
+      isLoadingModal = true;
+    });
+    setState(() {
+      isLoadingModal = true;
+    });
+    statusOfPayments.downPayment =
+        await sellRepository.postMonetaryDownPayment(arguments["quoteId"]);
+    hideButtons = true;
+    setState(() {
+      isLoadingModal = false;
+    });
+  }
+
+  doFirstMonetaryFee() async {
+    setState(() {
+      isLoadingModal = true;
+    });
+
+    statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(
+        arguments["quoteId"], defaultInterest);
+    hideButtons = true;
+    setState(() {
+      isLoadingModal = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -94,169 +192,192 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    EasyLoading.dismiss();
+  }
+
   HttpAdapter httpAdapter = HttpAdapter();
 
   @override
   Widget build(BuildContext context) {
     return Layout(
+        useScroll: false,
         onBackFunction: () {
           Get.back(closeOverlays: true, result: hideButtons);
         },
         sideBarList: const [],
         appBar:
-            const CustomAppBarTitle(title: "Detalle de Aplicación A Crédito"),
-        child: SizedBox(
-          height: Get.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Column(
-                children: [
-                  CustomCard(
-                      color: Colors.white,
-                      onTap: () => _showQuoteDialog(context),
-                      child: Container(
-                        width: (Get.width),
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Cotización",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+            const CustomAppBarTitle(title: "Detalle de aplicación a crédito"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () => _showCreditDialog(context),
+                  child: CustomTwoPartsCard(
+                      height: 80,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.person),
+                          SizedBox(width: 10),
+                          Text(
+                            'Aplicación a crédito',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                           ),
-                        ),
-                      )),
-                  CustomCard(
-                      color: Colors.white,
-                      onTap: () => _showCreditDialog(context),
-                      child: Container(
-                        width: (Get.width),
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Aplicación a crédito",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        ],
+                      ),
+                      bodyText: "Datos personales del cliente."),
+                ),
+                SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () => _showQuoteDialog(context),
+                  child: CustomTwoPartsCard(
+                      height: 80,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.document_scanner),
+                          SizedBox(width: 10),
+                          Text(
+                            'Cotización',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                           ),
-                        ),
-                      )),
-                ],
-              ),
-              SizedBox(
-                height: Get.height / 6,
-                child: Row(
+                        ],
+                      ),
+                      bodyText:
+                          "Describe el precio de la unidad y datos básicos."),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                if (statusOfPayments.monetaryFee)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (p0) => {},
+                      ),
+                      Text("Compra")
+                    ],
+                  ),
+                if (statusOfPayments.downPayment)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (p0) => {},
+                      ),
+                      Text("Enganche ${extraDataModalDownPayment}")
+                    ],
+                  ),
+                if (statusOfPayments.book)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (p0) => {},
+                      ),
+                      Text("Reserva ${extraDataModalBook}")
+                    ],
+                  ),
+              ],
+            ),
+            Column(children: [
+              if (!statusOfPayments.monetaryFee)
+                Column(
                   children: [
-                    hideButtons
-                        ? Expanded(
-                            child: CustomButtonWidget(
-                                text: "Regresar",
-                                onTap: () => Get.back(
-                                    closeOverlays: true, result: hideButtons)),
-                          )
-                        : Expanded(
-                            child: CustomButtonWidget(
-                                color: AppColors.SECONDARY_BUTTON,
-                                text: "Reservar",
-                                onTap: () => _showModalReserve(context))),
-                    Expanded(
-                        child: CustomButtonWidget(
-                            text: "Formalizar Venta",
-                            onTap: () => Get.toNamed(
-                                    RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE,
-                                    arguments: {
-                                      "quoteId": parsedQuoteId,
-                                      "statusId": arguments["statusId"]
-                                    })))
+                    CustomButtonWidget(
+                        color: AppColors.softMainColor,
+                        text: "Compra",
+                        onTap: () {
+                          _showModalSell(
+                              context,
+                              "Solicitud de compra",
+                              "la compra",
+                              () async => doFirstMonetaryFee(),
+                              isLoadingModal,
+                              "");
+                        }),
+                    SizedBox(height: 10),
                   ],
                 ),
-              )
-            ],
-          ),
+              if (!statusOfPayments.downPayment)
+                Column(
+                  children: [
+                    CustomButtonWidget(
+                        color: AppColors.softMainColor,
+                        text: "Enganche",
+                        onTap: () {
+                          _showModalSell(
+                              context,
+                              "Solicitud de enganche",
+                              "el enganche",
+                              () => doMonetaryDownSell(),
+                              isLoadingModal,
+                              extraDataModalDownPayment);
+                        }),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              if (!statusOfPayments.book)
+                Column(
+                  children: [
+                    CustomButtonWidget(
+                        color: AppColors.softMainColor,
+                        text: "Reserva",
+                        onTap: () {
+                          _showModalSell(
+                              context,
+                              "Solicitud de reserva",
+                              "reserva",
+                              () => doBookSell(),
+                              isLoadingModal,
+                              extraDataModalBook);
+                        }),
+                    SizedBox(height: 10),
+                  ],
+                ),
+                CustomButtonWidget(
+                    color: AppColors.softMainColor,
+                    text: "Formalizar Venta",
+                    onTap: () => formalizeSell()),
+              SizedBox(height: 10),
+              CustomButtonWidget(
+                  text: Strings.backToPreviousScreen,
+                  onTap: () =>
+                      Get.back(closeOverlays: true, result: hideButtons)),
+            ]),
+          ],
         ));
   }
 
-  _showModalReserve(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
-    final _formKeyComments = GlobalKey<FormState>();
-
-    return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return Center(
-            child: Container(
-              color: Colors.white,
-              height: Get.height / 3,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Form(
-                  key: _formKeyComments,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text("¿Desea Reservar este Crédito?",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: Dimensions.extraLargeTextSize,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                        CustomInputWidget(
-                            controller: commentController,
-                            validator: (value) {
-                              final reservedDays = int.tryParse(value!);
-
-                              if (reservedDays == null)
-                                return "Ingrese un numero valido.";
-                              if (reservedDays > 5) {
-                                return "La reserva no puede ser mayor a 5 Dias.";
-                              }
-
-                              return null;
-                            },
-                            keyboardType: TextInputType.number,
-                            label: "Dias de Reserva (máximo 5 Dias)",
-                            hintText: "Dias de Reserva (máximo 5 Dias)",
-                            prefixIcon: Icons.comment),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    text: "Reservar",
-                                    color: AppColors.SECONDARY_BUTTON,
-                                    onTap: () async {
-                                      if (_formKeyComments.currentState!
-                                          .validate()) {
-                                        // final body = {
-                                        //   "idEstado": "6",
-                                        //   "comentario": commentController.text,
-                                        // };
-                                        // await httpAdapter.putApi(
-                                        //     "orders/v1/cotizacionUpdEstado/$parsedQuoteId",
-                                        //     body, {});
-                                        // EasyLoading.showSuccess(
-                                        //     "Crédito Rechazado con éxito.");
-
-                                        // setState(() {
-                                        //   hideButtons = true;
-                                        // });
-                                        Navigator.of(context).pop();
-                                      }
-                                    })),
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    text: "Regresar",
-                                    onTap: () => Navigator.of(context).pop()))
-                          ],
-                        )
-                      ]),
-                ),
-              ),
-            ),
-          );
-        }));
+  _showModalSell(BuildContext context, String title, String text,
+      Function() onPress, bool isLoading, String extraData) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return PopScope(
+          child: DialogAcceptSell(
+              extraData: extraData,
+              onPressAccept: () async {
+                await onPress();
+                Navigator.pop(context, false);
+              },
+              isLoading: isLoading,
+              title: title,
+              text: "¿Esta seguro de aplicar ${text}?"),
+        );
+      },
+    );
   }
 
   _showCreditDialog(BuildContext context) {
@@ -314,7 +435,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                           fontSize: Dimensions.extraLargeTextSize),
                     ),
                     const FormQuote(
-                      salePrice: "120000",
+                      salePrice: "",
                       quoteEdit: false,
                     ),
                     CustomButtonWidget(

@@ -1,7 +1,12 @@
 import 'package:developer_company/data/implementations/discount_repository_impl.dart';
+import 'package:developer_company/data/implementations/improve_client_contact_repository_impl.dart';
+import 'package:developer_company/data/models/client_model.dart';
 import 'package:developer_company/data/models/unit_quotation_model.dart';
 import 'package:developer_company/data/providers/discount_provider.dart';
+import 'package:developer_company/data/providers/improve_client_contact_provider.dart';
 import 'package:developer_company/data/repositories/discount_repository.dart';
+import 'package:developer_company/data/repositories/improve_client_contact_repository.dart';
+// import 'package:developer_company/global_state/providers/client_provider_state.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/strings.dart';
@@ -16,6 +21,7 @@ import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/views/credit_request/helpers/calculate_sell_price_discount.dart';
 import 'package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart';
+import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
 import 'package:developer_company/widgets/elevated_custom_button.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +32,15 @@ class FormQuote extends StatefulWidget {
   final bool quoteEdit;
   final bool canEditDiscount;
   final String salePrice;
+  final bool isEditing;
 
-  const FormQuote(
-      {Key? key,
-      this.quoteEdit = true,
-      required this.salePrice,
-      this.canEditDiscount = false})
-      : super(key: key);
+  const FormQuote({
+    Key? key,
+    this.quoteEdit = true,
+    required this.salePrice,
+    this.canEditDiscount = false,
+    this.isEditing = true,
+  }) : super(key: key);
 
   @override
   _FormQuoteState createState() => _FormQuoteState();
@@ -48,11 +56,16 @@ class _FormQuoteState extends State<FormQuote> {
   DiscountRepository _discountRepository =
       DiscountRepositoryImpl(DiscountProvider());
 
+  ImproveClientContactRepository contactClientRepository =
+      ImproveClientContactRepositoryImpl(ImproveClientContactProvider());
+
   // bool _canEditDiscount = false;
   int? quoteId;
 
   Quotation? quoteInfo;
   bool isFetchQuote = false;
+  List<ClientModel> dropdownClients = [];
+  List<DropDownOption> clientOptions = []; //! use as temp dropdown.
 
   retrieveDefaultDiscount() async {
     final projectId = user.project.projectId;
@@ -60,6 +73,22 @@ class _FormQuoteState extends State<FormQuote> {
         await _discountRepository.getSeasonDiscount(projectId);
     unitDetailPageController.seasonDiscount.text =
         _defaultDiscountData.percentage;
+  }
+
+  Future<List<DropDownOption>> _handleSearchClients(String text) async {
+    if (text.length < 1) return clientOptions;
+
+    List<ClientModel> clients =
+        await contactClientRepository.getClientsByKeyword(text, text);
+    List<DropDownOption> newClientOptions = clients
+        .map((client) =>
+            DropDownOption(id: client.id.toString(), label: client.name!))
+        .toList();
+
+    dropdownClients = clients;
+    clientOptions = newClientOptions;
+
+    return newClientOptions;
   }
 
   @override
@@ -93,6 +122,7 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.applyDefaultDiscount,
           onChanged: (bool value) {
+            if (!widget.quoteEdit) return;
             if (value) {
               unitDetailPageController.finalSellPrice.text =
                   calculateSellPriceDiscount(
@@ -163,6 +193,22 @@ class _FormQuoteState extends State<FormQuote> {
             label: "Precio con descuento",
             hintText: "Precio con descuento",
             prefixIcon: Icons.person_outline),
+        if (!widget.isEditing)
+          AutocompleteDropdownWidget(
+              listItems: [],
+              onSelected: (selected) {
+                final selectedClientDropdown = dropdownClients.firstWhere(
+                    (element) => element.id == int.parse(selected.id));
+                unitDetailPageController
+                    .updateClientInfo(selectedClientDropdown);
+              },
+              label: "Búsqueda de clientes",
+              hintText: "Escriba para buscar",
+              onFocusChange: (p0) {},
+              onTextChange: (value) async {
+                return Future.delayed(
+                    Duration(seconds: 1), () => _handleSearchClients(value));
+              }),
         CustomInputWidget(
             validator: (value) => notEmptyFieldValidator(value),
             enabled: widget.quoteEdit,
@@ -256,6 +302,7 @@ class _FormQuoteState extends State<FormQuote> {
               style: TextStyle(color: Colors.black)),
           value: unitDetailPageController.isPayedTotal,
           onChanged: (bool value) {
+            if (!widget.quoteEdit) return;
             if (unitDetailPageController.paymentMonths.text.isEmpty) {
               EasyLoading.showInfo(Strings.termOfMonthsMin);
               return;
@@ -283,9 +330,12 @@ class _FormQuoteState extends State<FormQuote> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: AppColors.officialWhite,
             title: Text("Solicitud de descuento"),
             content: Text(
-                "Es un porcentaje descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento"),
+              "Es un porcentaje descuento enviado a un analista para su revisión y resolución, la cual se reflejará en este apartado y en el campo de precio con descuento",
+              style: TextStyle(color: Colors.black),
+            ),
             actions: [
               ElevatedCustomButton(
                 color: AppColors.secondaryMainColor,

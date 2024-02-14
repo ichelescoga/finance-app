@@ -48,5 +48,6 @@ app.*.map.json
 
 
 financeapp-key.keystore
+**.jks
 
 .vscode

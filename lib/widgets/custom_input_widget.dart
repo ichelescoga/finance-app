@@ -18,6 +18,8 @@ class CustomInputWidget extends StatelessWidget {
   final VoidCallback? onTap; // Optional onChange callback
   final Function(PointerDownEvent)? onTapOutside; // Optional onChange callback
   final Function(bool)? onFocusChangeInput;
+  final FocusNode? focusNode;
+  final Function(String)? onFieldSubmitted ;
 
   const CustomInputWidget(
       {Key? key,
@@ -34,7 +36,10 @@ class CustomInputWidget extends StatelessWidget {
       this.onChange,
       this.onTap,
       this.onTapOutside,
-      this.suffixIcon})
+      this.suffixIcon,
+      this.focusNode,
+      this.onFieldSubmitted
+      })
       : super(key: key);
 
   @override
@@ -55,6 +60,8 @@ class CustomInputWidget extends StatelessWidget {
               ? (hasFocus) => onFocusChangeInput!(hasFocus)
               : null,
           child: TextFormField(
+            focusNode: focusNode,
+            onFieldSubmitted: onFieldSubmitted,
             readOnly: readOnly,
             onTapOutside: onTapOutside,
             obscureText: obscureText,

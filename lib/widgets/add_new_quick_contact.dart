@@ -38,14 +38,14 @@ class _AddNewQuickContactState extends State<AddNewQuickContact> {
       QuickClientContactRepositoryImpl(QuickClientContactProvider());
 
   _handleAddNewAlbum() async {
-    final projectId = user?.project.projectId;
+    final projectId = user.project.projectId;
 
     if (_formKeyQuickClientContact.currentState!.validate()) {
       setState(() => isLoading = true);
       try {
         final QuickClientContacts contactInfo = QuickClientContacts(
             contactId: widget.quickClientContactController.contactId,
-            projectId: int.parse(projectId!),
+            projectId: int.parse(projectId),
             state: widget.quickClientContactController.isActive,
             fullName: widget.quickClientContactController.fullName.text,
             phone: widget.quickClientContactController.phone.text,
@@ -71,6 +71,7 @@ class _AddNewQuickContactState extends State<AddNewQuickContact> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.officialWhite,
       title: Text("Agregar Nuevo Contacto"),
       content: SingleChildScrollView(
         child: SizedBox(

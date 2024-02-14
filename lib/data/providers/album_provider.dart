@@ -6,7 +6,7 @@ class AlbumProvider {
   final httpAdapter = HttpAdapter();
 
   Future<Album?> postNewAlbum(Album albumData) async {
-    final response = await httpAdapter.postApi("orders/v1//crearAlbum",
+    final response = await httpAdapter.postApi("orders/v1/crearAlbum",
         jsonEncode(albumData.toJson()), {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {

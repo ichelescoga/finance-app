@@ -1,10 +1,8 @@
-import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/implementations/project__repository_impl.dart';
 import 'package:developer_company/data/models/project_model.dart';
-import 'package:developer_company/data/providers/company_provider.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
-import 'package:developer_company/data/repositories/company_repository.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
+import 'package:developer_company/global_state/providers/client_provider_state.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/colors.dart';
@@ -15,29 +13,29 @@ import 'package:developer_company/shared/services/quetzales_currency.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/shared/utils/unit_status.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
+import 'package:developer_company/widgets/filter_box.dart';
 import 'package:developer_company/widgets/layout.dart';
 import 'package:developer_company/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class UnitQuotePage extends StatefulWidget {
+class UnitQuotePage extends ConsumerStatefulWidget {
   const UnitQuotePage({Key? key}) : super(key: key);
 
   @override
-  State<UnitQuotePage> createState() => _UnitQuotePageState();
+  ConsumerState<UnitQuotePage> createState() => _UnitQuotePageState();
 }
 
-class _UnitQuotePageState extends State<UnitQuotePage> {
+class _UnitQuotePageState extends ConsumerState<UnitQuotePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final CompanyRepository companyRepository =
-      CompanyRepositoryImpl(CompanyProvider());
 
   final ProjectRepository projectRepository =
       ProjectRepositoryImpl(ProjectProvider());
 
-  List<Unit> _projectUnits = [];
+  List<Unit> projectUnits = [];
+  List<Unit> filteredProjectUnits = [];
   final user = container.read(userProvider);
 
   final List<SideBarItem> sideBarList = [
@@ -81,7 +79,8 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
       List<Project> project =
           await projectRepository.fetchUnitsByProject(int.tryParse(projectId)!);
       setState(() {
-        _projectUnits = project[0].units;
+        projectUnits = project[0].units;
+        filteredProjectUnits = project[0].units;
       });
     } catch (e) {
       // print('Project fetching failed: $e');
@@ -91,11 +90,15 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   void retrieveData() async {
     try {
       EasyLoading.showToast(Strings.loading);
-      final projectId = user?.project.projectId;
-      _fetchUnitProjects(projectId!);
+      final projectId = user.project.projectId;
+      _fetchUnitProjects(projectId);
     } finally {
       EasyLoading.dismiss();
     }
+  }
+
+  void cleanSelectedContactToClient() {
+    ref.read(selectedContactToClientProviderState.notifier).state = null;
   }
 
   @override
@@ -105,15 +108,33 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    cleanSelectedContactToClient();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
     return Layout(
+      onBackFunction: () {
+        cleanSelectedContactToClient();
+        Get.offAllNamed(RouterPaths.DASHBOARD_PAGE);
+      },
       sideBarList: sideBarList,
       appBar:
-          const CustomAppBarSideBar(title: "Creación de Solicitud de crédito"),
+          const CustomAppBarSideBar(title: "Creación de solicitud de crédito"),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          FilterBox(
+              elements: projectUnits,
+              handleFilteredData: (List<Unit> data) {
+                setState(() => filteredProjectUnits = data);
+              },
+              isLoading: false,
+              hint: "Unidades",
+              label: "Unidades"),
           // HERE DASHBOARD OF CREATE QUOTE
           Center(
             child: SingleChildScrollView(
@@ -170,7 +191,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                       ),
                     ),
                   ],
-                  rows: _projectUnits
+                  rows: filteredProjectUnits
                       .asMap()
                       .map((index, element) {
                         final priceFormatted =
@@ -179,11 +200,10 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                             index,
                             DataRow(
                               onSelectChanged: (value) async {
-                                if (element.estadoId == 3 ||
-                                    element.estadoId == 5) {
+                                if (!isAvailableForQuote(element.estadoId)) {
                                   // unitStatus unit_status vendida
                                   EasyLoading.showInfo(
-                                      "No Se puede crear cotización para unidad en estado ${unitStatus[element.estadoId]}");
+                                      "No se puede generar cotización para unidad en estado ${getUnitStatus(element.estadoId)}");
                                 } else {
                                   Get.toNamed(
                                       RouterPaths.UNIT_QUOTE_DETAIL_PAGE,
@@ -206,7 +226,7 @@ class _UnitQuotePageState extends State<UnitQuotePage> {
                                   child: Text(element.unitName),
                                 )),
                                 DataCell(Container(
-                                  child: Text(unitStatus[element.estadoId]!),
+                                  child: Text(getUnitStatus(element.estadoId)),
                                 )),
                                 DataCell(Container(
                                   child: Text(priceFormatted),

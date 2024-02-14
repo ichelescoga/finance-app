@@ -25,6 +25,7 @@ class AppColors {
   static const Color greenLightColor = Color(0xFFE5F6E7);
   static const Color blueColor = Color(0xFF307AFF);
   static const Color alternativeBlack = Color(0xFF444B54);
+  static const Color greyColor90 = Color.fromARGB(255, 235, 235, 235);
   static const Color officialWhite = Color(0xFFFFFFFF);
 
   dataRowColors(index) {

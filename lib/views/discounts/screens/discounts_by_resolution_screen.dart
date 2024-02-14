@@ -29,6 +29,7 @@ class _DiscountsByResolutionScreenState extends State<DiscountsByResolutionScree
       DiscountRepositoryImpl(DiscountProvider());
 
   List<RequestedDiscount> requestDiscounts = [];
+  List<RequestedDiscount> filteredRequestDiscounts = [];
 
 
   fetchRequestedDiscounts() async {
@@ -40,6 +41,7 @@ class _DiscountsByResolutionScreenState extends State<DiscountsByResolutionScree
           await discountRepository.getRequestDiscounts(projectId);
       setState(() {
         requestDiscounts = listDiscounts;
+        filteredRequestDiscounts = listDiscounts;
       });
     } finally {
       EasyLoading.dismiss();
@@ -64,13 +66,13 @@ class _DiscountsByResolutionScreenState extends State<DiscountsByResolutionScree
               isLoading: isLoading,
               elements: requestDiscounts,
               handleFilteredData: ((List<RequestedDiscount> data) =>
-                  setState(() => requestDiscounts = data)),
+                  setState(() => filteredRequestDiscounts = data)),
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: CustomDataTable(
                 columns: ["Nombre unidad", "Cliente", "Descuento\nSolicitado"],
-                elements: requestDiscounts
+                elements: filteredRequestDiscounts
                     .asMap()
                     .map((index, element) => MapEntry(
                         index,

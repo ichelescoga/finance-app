@@ -1,3 +1,5 @@
+import 'package:developer_company/views/CDI/cdi_list_page.dart';
+import 'package:developer_company/views/CDI/cdi_manage_page.dart';
 import 'package:developer_company/views/advisers/pages/create_adviser_page.dart';
 import 'package:developer_company/views/analysts/pages/analyst_detail_credit_client.dart';
 import 'package:developer_company/views/analysts/pages/analyst_list_credits.dart';
@@ -23,7 +25,11 @@ import 'package:developer_company/views/credit_request/pages/credit_user_applica
 import 'package:developer_company/views/credit_request/pages/credits_reserved_approved.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_detail_page.dart';
 import 'package:developer_company/views/credit_request/pages/unit_quote_page.dart';
-import 'package:developer_company/views/developer_company/pages/create_company_page.dart';
+import 'package:developer_company/views/developer_company/pages/list_companies_page.dart';
+import 'package:developer_company/views/developer_company/pages/manage_company_page.dart';
+import 'package:developer_company/views/developer_company_projects/pages/create_assign_project_to_company_page.dart';
+import 'package:developer_company/views/developer_company_projects/pages/list_companies_to_project_page.dart';
+import 'package:developer_company/views/developer_company_projects/pages/list_projects_by_company_page.dart';
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_maintenance_page.dart';
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_page.dart';
 import 'package:developer_company/views/discounts/pages/discounts_by_quote_maintenance_page.dart';
@@ -51,7 +57,8 @@ class GetRoutes{
       GetPage(name: RouterPaths.LOGIN_PAGE, page: () => const LoginPage()),
       GetPage(name: RouterPaths.REGISTER_PAGE, page: () => const RegisterPage()),
       GetPage(name: RouterPaths.DASHBOARD_PAGE, page: () => const DashboardPage()),
-      GetPage(name: RouterPaths.CREATE_COMPANY_PAGE, page: () => const CreateCompanyPage()),
+      
+
       GetPage(name: RouterPaths.CREATE_ADVISER_PAGE, page: () => const CreateAdviserPage()),
       GetPage(name: RouterPaths.QUOTE_CONSULT_PAGE, page: () => const QuoteConsultPage()),
       GetPage(name: RouterPaths.QUOTE_STATS_PAGE, page: () => const QuoteStatsPage()),
@@ -97,7 +104,21 @@ class GetRoutes{
       GetPage(name: RouterPaths.DISCOUNTS_BY_QUOTE_PAGE, page: () => const DiscountsByQuotePage()),
       GetPage(name: RouterPaths.DISCOUNT_DETAIL_BY_QUOTE_PAGE, page: () => const DiscountDetailByQuotePage()),
       GetPage(name: RouterPaths.DISCOUNTS_BY_QUOTE_MAINTENANCE_PAGE, page: () => const DiscountsByQuoteMaintenancePage()),
-      
+
+      // COMPANIES 🏢🏢
+
+      GetPage(name: RouterPaths.MANAGE_COMPANY_PAGE, page: () => const CreateCompanyPage()),
+      GetPage(name: RouterPaths.LIST_COMPANIES_PAGE, page: () => const ListCompanies()),
+
+      // PROJECTS 📐📐
+      GetPage(name: RouterPaths.LIST_COMPANY_PROJECTS_PAGE, page: () => const listCompaniesToProjectsPage()),
+      GetPage(name: RouterPaths.LIST_PROJECTS_BY_COMPANY_PAGE, page: () => const ListProjectsByCompanyState()),
+      GetPage(name: RouterPaths.ASSIGN_PROJECT_TO_COMPANY_PAGE, page: () => const createAssignProjectToCompanyPage()),
+
+      //CDI
+      GetPage(name: RouterPaths.LIST_CDI_PAGE, page: () => const CDIListPage()),
+      GetPage(name: RouterPaths.MANAGE_CDI_PAGE, page: () => const CDIManagePage()),
+
     ];
   }
 }

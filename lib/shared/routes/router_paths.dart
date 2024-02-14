@@ -5,7 +5,6 @@ class RouterPaths{
   static const String LOGIN_PAGE = '/loginPage';
   static const String REGISTER_PAGE = '/registerPage';
   static const String DASHBOARD_PAGE = '/dashboardPage';
-  static const String CREATE_COMPANY_PAGE = '/createCompanyPage';
   static const String CREATE_ADVISER_PAGE = '/createAdviserPage';
   static const String QUOTE_CONSULT_PAGE = '/quoteConsultPage';
   static const String QUOTE_STATS_PAGE = '/quoteStatsPage';
@@ -56,5 +55,22 @@ class RouterPaths{
   static const String DISCOUNTS_BY_QUOTE_PAGE =  "/discountsByQuotePage";
   static const String DISCOUNT_DETAIL_BY_QUOTE_PAGE =  "/discountDetailByQuotePage";
   static const String DISCOUNTS_BY_QUOTE_MAINTENANCE_PAGE =  "/discountsByQuoteMaintenancePage";
+
+  // COMPANIES 🏢🏢
+
+  static const String MANAGE_COMPANY_PAGE = '/manageCompanyPage';
+  static const String LIST_COMPANIES_PAGE = '/listCompaniesPage';
+
+  // PROJECTS 📐📐
+
+  static const String LIST_COMPANY_PROJECTS_PAGE = "/listCompanyProjects";
+  static const String LIST_PROJECTS_BY_COMPANY_PAGE = "/listProjectsByCompanyPage";
+  static const String ASSIGN_PROJECT_TO_COMPANY_PAGE = "/createAssignProjectToCompanyPage";
+
+
+  // CDI
+  static const String LIST_CDI_PAGE = "/listCDIPage";
+  static const String MANAGE_CDI_PAGE = "/manageCDIPage";
+  
 }
 

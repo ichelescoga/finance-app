@@ -32,17 +32,19 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
       AnalystRepositoryImpl(AnalystProvider());
 
   List<AnalystQuotation> quotationsByClient = [];
+  List<AnalystQuotation> filteredQuotationsByClient = [];
 
   Future<void> retrieveQuotationApplied() async {
     try {
       setState(() => isLoading = true);
       EasyLoading.show();
-      final projectId = user?.project.projectId;
+      final projectId = user.project.projectId;
       List<AnalystQuotation> listClients =
-          await analystRepository.fetchAllQuotesForAnalyst(projectId!);
+          await analystRepository.fetchAllQuotesForAnalyst(projectId);
 
       setState(() {
         quotationsByClient = listClients;
+        filteredQuotationsByClient = listClients;
       });
     } catch (e) {
       EasyLoading.showError("Algo salio mal");
@@ -101,7 +103,7 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
               elements: quotationsByClient,
               isLoading: isLoading,
               handleFilteredData: (List<AnalystQuotation> data) =>
-                  setState(() => quotationsByClient = data),
+                  setState(() => filteredQuotationsByClient = data),
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -115,7 +117,7 @@ class _AnalystListCreditsState extends State<AnalystListCredits> {
                   'Total Saldo A financiar',
                   'Ejecutivo'
                 ],
-                elements: quotationsByClient
+                elements: filteredQuotationsByClient
                     .asMap()
                     .map((index, element) => MapEntry(
                         index,

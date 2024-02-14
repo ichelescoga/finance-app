@@ -39,7 +39,7 @@ class _ClientCreditDetailPageState extends State<ClientCreditDetailPage> {
             elevation: 0.25,
             backgroundColor: AppColors.BACKGROUND,
             title: Text(
-              'Avance de creditos',
+              'Avance de créditos',
               style: const TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w800,

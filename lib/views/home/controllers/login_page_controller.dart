@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginPageController extends BaseController {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController(text: "ejecutivoprueba@gmail.com");
+  TextEditingController passwordController = TextEditingController(text: "FinanceApp");
   RxBool passwordVisibility = false.obs;
   RxBool confirmPasswordVisibility = false.obs;
 

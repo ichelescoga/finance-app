@@ -34,7 +34,7 @@ class AnalystQuotation {
       sellPrice:quetzalesCurrency( json["UNIDAD_COTIZACIONs"][0]["Id_unidad_UNIDAD"]["Precio_Venta"].toString()),
       buyPrice: quetzalesCurrency(json['Venta_descuento'].toString()),
       executive: json["Id_detalle_asesor_ASESOR_DETALLE"]["Id_empleado_EMPLEADO_ASESOR"]["Primer_nombre"],
-      clientName: json['Id_cliente_CLIENTE']["Primer_nombre"],
+      clientName: json['Id_cliente_CLIENTE'] == null ? "" : json['Id_cliente_CLIENTE']["Primer_nombre"],
       // Initialize other properties from the JSON response
     );
   }

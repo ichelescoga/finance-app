@@ -1,64 +1,71 @@
 class Company {
-  final int companyId;
+  int? companyId;
   final String businessName;
-  final String comercialName;
-  final String legalRepresentative;
-  final String nit;
-  final String dpi;
-  final String address;
-  final String postalCode;
-  final String phone;
-  final String contactName;
-  final String contactPhone;
-  final String salesManager;
-  final String salesManagerPhone;
-  final int countryId;
-  final int departmentId;
-  final int municipalityId;
+  final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final bool state;
+  final String developer;
+  final String nit;
+  final String address;
+  final String contact;
+  final String contactPhone;
+  final String salesManager;
+  final String managerPhone;
+  final String logo;
 
   Company({
-    required this.companyId,
+    this.companyId,
     required this.businessName,
-    required this.comercialName,
-    required this.legalRepresentative,
+    required this.description,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    this.state = false,
+    required this.developer,
     required this.nit,
-    required this.dpi,
     required this.address,
-    required this.postalCode,
-    required this.phone,
-    required this.contactName,
+    required this.contact,
     required this.contactPhone,
     required this.salesManager,
-    required this.salesManagerPhone,
-    required this.countryId,
-    required this.departmentId,
-    required this.municipalityId,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+    required this.managerPhone,
+    required this.logo,
+  })  : createdAt = DateTime.now(),
+        updatedAt = DateTime.now();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': companyId,
+      'nombre': businessName,
+      'descripcion': description,
+      'createdby': createdAt.toIso8601String(),
+      "updatedby": updatedAt.toIso8601String(),
+      'desarrollador': developer,
+      'nit': nit,
+      'direccion': address,
+      'contacto': contact,
+      'telefonocontacto': contactPhone,
+      'gerenteventas': salesManager,
+      'telefonogerenteventas': managerPhone,
+      'logo': logo,
+    };
+  }
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
-      companyId: json['Id_empresa'],
-      businessName: json['Razon_social'],
-      comercialName: json['Nombre_comercial'],
-      legalRepresentative: json['Representante_legal'],
+      companyId: json['Id'],
+      businessName: json['Nombre'],
+      description: json['Descripcion'],
+      createdAt: DateTime.parse(json['Created_at']),
+      updatedAt: DateTime.parse(json['Updated_at']),
+      state: json['Estado'],
+      developer: json['Desarrollador'],
       nit: json['NIT'],
-      dpi: json['DPI'],
       address: json['Direccion'],
-      postalCode: json['Codigo_postal'],
-      phone: json['Telefono'],
-      contactName: json['Nombre_contacto'],
-      contactPhone: json['Telefono_contacto'],
-      salesManager: json['Gerente_ventas'],
-      salesManagerPhone: json['Telefono_gerente'],
-      countryId: json['Id_pais'],
-      departmentId: json['Id_departamento'],
-      municipalityId: json['Id_municipio'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      contact: json['Contacto'],
+      contactPhone: json['Telefono Contacto'],
+      salesManager: json['Gerente de Ventas'],
+      managerPhone: json['Telefono Gerente'],
+      logo: json['Logo'],
     );
   }
 }
