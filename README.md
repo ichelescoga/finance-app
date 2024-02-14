@@ -17,11 +17,11 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## change name and bundle ID
+Be aware if the packages update the version for apply the right commands, actual commands for active rename 3.0.1
 ```
   flutter pub global activate rename
-  flutter pub global run rename --appname "Finance Flow & Marketing"
-  flutter pub global run rename --bundleId com.financeApp.FinanceFlow&Marketing
-  flutter pub global run rename --bundleId com.financeApp.FinanceFlowMarketing
+  flutter pub global run rename setAppName --targets android --value "Finance Flow And Marketing"
+  flutter pub global run rename setBundleId --targets android --value "com.financeApp.FinanceFlowAndMarketing"
 ```
 
 ## Generate bundle
