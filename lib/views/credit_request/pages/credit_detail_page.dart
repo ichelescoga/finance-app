@@ -346,7 +346,6 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                     SizedBox(height: 10),
                   ],
                 ),
-              if (!hideButtons)
                 CustomButtonWidget(
                     color: AppColors.softMainColor,
                     text: "Formalizar Venta",

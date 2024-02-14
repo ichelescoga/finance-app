@@ -49,6 +49,8 @@ class _QuickClientContactListPageState
   bool isLoading = false;
 
   _fetchClientContacts() async {
+    clientContacts.clear();
+    filteredClientContacts.clear();
     isLoading = true;
     EasyLoading.show();
     final projectId = user.project.projectId;

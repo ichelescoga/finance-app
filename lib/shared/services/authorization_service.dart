@@ -17,10 +17,14 @@ class AuthorizationService {
         PermissionLevel.dashboardAddQuoteButton,
         PermissionLevel.adviserCreditsApprovedAndReserved,
         PermissionLevel.discountsByQuote,
+        PermissionLevel.sideBarContacts,
+        PermissionLevel.sideBarMarketing,
       ],
       'Analista': [
         PermissionLevel.analystCreditByClient,
         PermissionLevel.discountsByQuote,
+        PermissionLevel.sideBarContacts,
+        PermissionLevel.sideBarMarketing,
       ],
       "AdminPruebas": [
         PermissionLevel.marketingMaintenance,
@@ -46,7 +50,7 @@ class AuthorizationService {
     };
 
     // TODO: remove Ejecutivo.
-    if (userRole == "Ejecutivo") return true;
+    // if (userRole == "Ejecutivo") return true;
     if (userRole == "Admin") return true;
 
     final allowedActions = allowedActionsByRole[userRole];

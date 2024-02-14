@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                         ),
                       ),
-                      obscureText: loginPageController.passwordVisibility.value,
+                      obscureText: !loginPageController.passwordVisibility.value,
                     ),
                   ),
                   const SizedBox(height: Dimensions.heightSize),

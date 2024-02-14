@@ -24,6 +24,11 @@ samples, guidance on mobile development, and a full API reference.
   flutter pub global run rename --bundleId com.financeApp.FinanceFlowMarketing
 ```
 
+## Generate bundle
+```
+flutter build appbundle
+```
+
 ## generate APK
 
 For some reason the compressed package generated for flutter (flutter build apk) doesn't work, so please use the command below.
@@ -31,6 +36,7 @@ For some reason the compressed package generated for flutter (flutter build apk)
 flutter build apk --debug
 ```
 this generate a app-debug.apk more weightily but works fine.
+
 
 
 
