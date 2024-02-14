@@ -54,8 +54,6 @@ class _MarketingAlbumDetailState extends State<MarketingAlbumDetail> {
   _fetchAssets() async {
     assets.clear();
     EasyLoading.show();
-    final projectId = user?.project.projectId;
-    if (projectId == null) return [];
 
     if (widget.isWatchMode == false) {
       final assetsDisables = await albumProvider.getAssetsByAlbum(

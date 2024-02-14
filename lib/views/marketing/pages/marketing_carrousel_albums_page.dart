@@ -36,9 +36,9 @@ class _MarketingCarrouselAlbumsPageState
   _retrieveFavoriteAlbums() async {
     favoriteAssets.clear();
     EasyLoading.show();
-    final projectId = user?.project.projectId;
+    final projectId = user.project.projectId;
 
-    final favorites = await albumProvider.getFavoritesByProject(projectId!);
+    final favorites = await albumProvider.getFavoritesByProject(projectId);
 
     favoriteAssets.addAll(favorites);
     setState(() {

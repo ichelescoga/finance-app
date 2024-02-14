@@ -45,10 +45,10 @@ class _MarketingAlbumDetailMaintenancePageState
   Asset? editingAsset;
 
   _handleUpdateAlbumMainInfo() async {
-    final projectId = user?.project.projectId;
+    final projectId = user.project.projectId;
 
     Album albumData = Album(
-        projectId: int.tryParse(projectId!),
+        projectId: int.tryParse(projectId),
         albumId: marketingArgs["albumId"],
         albumName: nameOfAlbumController.text,
         position: marketingArgs["albumPosition"],
