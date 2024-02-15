@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 class UserNotifier extends StateNotifier<User> {
-  UserNotifier() : super(User(name: "", role: "", token: "", company: Company(companyId: "", companyName: "companyName"), project: Project(projectId: "1", projectName: "")));
+  UserNotifier() : super(User(name: "", role: "", token: "", needChangePassword: false, company: Company(companyId: "", companyName: "companyName"), project: Project(projectId: "1", projectName: "")));
 
   void setUser(User user) {
     state = user;

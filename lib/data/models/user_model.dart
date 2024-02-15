@@ -6,13 +6,16 @@ class User {
   final String name;
   final Company company;
   final Project project;
+  final bool needChangePassword;
 
   User(
       {required this.role,
       required this.name,
       required this.token,
       required this.company,
-      required this.project});
+      required this.project,
+      required this.needChangePassword
+      });
 
   factory User.fromJson(Map<String, dynamic> json) {
     final roleName =
@@ -21,6 +24,7 @@ class User {
         token: json['token'],
         role: roleName,
         name: json['usuario']["Nombre"],
+        needChangePassword: json["usuario"]["needUpdatePassword"] == null ? false : json["usuario"]["needUpdatePassword"],
         company: Company.fromJson(json),
         project: Project.fromJson(json));
   }

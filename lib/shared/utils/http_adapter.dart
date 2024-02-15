@@ -5,6 +5,7 @@ import "package:developer_company/global_state/providers/user_provider_state.dar
 import "package:developer_company/main.dart";
 import "package:developer_company/shared/resources/strings.dart";
 import "package:developer_company/shared/routes/router_paths.dart";
+import "package:developer_company/shared/utils/constants.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:get/get.dart";
@@ -33,13 +34,13 @@ class HttpAdapter extends http.BaseClient {
 
     if (response.statusCode == 200 || response.statusCode == 202) {
       return response;
-    } else if (response.statusCode == 403) {
+    } else if (response.statusCode == 403 && response.body.contains(Constants.TOKEN_EXPIRED_OR_INVALID_PASSWORD)) {
       Get.offAllNamed(RouterPaths.HOME_PAGE);
       EasyLoading.showInfo(Strings.sessionExpired);
       throw Exception('Login Expired');
     } else {
       print("🤖🤖🤖 ERROR IN _handleResponse 🤖🦔🦔 ${response.statusCode} ");
-      throw Exception('Failed to load data');
+      return response;
     }
   }
 

@@ -13,6 +13,10 @@ import 'package:developer_company/shared/resources/dimensions.dart';
 import 'package:developer_company/shared/resources/strings.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
+import 'package:developer_company/views/home/controllers/reset_password_controller.dart';
+import 'package:developer_company/views/home/pages/reset_password.dart';
+import 'package:developer_company/widgets/custom_button_widget.dart';
+import 'package:developer_company/widgets/elevated_custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -45,9 +49,16 @@ class _LoginPageState extends State<LoginPage> {
           loginPageController.emailController.value.text,
           loginPageController.passwordController.value.text);
 
+      if (user.needChangePassword) {
+        ResetPasswordController passController = ResetPasswordController();
+        passController.emailController.text =
+            loginPageController.emailController.text;
+        return _dialogShowInfoResetPassword(context);
+      }
       container.read(userProvider.notifier).setUser(user);
       loginPageController.emailController.clear();
       loginPageController.passwordController.clear();
+
       return true;
     } catch (e) {
       setState(() {
@@ -188,9 +199,15 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                         ),
                       ),
-                      obscureText: !loginPageController.passwordVisibility.value,
+                      obscureText:
+                          !loginPageController.passwordVisibility.value,
                     ),
                   ),
+                  // CustomButtonWidget(
+                  //     text: "text",
+                  //     onTap: () {
+
+                  //     }),
                   const SizedBox(height: Dimensions.heightSize),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -302,5 +319,48 @@ class _LoginPageState extends State<LoginPage> {
           Get.back(closeOverlays: true);
           return false;
         });
+  }
+
+  _dialogShowInfoResetPassword(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.officialWhite,
+          title: Text("Cambio de contraseña"),
+          content: Text(
+            "Es necesario que cambie la contraseña para poder continuar.",
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
+            ElevatedCustomButton(
+              color: AppColors.secondaryMainColor,
+              text: "Entendido",
+              isLoading: false,
+              onPress: () => Navigator.pop(context, true),
+            )
+          ],
+        );
+      },
+    ).then((value) {
+      if (value == true) {
+        _dialogNeedResetPassword(context);
+      }
+    });
+  }
+
+  _dialogNeedResetPassword(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return PopScope(child: ResetPasswordDialog());
+      },
+    ).then((value) {
+      if (value == true) {
+        loginPageController.emailController.clear();
+        loginPageController.passwordController.clear();
+        return;
+      }
+    });
   }
 }
