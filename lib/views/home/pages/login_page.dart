@@ -15,7 +15,6 @@ import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:developer_company/shared/utils/responsive.dart';
 import 'package:developer_company/views/home/controllers/reset_password_controller.dart';
 import 'package:developer_company/views/home/pages/reset_password.dart';
-import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/elevated_custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -203,11 +202,6 @@ class _LoginPageState extends State<LoginPage> {
                           !loginPageController.passwordVisibility.value,
                     ),
                   ),
-                  // CustomButtonWidget(
-                  //     text: "text",
-                  //     onTap: () {
-
-                  //     }),
                   const SizedBox(height: Dimensions.heightSize),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -266,25 +260,6 @@ class _LoginPageState extends State<LoginPage> {
                             successLogin = loginResult;
                           });
                         });
-                        /*
-                        await Future.delayed(const Duration(milliseconds: 1200),
-                                () async {
-                              await x.pushRegister(nm.trim(), em.trim(), ps.trim());
-                              EasyLoading.dismiss();
-
-                              Future.delayed(const Duration(milliseconds: 900), () async {
-                                dynamic member = x.userLogin;
-                                if (member['id_install'] != '' &&
-                                    member['is_member'] == '1' &&
-                                    member['is_login'] == '1') {
-                                  x.getHome();
-                                  Get.back();
-                                  EasyLoading.showSuccess(
-                                      'Process successful...\nWelcome ${member['fullname']}');
-                                }
-                              });
-                            });
-                         */
                       },
                     ),
                   ),
