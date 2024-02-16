@@ -16,10 +16,11 @@ import "package:developer_company/views/bank_executive/pages/form_detail_client.
 import "package:developer_company/views/credit_request/helpers/handle_balance_to_finance.dart";
 import 'package:developer_company/views/credit_request/forms/form_quote.dart';
 import "package:developer_company/views/quotes/controllers/unit_detail_page_controller.dart";
+import "package:developer_company/widgets/CustomTwoPartsCard.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
-import "package:developer_company/widgets/custom_card.dart";
 import "package:developer_company/widgets/custom_input_widget.dart";
+import "package:developer_company/widgets/elevated_custom_button.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
@@ -117,38 +118,46 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
             children: [
               Column(
                 children: [
-                  CustomCard(
-                      color: Colors.white,
-                      onTap: () => _showQuoteDialog(context),
-                      child: Container(
-                        width: (Get.width),
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Cotización",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  GestureDetector(
+                    onTap: () => _showCreditDialog(context),
+                    child: CustomTwoPartsCard(
+                        height: 80,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.person),
+                            SizedBox(width: 10),
+                            Text(
+                              'Aplicación a crédito',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          ],
                         ),
-                      )),
-                  CustomCard(
-                      color: Colors.white,
-                      onTap: () => _showCreditDialog(context),
-                      child: Container(
-                        width: (Get.width),
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Aplicación a crédito",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        bodyText: "Datos personales del cliente."),
+                  ),
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () => _showQuoteDialog(context),
+                    child: CustomTwoPartsCard(
+                        height: 80,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.document_scanner),
+                            SizedBox(width: 10),
+                            Text(
+                              'Cotización',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          ],
                         ),
-                      )),
+                        bodyText:
+                            "Describe el precio de la unidad y datos básicos."),
+                  ),
                 ],
               ),
               hideButtons
@@ -162,12 +171,16 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
                         children: [
                           Expanded(
                               child: CustomButtonWidget(
+                                  color: AppColors.softMainColor,
                                   text: "Aprobar",
                                   onTap: () => _showModalApprove(context))),
                           Expanded(
                               child: CustomButtonWidget(
+                                  color: AppColors.redColor,
                                   text: "Rechazar",
-                                  onTap: () => _showModalReject(context)))
+                                  onTap: () {
+                                    _showModalReject(context);
+                                  }))
                         ],
                       ),
                     )
@@ -180,50 +193,41 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
     return showDialog(
         context: context,
         builder: ((BuildContext context) {
-          return Center(
-            child: Container(
-              color: Colors.white,
-              height: Get.height / 4,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text("¿Desea Aprobar Este crédito?",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: Dimensions.extraLargeTextSize,
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: CustomButtonWidget(
-                                color: AppColors.blueColor,
-                                text: "Aprobar",
-                                onTap: () async {
-                                  final body = {
-                                    "idEstado": "7",
-                                    "comentario": "null",
-                                  };
-                                  await httpAdapter.putApi(
-                                      "orders/v1/cotizacionUpdEstado/$parsedQuoteId",
-                                      body, {});
+          return AlertDialog(
+            title: Text("Aprobar crédito?",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: Dimensions.extraLargeTextSize,
+                  overflow: TextOverflow.ellipsis,
+                )),
+            actions: [
+              ElevatedCustomButton(
+                color: AppColors.softMainColor,
+                text: "Aceptar",
+                isLoading: false,
+                onPress: () async {
+                  final body = {
+                    "idEstado": "7",
+                    "comentario": "null",
+                  };
+                  await httpAdapter.putApi(
+                      "orders/v1/cotizacionUpdEstado/$parsedQuoteId", body, {});
 
-                                  setState(() {
-                                    hideButtons = true;
-                                  });
+                  setState(() {
+                    hideButtons = true;
+                  });
 
-                                  EasyLoading.showSuccess(
-                                      "Crédito Aprobado con éxito.");
-                                  Navigator.of(context).pop();
-                                })),
-                        Expanded(
-                            child: CustomButtonWidget(
-                                text: "Regresar",
-                                onTap: () => Navigator.of(context).pop()))
-                      ],
-                    )
-                  ]),
-            ),
+                  EasyLoading.showSuccess("Crédito Aprobado con éxito.");
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedCustomButton(
+                color: AppColors.secondaryMainColor,
+                text: "Cerrar",
+                isLoading: false,
+                onPress: () => Navigator.pop(context, false),
+              )
+            ],
           );
         }));
   }
@@ -233,68 +237,62 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
     final _formKeyComments = GlobalKey<FormState>();
 
     return showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return Center(
-            child: Container(
-              color: Colors.white,
-              height: Get.height / 3,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Form(
-                  key: _formKeyComments,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text("¿Desea Rechazar Este crédito?",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: Dimensions.extraLargeTextSize,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                        CustomInputWidget(
-                            controller: commentController,
-                            validator: (value) => notEmptyFieldValidator(value),
-                            label: "Comentarios",
-                            hintText: "Agregue un comentario",
-                            prefixIcon: Icons.comment),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    color: AppColors.redColor,
-                                    text: "Rechazar",
-                                    onTap: () async {
-                                      if (_formKeyComments.currentState!
-                                          .validate()) {
-                                        final body = {
-                                          "idEstado": "6",
-                                          "comentario": commentController.text,
-                                        };
-                                        await httpAdapter.putApi(
-                                            "orders/v1/cotizacionUpdEstado/$parsedQuoteId",
-                                            body, {});
-                                        EasyLoading.showSuccess(
-                                            "Crédito Rechazado con éxito.");
-
-                                        setState(() {
-                                          hideButtons = true;
-                                        });
-                                        Navigator.of(context).pop();
-                                      }
-                                    })),
-                            Expanded(
-                                child: CustomButtonWidget(
-                                    text: "Regresar",
-                                    onTap: () => Navigator.of(context).pop()))
-                          ],
-                        )
-                      ]),
-                ),
-              ),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("¿Rechazar crédito?",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.extraLargeTextSize,
+                overflow: TextOverflow.ellipsis,
+              )),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKeyComments,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CustomInputWidget(
+                        controller: commentController,
+                        validator: (value) => notEmptyFieldValidator(value),
+                        label: "Comentarios",
+                        hintText: "Agregue un comentario",
+                        prefixIcon: Icons.comment),
+                  ]),
             ),
-          );
-        }));
+          ),
+          actions: [
+            ElevatedCustomButton(
+              color: AppColors.softMainColor,
+              text: "Aceptar",
+              isLoading: false,
+              onPress: () async {
+                if (_formKeyComments.currentState!.validate()) {
+                  final body = {
+                    "idEstado": "6",
+                    "comentario": commentController.text,
+                  };
+                  await httpAdapter.putApi(
+                      "orders/v1/cotizacionUpdEstado/$parsedQuoteId", body, {});
+                  EasyLoading.showSuccess("Crédito Rechazado con éxito.");
+
+                  setState(() {
+                    hideButtons = true;
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            ElevatedCustomButton(
+              color: AppColors.secondaryMainColor,
+              text: "Cerrar",
+              isLoading: false,
+              onPress: () => Navigator.pop(context, false),
+            )
+          ],
+        );
+      },
+    );
   }
 
   _showCreditDialog(BuildContext context) {
@@ -352,7 +350,7 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
                           fontSize: Dimensions.extraLargeTextSize),
                     ),
                     const FormQuote(
-                      salePrice: "120000",
+                      salePrice: "",
                       quoteEdit: false,
                     ),
                     CustomButtonWidget(

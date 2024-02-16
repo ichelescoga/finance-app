@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
           // onError: Colors.red,
           // errorContainer: Colors.red,
           // onErrorContainer: Colors.red,
-          // background: Colors.red,
+          background: AppColors.officialWhite,
           // onBackground: Colors.red,
           // surface: Colors.red,
           onSurface: AppColors.mainColor,

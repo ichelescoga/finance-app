@@ -44,8 +44,8 @@ class Strings {
       'El nit debe de ser mayor a 7 caracteres.';
   static String pleaseVerifyInputs = 'Por favor valide campos';
 
-  static String termInMonthsMax = 'Por favor verifique que su plazo en meses no sea mayor a';
-  static String termInMonthsMin = 'Por favor verifique que su plazo en meses no sea menor a';
+  static String termInMonthsMax = 'Plazo en meses no debe de ser mayor a';
+  static String termInMonthsMin = 'Plazo en meses no debe de ser menor a';
 
   static String incomesMax = 'Por favor verifique que el sueldo sea mayor a ';
   static String incomesMin = 'Por favor verifique que el sueldo sea menor a';
