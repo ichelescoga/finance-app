@@ -190,6 +190,7 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
   }
 
   _showModalApprove(BuildContext context) {
+    bool isLoading = false;
     return showDialog(
         context: context,
         builder: ((BuildContext context) {
@@ -204,8 +205,11 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
               ElevatedCustomButton(
                 color: AppColors.softMainColor,
                 text: "Aceptar",
-                isLoading: false,
+                isLoading: isLoading,
                 onPress: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
                   final body = {
                     "idEstado": "7",
                     "comentario": "null",
@@ -219,12 +223,15 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
 
                   EasyLoading.showSuccess("Crédito Aprobado con éxito.");
                   Navigator.of(context).pop();
+                  setState(() {
+                    isLoading = false;
+                  });
                 },
               ),
               ElevatedCustomButton(
                 color: AppColors.secondaryMainColor,
                 text: "Cerrar",
-                isLoading: false,
+                isLoading: isLoading,
                 onPress: () => Navigator.pop(context, false),
               )
             ],
@@ -235,6 +242,7 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
   _showModalReject(BuildContext context) {
     TextEditingController commentController = TextEditingController();
     final _formKeyComments = GlobalKey<FormState>();
+    bool isLoading = false;
 
     return showDialog(
       context: context,
@@ -268,6 +276,9 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
               isLoading: false,
               onPress: () async {
                 if (_formKeyComments.currentState!.validate()) {
+                  setState(() {
+                    isLoading = true;
+                  });
                   final body = {
                     "idEstado": "6",
                     "comentario": commentController.text,
@@ -280,13 +291,16 @@ class _AnalystDetailCreditClientState extends State<AnalystDetailCreditClient> {
                     hideButtons = true;
                   });
                   Navigator.of(context).pop();
+                  setState(() {
+                    isLoading = false;
+                  });
                 }
               },
             ),
             ElevatedCustomButton(
               color: AppColors.secondaryMainColor,
               text: "Cerrar",
-              isLoading: false,
+              isLoading: isLoading,
               onPress: () => Navigator.pop(context, false),
             )
           ],
