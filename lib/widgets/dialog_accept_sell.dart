@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DialogAcceptSell extends StatefulWidget {
-  final Function() onPressAccept;
-  final bool isLoading;
   final String title;
   final String text;
   final String extraData;
+  final Future Function() onPress;
+  final List<Widget> actions;
 
   const DialogAcceptSell({
     Key? key,
-    required this.onPressAccept,
-    required this.isLoading,
     required this.title,
     required this.text,
     required this.extraData,
+    required this.actions,
+    required this.onPress
   }) : super(key: key);
 
   @override
@@ -24,6 +24,18 @@ class DialogAcceptSell extends StatefulWidget {
 }
 
 class _DialogAcceptSellState extends State<DialogAcceptSell> {
+  bool isLoading = false;
+
+  process  () async{ 
+    setState(() {
+      isLoading = true;
+    });
+    await widget.onPress();
+    Navigator.pop(context, true);
+     setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +57,19 @@ class _DialogAcceptSellState extends State<DialogAcceptSell> {
             )),
       ),
       actions: [
-        ElevatedCustomButton(
-          color: AppColors.softMainColor,
-          text: "Aceptar",
-          isLoading: widget.isLoading,
-          onPress: widget.onPressAccept,
-        ),
-        ElevatedCustomButton(
-          color: AppColors.secondaryMainColor,
-          text: "Cerrar",
-          isLoading: widget.isLoading,
-          onPress: () => Navigator.pop(context, false),
-        )
-      ],
+              ElevatedCustomButton(
+                color: AppColors.softMainColor,
+                text: "Aceptar",
+                isLoading: isLoading,
+                onPress: () async => process(),
+              ),
+              ElevatedCustomButton(
+                color: AppColors.secondaryMainColor,
+                text: "Cerrar",
+                isLoading: isLoading,
+                onPress: () => Navigator.pop(context, false),
+              )
+            ],
     );
   }
 }

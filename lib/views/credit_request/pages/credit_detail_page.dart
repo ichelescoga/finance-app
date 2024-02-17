@@ -50,7 +50,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
   final Map<String, dynamic> arguments = Get.arguments;
 
   bool hideButtons = false;
-  bool isLoadingModal = false;
+  bool isLoading = false;
   final user = container.read(userProvider);
 
   String? parsedQuoteId;
@@ -65,8 +65,8 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     HttpAdapter http = HttpAdapter();
     final projectId = user.project.projectId;
 
-    dynamic interestResponse =
-        await http.getApi("orders/v1/detallePorcentajeInteres/${projectId}", {});
+    dynamic interestResponse = await http
+        .getApi("orders/v1/detallePorcentajeInteres/${projectId}", {});
     final List<dynamic> jsonResponse = jsonDecode(interestResponse.body);
     if (jsonResponse.length > 0) {
       if (int.tryParse(jsonResponse[0]["Porcentaje"]) == null) {
@@ -144,44 +144,28 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     });
   }
 
-  doBookSell() async {
-    setState(() {
-      isLoadingModal = true;
-    });
+  Future<bool> doBookSell() async {
     statusOfPayments.book =
         await sellRepository.postBookModel(arguments["quoteId"]);
     hideButtons = true;
-    setState(() {
-      isLoadingModal = false;
-    });
+    setState(() {});
+    return statusOfPayments.book;
   }
 
-  doMonetaryDownSell() async {
-    setState(() {
-      isLoadingModal = true;
-    });
-    setState(() {
-      isLoadingModal = true;
-    });
+  Future<bool> doMonetaryDownSell() async {
     statusOfPayments.downPayment =
         await sellRepository.postMonetaryDownPayment(arguments["quoteId"]);
     hideButtons = true;
-    setState(() {
-      isLoadingModal = false;
-    });
+    setState(() {});
+    return statusOfPayments.downPayment;
   }
 
-  doFirstMonetaryFee() async {
-    setState(() {
-      isLoadingModal = true;
-    });
-
+  Future<bool> doFirstMonetaryFee() async {
     statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(
         arguments["quoteId"], defaultInterest);
     hideButtons = true;
-    setState(() {
-      isLoadingModal = false;
-    });
+    setState(() {});
+    return statusOfPayments.monetaryFee;
   }
 
   @override
@@ -300,12 +284,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                         text: "Compra",
                         onTap: () {
                           _showModalSell(
-                              context,
-                              "Solicitud de compra",
-                              "la compra",
-                              () async => doFirstMonetaryFee(),
-                              isLoadingModal,
-                              "");
+                              context, "Solicitud de compra", "la compra", "");
                         }),
                     SizedBox(height: 10),
                   ],
@@ -317,13 +296,8 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                         color: AppColors.softMainColor,
                         text: "Enganche",
                         onTap: () {
-                          _showModalSell(
-                              context,
-                              "Solicitud de enganche",
-                              "el enganche",
-                              () => doMonetaryDownSell(),
-                              isLoadingModal,
-                              extraDataModalDownPayment);
+                          _showModalSell(context, "Solicitud de enganche",
+                              "el enganche", extraDataModalDownPayment);
                         }),
                     SizedBox(height: 10),
                   ],
@@ -335,21 +309,16 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
                         color: AppColors.softMainColor,
                         text: "Reserva",
                         onTap: () {
-                          _showModalSell(
-                              context,
-                              "Solicitud de reserva",
-                              "reserva",
-                              () => doBookSell(),
-                              isLoadingModal,
-                              extraDataModalBook);
+                          _showModalSell(context, "Solicitud de reserva",
+                              "reserva", extraDataModalBook);
                         }),
                     SizedBox(height: 10),
                   ],
                 ),
-                CustomButtonWidget(
-                    color: AppColors.softMainColor,
-                    text: "Formalizar Venta",
-                    onTap: () => formalizeSell()),
+              CustomButtonWidget(
+                  color: AppColors.softMainColor,
+                  text: "Formalizar Venta",
+                  onTap: () => formalizeSell()),
               SizedBox(height: 10),
               CustomButtonWidget(
                   text: Strings.backToPreviousScreen,
@@ -360,21 +329,36 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
         ));
   }
 
-  _showModalSell(BuildContext context, String title, String text,
-      Function() onPress, bool isLoading, String extraData) {
+  _showModalSell(
+      BuildContext context, String title, String text, String extraData) async {
+    process(String text) async {
+      bool result = false;
+
+      if (text == "reserva") {
+        result = await doBookSell();
+        result ? EasyLoading.showSuccess("Reserva exitosa") : EasyLoading.showError("Reserva no exitosa");
+      }
+      if (text == "el enganche") {
+        result = await doMonetaryDownSell();
+        result ? EasyLoading.showSuccess("Reserva exitosa") : EasyLoading.showError("Reserva no exitosa");
+      }
+      if (text == "la compra") {
+        result = await doFirstMonetaryFee();
+        result ? EasyLoading.showSuccess("Compra exitosa") : EasyLoading.showError("Compra no exitosa");
+      }
+    }
+
     showDialog(
       context: context,
       builder: (context) {
         return PopScope(
           child: DialogAcceptSell(
-              extraData: extraData,
-              onPressAccept: () async {
-                await onPress();
-                Navigator.pop(context, false);
-              },
-              isLoading: isLoading,
-              title: title,
-              text: "¿Esta seguro de aplicar ${text}?"),
+            onPress: () async => await process(text),
+            extraData: extraData,
+            title: title,
+            text: "¿Esta seguro de aplicar ${text}?",
+            actions: [],
+          ),
         );
       },
     );

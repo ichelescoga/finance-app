@@ -236,31 +236,20 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
-          // AuthorizationWrapper(
-          //   requestAction: PermissionLevel.manageCompany,
-          //   child: Column(
-          //     children: [
-          //       spaceButton,
-          //       CustomButtonWidget(
-          //           text: "Empresas",
-          //           onTap: () => Get.toNamed(RouterPaths.LIST_COMPANIES_PAGE),
-          //           padding: defaultPadding),
-          //     ],
-          //   ),
-          // ),
-          // AuthorizationWrapper(
-          //   requestAction: PermissionLevel.manageCompany,
-          //   child: Column(
-          //     children: [
-          //       spaceButton,
-          //       CustomButtonWidget(
-          //           text: "Proyectos",
-          //           onTap: () =>
-          //               Get.toNamed(RouterPaths.LIST_COMPANY_PROJECTS_PAGE),
-          //           padding: defaultPadding),
-          //     ],
-          //   ),
-          // ),
+          AuthorizationWrapper(
+            requestAction: PermissionLevel.discountsByQuote,
+            child: Column(
+              children: [
+                spaceButton,
+                CustomButtonWidget(
+                    text: "Reinicio contraseña usuarios",
+                    onTap: () =>
+                        Get.toNamed(RouterPaths.DISCOUNTS_BY_QUOTE_PAGE),
+                    padding: defaultPadding),
+              ],
+            ),
+          ),
+
           ...cdi
               .map((e) => AuthorizationWrapper(
                     requestAction: PermissionLevel.list_cdi,

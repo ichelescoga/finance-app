@@ -72,5 +72,8 @@ class RouterPaths{
   static const String LIST_CDI_PAGE = "/listCDIPage";
   static const String MANAGE_CDI_PAGE = "/manageCDIPage";
   
+  // RESET PASSWORD
+  static const String RESET_PASSWORD_PAGE = "/resetPasswordPage";
+  
 }
 
