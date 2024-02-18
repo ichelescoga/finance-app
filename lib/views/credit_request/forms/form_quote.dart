@@ -79,7 +79,7 @@ class _FormQuoteState extends State<FormQuote> {
     if (text.length < 1) return clientOptions;
 
     List<ClientModel> clients =
-        await contactClientRepository.getClientsByKeyword(text, text);
+        await contactClientRepository.getClientsByKeyword(text);
     List<DropDownOption> newClientOptions = clients
         .map((client) =>
             DropDownOption(id: client.id.toString(), label: client.name!))

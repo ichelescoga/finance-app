@@ -4,5 +4,5 @@ abstract class ImproveClientContactRepository {
   Future<ClientModel> existContactInClient(
       String phone, String name, String email);
 
-  Future<List<ClientModel>> getClientsByKeyword(String name, String email);
+  Future<List<ClientModel>> getClientsByKeyword(String keyword);
 }

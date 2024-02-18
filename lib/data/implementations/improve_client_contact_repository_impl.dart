@@ -17,7 +17,7 @@ class ImproveClientContactRepositoryImpl
 
   @override
   Future<List<ClientModel>> getClientsByKeyword(
-      String name, String email) async {
-    return await improveClientContactProvider.getClientsByKeyword(name, email);
+      String keyword) async {
+    return await improveClientContactProvider.getClientsByKeyword(keyword);
   }
 }
