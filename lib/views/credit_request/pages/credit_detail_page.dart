@@ -163,6 +163,10 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
   Future<bool> doFirstMonetaryFee() async {
     statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(
         arguments["quoteId"], defaultInterest);
+
+    if(!statusOfPayments.monetaryFee) {
+      return false;
+    }
     hideButtons = true;
     setState(() {});
     return statusOfPayments.monetaryFee;
@@ -340,11 +344,11 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
       }
       if (text == "el enganche") {
         result = await doMonetaryDownSell();
-        result ? EasyLoading.showSuccess("Reserva exitosa") : EasyLoading.showError("Reserva no exitosa");
+        result ? EasyLoading.showSuccess("Enganche exitoso") : EasyLoading.showError("Enganche no exitoso");
       }
       if (text == "la compra") {
         result = await doFirstMonetaryFee();
-        result ? EasyLoading.showSuccess("Compra exitosa") : EasyLoading.showError("Compra no exitosa");
+        result ? EasyLoading.showSuccess("Compra exitosa") : EasyLoading.showError("Compra no exitosa, Verifique que tenga un enganche y reserva.", duration: Duration(seconds: 10));
       }
     }
 

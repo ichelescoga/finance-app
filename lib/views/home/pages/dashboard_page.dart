@@ -236,19 +236,19 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
-          AuthorizationWrapper(
-            requestAction: PermissionLevel.discountsByQuote,
-            child: Column(
-              children: [
-                spaceButton,
-                CustomButtonWidget(
-                    text: "Reinicio contraseña usuarios",
-                    onTap: () =>
-                        Get.toNamed(RouterPaths.DISCOUNTS_BY_QUOTE_PAGE),
-                    padding: defaultPadding),
-              ],
-            ),
-          ),
+          // AuthorizationWrapper(
+          //   requestAction: PermissionLevel.discountsByQuote,
+          //   child: Column(
+          //     children: [
+          //       spaceButton,
+          //       CustomButtonWidget(
+          //           text: "Reinicio contraseña usuarios",
+          //           onTap: () =>
+          //               Get.toNamed(RouterPaths.DISCOUNTS_BY_QUOTE_PAGE),
+          //           padding: defaultPadding),
+          //     ],
+          //   ),
+          // ),
 
           ...cdi
               .map((e) => AuthorizationWrapper(

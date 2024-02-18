@@ -52,7 +52,7 @@ class SellProvider {
     if (response.statusCode == 200) {
       return true;
     } else {
-      throw Exception('Failed to fetch projects');
+      return false;
     }
   }
 
@@ -65,7 +65,7 @@ class SellProvider {
     if (response.statusCode == 200) {
       return true;
     } else {
-      throw Exception('Failed to fetch projects');
+      return false;
     }
   }
 
@@ -78,6 +78,10 @@ class SellProvider {
     if (response.statusCode == 200) {
       return true;
     } else {
+      if (response.body.toString().contains("PAYMENTS_NOT_CREATED")){
+        return false;
+      }
+
       throw Exception('Failed to fetch projects');
     }
   }
