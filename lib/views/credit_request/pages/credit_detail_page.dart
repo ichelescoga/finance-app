@@ -4,6 +4,7 @@ import "package:developer_company/data/implementations/sell_repository_impl.dart
 import "package:developer_company/data/implementations/unit_quotation_repository_impl.dart";
 import "package:developer_company/data/models/sell_models.dart";
 import "package:developer_company/data/models/unit_quotation_model.dart";
+import "package:developer_company/data/models/user_model.dart";
 import "package:developer_company/data/providers/sell_provider.dart";
 import "package:developer_company/data/providers/unit_quotation_provider.dart";
 import "package:developer_company/data/repositories/sell_repository.dart";
@@ -160,16 +161,17 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     return statusOfPayments.downPayment;
   }
 
-  Future<bool> doFirstMonetaryFee() async {
-    statusOfPayments.monetaryFee = await sellRepository.postMonetaryFee(
+  Future<dynamic> doFirstMonetaryFee() async {
+    statusOfPayments.monetaryFee = true;
+    dynamic monetaryFeeResponse = await sellRepository.postMonetaryFee(
         arguments["quoteId"], defaultInterest);
 
-    if(!statusOfPayments.monetaryFee) {
+    if(statusOfPayments.monetaryFee == false) {  
       return false;
     }
     hideButtons = true;
     setState(() {});
-    return statusOfPayments.monetaryFee;
+    return monetaryFeeResponse;
   }
 
   @override
@@ -348,6 +350,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
       }
       if (text == "la compra") {
         result = await doFirstMonetaryFee();
+        // TODO: MAKE MODAL FOR SHOW NEW CREDENTIALS
         result ? EasyLoading.showSuccess("Compra exitosa") : EasyLoading.showError("Compra no exitosa, Verifique que tenga un enganche y reserva.", duration: Duration(seconds: 10));
       }
     }

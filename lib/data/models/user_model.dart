@@ -60,3 +60,42 @@ class Project {
         projectName: json["proyecto"]["Nombre_proyecto"]);
   }
 }
+
+class UserClient {
+ final String email;
+ final String name;
+ final String role;
+ final String token;
+
+  UserClient({
+    required this.email,
+    required this.name,
+    required this.role,
+    required this.token,
+  });
+
+  factory UserClient.fromJson(Map<String,dynamic> json){ 
+    return UserClient(email: json["email"], name: json["name"], role: json["roleId"], token: json["token"]);
+  }
+
+}
+
+
+class NewUserClient {
+  final String email;
+  final String password;
+
+  NewUserClient({
+    required this.email,
+    required this.password
+  });
+
+  factory NewUserClient.fromJson(Map<String,dynamic> json){
+    return NewUserClient(email: json["user"]["email"], password: json["user"]["password"]);
+  }
+}
+
+//  "token": token,
+//   "roleId": 3,
+//   "email": "pablozapetalop@gmail.com",
+//   "name": "Pablo Miguel Zapeta Lopez "

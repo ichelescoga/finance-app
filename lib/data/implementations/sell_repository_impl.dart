@@ -29,7 +29,7 @@ class SellRepositoryImpl implements SellRepository {
   }
 
   @override
-  Future<bool> postMonetaryFee(String unitId, String interestRate) async {
+  Future<dynamic> postMonetaryFee(String unitId, String interestRate) async {
     return this.sellProvider.postMonetaryFee(unitId, interestRate);
   }
 

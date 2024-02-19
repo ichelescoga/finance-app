@@ -44,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _loginUser(ProviderContainer container) async {
     try {
+
+      // TODO: TEST if User or clientUser
       User user = await userRepository.loginUser(
           loginPageController.emailController.value.text,
           loginPageController.passwordController.value.text);
@@ -54,9 +56,17 @@ class _LoginPageState extends State<LoginPage> {
             loginPageController.emailController.text;
         return _dialogShowInfoResetPassword(context);
       }
+
       container.read(userProvider.notifier).setUser(user);
       loginPageController.emailController.clear();
       loginPageController.passwordController.clear();
+
+      final haveAccessLookMarketing = AskPermission(PermissionLevel.marketingInitial);
+      if (haveAccessLookMarketing) {
+        Get.toNamed(RouterPaths.MARKETING_CARROUSEL_ALBUMS);
+      } else {
+        Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+      }
 
       return true;
     } catch (e) {
@@ -246,16 +256,7 @@ class _LoginPageState extends State<LoginPage> {
                             () async {
                           EasyLoading.dismiss();
                           final loginResult = await _loginUser(container);
-                          if (loginResult) {
-                            final haveAccess =
-                                AskPermission(PermissionLevel.marketingInitial);
-                            if (haveAccess) {
-                              Get.toNamed(
-                                  RouterPaths.MARKETING_CARROUSEL_ALBUMS);
-                            } else {
-                              Get.toNamed(RouterPaths.DASHBOARD_PAGE);
-                            }
-                          }
+
                           setState(() {
                             successLogin = loginResult;
                           });

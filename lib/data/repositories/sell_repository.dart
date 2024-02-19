@@ -8,5 +8,5 @@ abstract class SellRepository {
   Future<BookModel> getBookModel(String unitId);
   Future<bool> postMonetaryDownPayment(String unitId);
   Future<bool> postBookModel(String unitId);
-  Future<bool> postMonetaryFee(String unitId, String interestRate);
+  Future<dynamic> postMonetaryFee(String unitId, String interestRate);
 }

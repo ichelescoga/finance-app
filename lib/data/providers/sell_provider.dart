@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:developer_company/data/models/sell_models.dart';
+import 'package:developer_company/data/models/user_model.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 // import 'package:intl/intl.dart';
 
@@ -69,16 +70,19 @@ class SellProvider {
     }
   }
 
-  Future<bool> postMonetaryFee(String quoteId, String interestRate) async {
+  Future<dynamic> postMonetaryFee(String quoteId, String interestRate) async {
     final response = await httpAdapter.postApi(
         "orders/v1/createCuotas/$quoteId",
         json.encode({"interes": interestRate}),
         {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
-      return true;
+      final userResponse = jsonDecode(response.body);
+
+      return userResponse["user"] == null ? null : NewUserClient.fromJson(userResponse);
     } else {
       if (response.body.toString().contains("PAYMENTS_NOT_CREATED")){
+        // ? ENTER ONLY WHEN BOOK OR DOWN_PAYMENT HAS LEFT.
         return false;
       }
 

@@ -168,6 +168,7 @@ class _FormQuoteState extends State<FormQuote> {
                   hintText: "Solicitar descuento extra",
                   keyboardType: TextInputType.number,
                   validator: (value) {
+                    if(widget.quoteEdit == false) return null;
                     if (value == null) return "Ingrese un numero valido";
                     if (double.tryParse(value) == null)
                       return "Numero no valido";

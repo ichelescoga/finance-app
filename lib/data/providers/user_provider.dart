@@ -11,6 +11,7 @@ class UserProvider {
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
+      // MODIFY THE FLOW HERE
       return User.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to login');
