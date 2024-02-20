@@ -12,6 +12,7 @@ class RouterPaths{
   static const String UNIT_DETAIL_PAGE = '/unitDetailPage';
   static const String UNIT_QUOTE_PAGE = '/unitQuotePage';
   static const String UNIT_QUOTE_DETAIL_PAGE = '/unitQuoteDetailPage';
+  static const String EXPRESS_QUOTE_DETAIL_PAGE = '/expressQuoteDetailPage';
   static const String CREDIT_APPLICATION_PAGE = '/creditApplicationPage';
   static const String CREDIT_USER_APPLICATION_PAGE = '/creditUserApplicationPage';
   static const String FINANCIAL_ENTITY_CREATION_PAGE = '/financialEntityCreationPage';
@@ -33,10 +34,10 @@ class RouterPaths{
   static const String ANALYST_DETAIL_CREDIT_PAGE = '/analystDetailCreditPage';
   static const String CREDIT_RESOLUTION_DETAIL_PAGE = '/creditResolutionDetailPage';
   static const String CREDIT_DETAIL_PAGE = '/creditDetailPage';
-  
+
   static const String ADVISER_CREDITS_RESERVED_APPROVED = '/AdviserCreditsReservedApproved';
-  
-  
+
+
   // MARKETING 🖼️🖼️🎞️🎞️
 
   static const String MARKETING_MAINTENANCE_ALBUMS = '/marketingMaintenanceAlbums';
@@ -71,6 +72,10 @@ class RouterPaths{
   // CDI
   static const String LIST_CDI_PAGE = "/listCDIPage";
   static const String MANAGE_CDI_PAGE = "/manageCDIPage";
-  
+
+  // Customer Requests
+
+  static const String EXPRESS_QUOTE = "/expressCustomerRequest";
+
 }
 

@@ -31,5 +31,7 @@ class PermissionLevel {
 
   static const String list_cdi = "list_cdi";
 
+  static const String expressQuote = "customer_requests";
+
   // Add more permission levels as needed
 }
