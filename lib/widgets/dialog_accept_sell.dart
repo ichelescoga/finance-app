@@ -8,14 +8,12 @@ class DialogAcceptSell extends StatefulWidget {
   final String text;
   final String extraData;
   final Future Function() onPress;
-  final List<Widget> actions;
 
   const DialogAcceptSell({
     Key? key,
     required this.title,
     required this.text,
     required this.extraData,
-    required this.actions,
     required this.onPress
   }) : super(key: key);
 
@@ -31,7 +29,6 @@ class _DialogAcceptSellState extends State<DialogAcceptSell> {
       isLoading = true;
     });
     await widget.onPress();
-    Navigator.pop(context, true);
      setState(() {
       isLoading = false;
     });

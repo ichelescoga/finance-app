@@ -73,7 +73,7 @@ class UnitDetailPageController extends BaseController {
     String? argsClientPhone,
   ) {
     // discount.text = argsDiscount ?? "0";
-    extraDiscount.text = argsExtraDiscount!;
+    extraDiscount.text = argsExtraDiscount == null ? "0" : argsExtraDiscount;
     applyDefaultDiscount = isActiveDiscount(argsStatusDiscount);
     statusDiscount = argsStatusDiscount!;
     resolutionDiscount = argsResolutionDiscount;

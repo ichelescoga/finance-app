@@ -25,6 +25,7 @@ import "package:developer_company/widgets/CustomTwoPartsCard.dart";
 import "package:developer_company/widgets/app_bar_title.dart";
 import "package:developer_company/widgets/custom_button_widget.dart";
 import "package:developer_company/widgets/dialog_accept_sell.dart";
+import "package:developer_company/widgets/elevated_custom_button.dart";
 import "package:developer_company/widgets/layout.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
@@ -166,7 +167,7 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
     dynamic monetaryFeeResponse = await sellRepository.postMonetaryFee(
         arguments["quoteId"], defaultInterest);
 
-    if(statusOfPayments.monetaryFee == false) {  
+    if (statusOfPayments.monetaryFee == false) {
       return false;
     }
     hideButtons = true;
@@ -342,16 +343,32 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
 
       if (text == "reserva") {
         result = await doBookSell();
-        result ? EasyLoading.showSuccess("Reserva exitosa") : EasyLoading.showError("Reserva no exitosa");
+        Navigator.pop(context, true);
+        result
+            ? EasyLoading.showSuccess("Reserva exitosa")
+            : EasyLoading.showError("Reserva no exitosa");
       }
       if (text == "el enganche") {
         result = await doMonetaryDownSell();
-        result ? EasyLoading.showSuccess("Enganche exitoso") : EasyLoading.showError("Enganche no exitoso");
+        Navigator.pop(context, true);
+        result
+            ? EasyLoading.showSuccess("Enganche exitoso")
+            : EasyLoading.showError("Enganche no exitoso");
       }
       if (text == "la compra") {
-        result = await doFirstMonetaryFee();
-        // TODO: MAKE MODAL FOR SHOW NEW CREDENTIALS
-        result ? EasyLoading.showSuccess("Compra exitosa") : EasyLoading.showError("Compra no exitosa, Verifique que tenga un enganche y reserva.", duration: Duration(seconds: 10));
+        final result = await doFirstMonetaryFee();
+
+        if (result is NewUserClient) {
+          Navigator.pop(context, true);
+          _showDialogoNewUserCredentials(context, result);
+        }
+
+        if (result == false) {
+          Navigator.pop(context, true);
+          EasyLoading.showError(
+              "Compra no exitosa, Verifique que tenga un enganche y reserva.",
+              duration: Duration(seconds: 10));
+        }
       }
     }
 
@@ -364,11 +381,44 @@ class _CreditDetailPageState extends State<CreditDetailPage> {
             extraData: extraData,
             title: title,
             text: "¿Esta seguro de aplicar ${text}?",
-            actions: [],
           ),
         );
       },
     );
+  }
+
+  _showDialogoNewUserCredentials(context, NewUserClient newUser) {
+    return showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              "Compra exitosa!",
+            ),
+            content: SingleChildScrollView(
+              child: Column(children: [
+                Text(
+                  "El cliente ahora puede ingresar a la aplicación con este correo y contraseña. \n",
+                  style: TextStyle(color: Colors.black),
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(newUser.email)),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(newUser.password))
+              ]),
+            ),
+            actions: [
+              ElevatedCustomButton(
+                color: AppColors.softMainColor,
+                text: "Aceptar",
+                isLoading: isLoading,
+                onPress: () async => Navigator.pop(context),
+              ),
+            ],
+          );
+        }));
   }
 
   _showCreditDialog(BuildContext context) {
