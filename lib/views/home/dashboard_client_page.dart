@@ -1,5 +1,4 @@
 import 'package:developer_company/shared/resources/dimensions.dart';
-import 'package:developer_company/widgets/AuthorizationWrapper.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
