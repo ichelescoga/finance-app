@@ -14,8 +14,7 @@ class User {
       required this.token,
       required this.company,
       required this.project,
-      required this.needChangePassword
-      });
+      required this.needChangePassword});
 
   factory User.fromJson(Map<String, dynamic> json) {
     final roleName =
@@ -24,11 +23,14 @@ class User {
         token: json['token'],
         role: roleName,
         name: json['usuario']["Nombre"],
-        needChangePassword: json["usuario"]["needUpdatePassword"] == null ? false : json["usuario"]["needUpdatePassword"],
+        needChangePassword: json["usuario"]["needUpdatePassword"] == null
+            ? false
+            : json["usuario"]["needUpdatePassword"],
         company: Company.fromJson(json),
         project: Project.fromJson(json));
   }
 }
+
 // TODO: REMEMBER PUT THE COMPANY MODEL THIS IS ONLY A TEMP COMPANY MODEL FOR PROJECTS WORKS, FOR AVOID WORKINGS BAD
 class Company {
   final String companyId;
@@ -62,36 +64,38 @@ class Project {
 }
 
 class UserClient {
- final String email;
- final String name;
- final String role;
- final String token;
+  final String email;
+  final String name;
+  final String role;
+  final String token;
+  final bool needChangePassword;
 
-  UserClient({
-    required this.email,
-    required this.name,
-    required this.role,
-    required this.token,
-  });
+  UserClient(
+      {required this.email,
+      required this.name,
+      required this.role,
+      required this.token,
+      required this.needChangePassword});
 
-  factory UserClient.fromJson(Map<String,dynamic> json){ 
-    return UserClient(email: json["email"], name: json["name"], role: json["roleId"], token: json["token"]);
+  factory UserClient.fromJson(Map<String, dynamic> json) {
+    return UserClient(
+        email: json["email"],
+        name: json["name"],
+        role: json["roleId"].toString(),
+        token: json["token"],
+        needChangePassword: json["needUpdatePassword"]);
   }
-
 }
-
 
 class NewUserClient {
   final String email;
   final String password;
 
-  NewUserClient({
-    required this.email,
-    required this.password
-  });
+  NewUserClient({required this.email, required this.password});
 
-  factory NewUserClient.fromJson(Map<String,dynamic> json){
-    return NewUserClient(email: json["user"]["email"], password: json["user"]["password"]);
+  factory NewUserClient.fromJson(Map<String, dynamic> json) {
+    return NewUserClient(
+        email: json["user"]["email"], password: json["user"]["password"]);
   }
 }
 

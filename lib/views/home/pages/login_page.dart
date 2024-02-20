@@ -3,6 +3,7 @@ import 'package:developer_company/data/models/user_model.dart';
 import 'package:developer_company/data/providers/user_provider.dart';
 import 'package:developer_company/data/repositories/user_repository.dart';
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
+import 'package:developer_company/shared/routes/router_client_paths.dart';
 import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/shared/utils/permission_level.dart';
 import 'package:developer_company/utils/ask_permission.dart';
@@ -44,29 +45,35 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _loginUser(ProviderContainer container) async {
     try {
-
       // TODO: TEST if User or clientUser
-      User user = await userRepository.loginUser(
+      dynamic user = await userRepository.loginUser(
           loginPageController.emailController.value.text,
           loginPageController.passwordController.value.text);
 
-      if (user.needChangePassword) {
+      if (user?.needChangePassword) {
         ResetPasswordController passController = ResetPasswordController();
         passController.emailController.text =
             loginPageController.emailController.text;
         return _dialogShowInfoResetPassword(context);
       }
 
-      container.read(userProvider.notifier).setUser(user);
+      if (user is User) {
+        container.read(userProvider.notifier).setUser(user);
+        final haveAccessLookMarketing =
+            AskPermission(PermissionLevel.marketingInitial);
+        if (haveAccessLookMarketing) {
+          Get.toNamed(RouterPaths.MARKETING_CARROUSEL_ALBUMS);
+        } else {
+          Get.toNamed(RouterPaths.DASHBOARD_PAGE);
+        }
+      }
+
+      if (user is UserClient) {
+        container.read(userClientProvider.notifier).setUser(user);
+        Get.toNamed(RouterClientPaths.DASHBOARD);
+      }
       loginPageController.emailController.clear();
       loginPageController.passwordController.clear();
-
-      final haveAccessLookMarketing = AskPermission(PermissionLevel.marketingInitial);
-      if (haveAccessLookMarketing) {
-        Get.toNamed(RouterPaths.MARKETING_CARROUSEL_ALBUMS);
-      } else {
-        Get.toNamed(RouterPaths.DASHBOARD_PAGE);
-      }
 
       return true;
     } catch (e) {

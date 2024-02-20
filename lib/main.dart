@@ -1,3 +1,4 @@
+import 'package:developer_company/shared/routes/get_client_routes.dart';
 import 'package:developer_company/shared/routes/get_routes.dart';
 import 'package:developer_company/shared/routes/router_paths.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,7 @@ class _MyAppState extends State<MyApp> {
         // secondaryHeaderColor: Colors.red,
       ),
       initialRoute: mainPage,
-      getPages: GetRoutes.routes(),
+      getPages: [...GetRoutes.routes(), ...GetUserClientRoutes.routes()],
       //initialBinding: MainBinding(),
     );
   }
