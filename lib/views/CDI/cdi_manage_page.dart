@@ -23,7 +23,6 @@ class CDIManagePage extends StatefulWidget {
 }
 
 class _CDIManagePageState extends State<CDIManagePage> {
-  // var uuid = Uuid();
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> manageCDIFormKey = GlobalKey<FormState>();
@@ -138,8 +137,6 @@ class _CDIManagePageState extends State<CDIManagePage> {
                         final imageValues = retrieveFormControllersImage(
                             formWidgets, imageControllers);
                         final checkButtonsValues = retrieveFormControllersCheckBox(formWidgets, checkControllers);
-
-                        // TODO: HAS LEFT IMPLEMENT DROPDOWNS 😱;
                         _handleSaveFormData(inputValues, imageValues, {}, checkButtonsValues);
                       } else {
                         EasyLoading.showInfo(
