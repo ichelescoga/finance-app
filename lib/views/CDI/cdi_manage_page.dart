@@ -61,7 +61,8 @@ class _CDIManagePageState extends State<CDIManagePage> {
       Map<String, dynamic> inputValues,
       Map<String, ImageToUpload> imageValues,
       Map<String, dynamic>
-          dropdownValues //TODO: should be receive the dynamicInputDropDownValues;
+          dropdownValues, //TODO: should be receive the dynamicInputDropDownValues;
+      Map<String, dynamic> checkControllers
       ) async {
     EasyLoading.show();
     final imagesResponse = await handleImagesToUpload(imageValues);
@@ -69,10 +70,10 @@ class _CDIManagePageState extends State<CDIManagePage> {
 
     if (dataId != null) {
       result = await cdiRepository.postData(
-          editEndpoint, {"id": dataId, ...inputValues, ...imagesResponse});
+          editEndpoint, {"id": dataId, ...inputValues, ...imagesResponse, ...checkControllers});
     } else {
       result = await cdiRepository
-          .postData(addEndpoint, {...inputValues, ...imagesResponse});
+          .postData(addEndpoint, {...inputValues, ...imagesResponse, ...checkControllers});
     }
     if (result) {
       Get.back(closeOverlays: true, result: result);
@@ -136,7 +137,10 @@ class _CDIManagePageState extends State<CDIManagePage> {
                             formWidgets, formControllers);
                         final imageValues = retrieveFormControllersImage(
                             formWidgets, imageControllers);
-                        _handleSaveFormData(inputValues, imageValues, {});
+                        final checkButtonsValues = retrieveFormControllersCheckBox(formWidgets, checkControllers);
+
+                        // TODO: HAS LEFT IMPLEMENT DROPDOWNS 😱;
+                        _handleSaveFormData(inputValues, imageValues, {}, checkButtonsValues);
                       } else {
                         EasyLoading.showInfo(
                             "Por favor verifique que los campos sean validos.");
