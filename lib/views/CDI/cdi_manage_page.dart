@@ -1,3 +1,4 @@
+import 'package:developer_company/controllers/cdi_check_button_controller.dart';
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
@@ -29,6 +30,7 @@ class _CDIManagePageState extends State<CDIManagePage> {
   final Map<String, dynamic> arguments = Get.arguments;
   Map<String, TextEditingController> formControllers = {};
   Map<String, ImageToUpload> imageControllers = {};
+  Map<String, CDICheckController> checkControllers = {};
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
   List<dynamic> formWidgets = [];
   String entityId = "";
@@ -105,6 +107,7 @@ class _CDIManagePageState extends State<CDIManagePage> {
                     callBackById: (p0) => cdiRepository.getDataById(
                         getByIdEndpoint, dataId.toString()),
                     imageControllers: imageControllers,
+                    checkControllers: checkControllers,
                     controllers: formControllers,
                     enable: true,
                     id: dataId,

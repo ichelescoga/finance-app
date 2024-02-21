@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/controllers/cdi_check_button_controller.dart';
 import 'package:developer_company/utils/cdi_components.dart';
+import 'package:developer_company/widgets/CDI/cdi_check_button_widget.dart';
 import 'package:developer_company/widgets/departments_municipalities_dropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:developer_company/widgets/autocomplete_dropdown.dart';
@@ -135,12 +136,9 @@ Widget buildTwoDropDownCascade(Map<String, dynamic> widgetEP, String id,
 }
 
 Widget buildCheckBox(Map<String, dynamic> widgetEP, String id,
-    Map<String, TextEditingController> controllers) {
-  return SwitchListTile(
-    title:
-        const Text('Precio al contado', style: TextStyle(color: Colors.black)),
-    value: false,
-    onChanged: (bool value) {},
-    activeColor: AppColors.secondaryMainColor,
-  );
+    Map<String, CDICheckController> controllers) {
+    CDICheckController controller = CDICheckController();
+    controllers[id] = controller;
+
+    return CDICheckButton(text: widgetEP["Place_holder"]!, controller: controller);
 }

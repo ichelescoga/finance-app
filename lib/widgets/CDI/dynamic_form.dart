@@ -85,7 +85,7 @@ class _DynamicDatabaseFormState extends State<DynamicDatabaseForm> {
           return buildTwoDropDownCascade(widgetEP, id, widget.controllers, formWidgets);
         }
         if(widgetEP["Type"] == CDIConstants.checkButton) {
-          return buildCheckBox(widgetEP, id, widget.controllers);
+          return buildCheckBox(widgetEP, id, widget.checkControllers);
         }
 
 
