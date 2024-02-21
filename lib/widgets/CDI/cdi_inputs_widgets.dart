@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:developer_company/shared/resources/colors.dart';
 import 'package:developer_company/utils/cdi_components.dart';
 import 'package:developer_company/widgets/departments_municipalities_dropdown_widget.dart';
 import 'package:flutter/material.dart';
@@ -130,5 +131,16 @@ Widget buildTwoDropDownCascade(Map<String, dynamic> widgetEP, String id,
 
     },
     // LOGIC FOR UPDATE THE CONTROLLER VALUE ON MUNICIPALITY QTS_DepartmentMunicipality
+  );
+}
+
+Widget buildCheckBox(Map<String, dynamic> widgetEP, String id,
+    Map<String, TextEditingController> controllers) {
+  return SwitchListTile(
+    title:
+        const Text('Precio al contado', style: TextStyle(color: Colors.black)),
+    value: false,
+    onChanged: (bool value) {},
+    activeColor: AppColors.secondaryMainColor,
   );
 }

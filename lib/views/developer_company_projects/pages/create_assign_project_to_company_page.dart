@@ -1,3 +1,4 @@
+import 'package:developer_company/controllers/cdi_check_button_controller.dart';
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/implementations/project__repository_impl.dart';
 import 'package:developer_company/data/models/image_model.dart';
@@ -39,6 +40,8 @@ class _createAssignProjectToCompanyPageState
 
   Map<String, TextEditingController> formControllers = {};
   Map<String, ImageToUpload> imageControllers = {};
+  Map<String, CDICheckController> checkControllers = {};
+
 
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
 
@@ -107,6 +110,7 @@ class _createAssignProjectToCompanyPageState
                     callBackById: (p0) => projectProvider
                         .getProjectById(projectId.toString()),
                     imageControllers: imageControllers,
+                    checkControllers: checkControllers,
                     controllers: formControllers,
                     enable: true,
                     id: projectId.toString(),
