@@ -34,6 +34,8 @@ import 'package:developer_company/views/discounts/pages/discount_detail_by_quote
 import 'package:developer_company/views/discounts/pages/discount_detail_by_quote_page.dart';
 import 'package:developer_company/views/discounts/pages/discounts_by_quote_maintenance_page.dart';
 import 'package:developer_company/views/discounts/pages/discounts_by_quote_page.dart';
+import 'package:developer_company/views/express_request/pages/express_requests_page.dart';
+import 'package:developer_company/views/express_request/screens/express_quote_detail_page.dart';
 import 'package:developer_company/views/financial_entity/pages/financial_entity_creation_page.dart';
 import 'package:developer_company/views/home/pages/dashboard_page.dart';
 import 'package:developer_company/views/home/pages/home_page.dart';
@@ -57,7 +59,7 @@ class GetRoutes{
       GetPage(name: RouterPaths.LOGIN_PAGE, page: () => const LoginPage()),
       GetPage(name: RouterPaths.REGISTER_PAGE, page: () => const RegisterPage()),
       GetPage(name: RouterPaths.DASHBOARD_PAGE, page: () => const DashboardPage()),
-      
+
 
       GetPage(name: RouterPaths.CREATE_ADVISER_PAGE, page: () => const CreateAdviserPage()),
       GetPage(name: RouterPaths.QUOTE_CONSULT_PAGE, page: () => const QuoteConsultPage()),
@@ -66,6 +68,7 @@ class GetRoutes{
       GetPage(name: RouterPaths.UNIT_DETAIL_PAGE, page: () => const UnitDetailPage()),
       GetPage(name: RouterPaths.UNIT_QUOTE_PAGE, page: () => const UnitQuotePage()),
       GetPage(name: RouterPaths.UNIT_QUOTE_DETAIL_PAGE, page: () => const UnitQuoteDetailPage()),
+      GetPage(name: RouterPaths.EXPRESS_QUOTE_DETAIL_PAGE, page:  () => const ExpressQuoteDetailPage()),
       GetPage(name: RouterPaths.CREDIT_APPLICATION_PAGE, page: () => const CreditApplicationPage()),
       GetPage(name: RouterPaths.CREDIT_USER_APPLICATION_PAGE, page: () => const CreditUserApplicationPage()),
       GetPage(name: RouterPaths.FINANCIAL_ENTITY_CREATION_PAGE, page: () => const FinancialEntityCreationPage()),
@@ -88,7 +91,7 @@ class GetRoutes{
       GetPage(name: RouterPaths.CREDIT_DETAIL_PAGE, page: () => const CreditDetailPage()),
       GetPage(name: RouterPaths.CREDIT_RESOLUTION_DETAIL_PAGE, page: () => const CreditResolutionDetailPage()),
       GetPage(name: RouterPaths.ADVISER_CREDITS_RESERVED_APPROVED, page: () => const CreditsReservedApproved()),
-      
+
 
       // MARKETING 🖼️🖼️🎞️🎞️
       GetPage(name: RouterPaths.MARKETING_MAINTENANCE_ALBUMS, page: () => const MarketingAlbumsMaintenancePage()),
@@ -118,6 +121,9 @@ class GetRoutes{
       //CDI
       GetPage(name: RouterPaths.LIST_CDI_PAGE, page: () => const CDIListPage()),
       GetPage(name: RouterPaths.MANAGE_CDI_PAGE, page: () => const CDIManagePage()),
+
+      //Customer Request
+      GetPage(name: RouterPaths.EXPRESS_QUOTE, page: () => const ExpressRequestPage()),
 
     ];
   }

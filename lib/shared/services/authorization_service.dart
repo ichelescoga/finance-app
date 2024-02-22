@@ -19,6 +19,7 @@ class AuthorizationService {
         PermissionLevel.discountsByQuote,
         PermissionLevel.sideBarContacts,
         PermissionLevel.sideBarMarketing,
+        PermissionLevel.expressQuote,
       ],
       'Analista': [
         PermissionLevel.analystCreditByClient,

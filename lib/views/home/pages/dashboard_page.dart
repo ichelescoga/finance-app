@@ -236,6 +236,8 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ),
+          autItem(PermissionLevel.expressQuote, "Cotización express",
+              () => Get.toNamed(RouterPaths.EXPRESS_QUOTE)),
           // AuthorizationWrapper(
           //   requestAction: PermissionLevel.manageCompany,
           //   child: Column(
@@ -287,5 +289,21 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+  }
+
+  AuthorizationWrapper autItem(
+      String requestAction, String label, void Function() doAction) {
+    return AuthorizationWrapper(
+        requestAction: requestAction,
+        child: Column(
+          children: [
+            spaceButton,
+            CustomButtonWidget(
+              text: label,
+              onTap: doAction,
+              padding: defaultPadding,
+            ),
+          ],
+        ));
   }
 }
