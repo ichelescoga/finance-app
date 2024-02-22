@@ -3,4 +3,5 @@ class CDIConstants {
   static const image = "QTS_Image";
   static const dropdown = "QTS_Dropdown";
   static const twoCascadeDropdown = "QTS_TwoCascadeDropdown";
+  static const checkButton = "QTS_CheckButton";
 }

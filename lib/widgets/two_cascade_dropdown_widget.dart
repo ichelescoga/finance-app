@@ -16,6 +16,8 @@ class TwoDropdownCascade extends StatefulWidget {
   final String childrenDropdownKeys;
   final String defaultSelectedFather;
   final TextEditingController childrenController;
+  final dynamic childrenWidgetEP;
+  final dynamic fatherWidgetEP;
 
   const TwoDropdownCascade(
       {required this.fatherOptions,
@@ -25,19 +27,23 @@ class TwoDropdownCascade extends StatefulWidget {
       required this.childrenDropdownEndpoint,
       required this.childrenDropdownKeys,
       required this.defaultSelectedFather,
-      required this.childrenController});
+      required this.childrenController,
+      required this.childrenWidgetEP,
+      required this.fatherWidgetEP,
+      });
 
   @override
   _TwoDropdownCascadeState createState() => _TwoDropdownCascadeState();
 }
 
 class _TwoDropdownCascadeState extends State<TwoDropdownCascade> {
-  String selectedSubDepartment = "";
+  String selectedChildren = "";
   List<DropDownOption> childrenOptions = [];
 
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
   String fatherId = "";
   bool childrenClean = true;
+  bool isLoadingChildren = true;
 
   resetValueChildren(p0) {
     setState(
@@ -55,10 +61,15 @@ class _TwoDropdownCascadeState extends State<TwoDropdownCascade> {
   }
 
   Future updateChildrenDropdownOptions(String fatherSelected) async {
+    setState(() {
+      isLoadingChildren = true;
+    });
     List<DropDownOption> childrenOpts = await getDropdownOptions(
         "${widget.childrenDropdownEndpoint}/${fatherId}",
         widget.childrenDropdownKeys);
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
+      isLoadingChildren = false;
       childrenOptions = childrenOpts;
       // childrenOptions.clear();
     });
@@ -68,25 +79,24 @@ class _TwoDropdownCascadeState extends State<TwoDropdownCascade> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // First Dropdown for Departments
+        // First Dropdown for Father Dropdown
         AutocompleteDropdownWidget(
           key: Key("fatherDropdown"),
           listItems: widget.fatherOptions,
           onSelected: (selected) async {
             widget.onFatherSelectedId(selected.id);
             setState(() {
-              // Reset the selected sub-department when the department changes
-              selectedSubDepartment = "";
+              // Reset the selected children when the father changes
+              selectedChildren = "";
               childrenOptions.clear();
               childrenClean = false;
-              
               widget.childrenController.clear();
             });
             fatherId = selected.id;
             await updateChildrenDropdownOptions(selected.id);
           },
-          label: "Departments",
-          hintText: "Select Department",
+          label: widget.fatherWidgetEP["Place_holder"]!,
+          hintText: widget.fatherWidgetEP["Place_holder"]!,
           onFocusChange: ((p0) {}),
           onTextChange: (p0) async {
             setState(() {
@@ -99,26 +109,27 @@ class _TwoDropdownCascadeState extends State<TwoDropdownCascade> {
           },
         ),
         // Second Dropdown for Sub-Departments
-        AutocompleteDropdownWithController(
-          key: Key("childrenDropdown"),
-          textEditingController: widget.childrenController,
-          listItems: childrenOptions,
-          onSelected: (selected) {
-            setState(() {
-              selectedSubDepartment = selected.id;
-            });
-            widget.onChildrenSelected(selected.id);
-          },
-          label: "Sub-Departments",
-          hintText: "Select Sub-Department",
-          onFocusChange: ((p0) {}),
-          onTextChange: (p0) async {
-            return childrenOptions
-                .where((element) =>
-                    element.label.toLowerCase().contains(p0.toLowerCase()))
-                .toList();
-          },
-        ),
+        if (!isLoadingChildren)
+          AutocompleteDropdownWithController(
+            key: Key("childrenDropdown"),
+            textEditingController: widget.childrenController,
+            listItems: childrenOptions,
+            onSelected: (selected) {
+              setState(() {
+                selectedChildren = selected.id;
+              });
+              widget.onChildrenSelected(selected.id);
+            },
+            label: widget.childrenWidgetEP["Place_holder"]!,
+            hintText: widget.childrenWidgetEP["Place_holder"]!,
+            onFocusChange: ((p0) {}),
+            onTextChange: (p0) async {
+              return childrenOptions
+                  .where((element) =>
+                      element.label.toLowerCase().contains(p0.toLowerCase()))
+                  .toList();
+            },
+          ),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:developer_company/controllers/cdi_check_button_controller.dart';
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/implementations/company_repository_impl.dart';
 import 'package:developer_company/data/models/image_model.dart';
@@ -39,6 +40,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
 
   Map<String, TextEditingController> formControllers = {};
   Map<String, ImageToUpload> imageControllers = {};
+  Map<String, CDICheckController> checkControllers = {};
 
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
 
@@ -104,6 +106,7 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
                 DynamicDatabaseForm(
                     callBackById: (p0) => companyProvider.getCompanyById(companyId!),
                     imageControllers: imageControllers,
+                    checkControllers: checkControllers,
                     controllers: formControllers,
                     enable: true,
                     id: companyId.toString(),

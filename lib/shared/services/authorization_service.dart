@@ -50,7 +50,7 @@ class AuthorizationService {
     };
 
     // TODO: remove Ejecutivo.
-    // if (userRole == "Ejecutivo") return true;
+    if (userRole == "Ejecutivo") return true;
     if (userRole == "Admin") return true;
 
     final allowedActions = allowedActionsByRole[userRole];

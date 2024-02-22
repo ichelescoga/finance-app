@@ -1,3 +1,4 @@
+import 'package:developer_company/controllers/cdi_check_button_controller.dart';
 import 'package:developer_company/data/implementations/CDI/cdi_repository_impl.dart';
 import 'package:developer_company/data/models/image_model.dart';
 import 'package:developer_company/data/providers/CDI/cdi_provider.dart';
@@ -22,13 +23,13 @@ class CDIManagePage extends StatefulWidget {
 }
 
 class _CDIManagePageState extends State<CDIManagePage> {
-  // var uuid = Uuid();
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> manageCDIFormKey = GlobalKey<FormState>();
   final Map<String, dynamic> arguments = Get.arguments;
   Map<String, TextEditingController> formControllers = {};
   Map<String, ImageToUpload> imageControllers = {};
+  Map<String, CDICheckController> checkControllers = {};
   CDIRepository cdiRepository = CDIRepositoryImpl(CDIProvider());
   List<dynamic> formWidgets = [];
   String entityId = "";
@@ -59,7 +60,8 @@ class _CDIManagePageState extends State<CDIManagePage> {
       Map<String, dynamic> inputValues,
       Map<String, ImageToUpload> imageValues,
       Map<String, dynamic>
-          dropdownValues //TODO: should be receive the dynamicInputDropDownValues;
+          dropdownValues, //TODO: should be receive the dynamicInputDropDownValues;
+      Map<String, dynamic> checkControllers
       ) async {
     EasyLoading.show();
     final imagesResponse = await handleImagesToUpload(imageValues);
@@ -67,10 +69,10 @@ class _CDIManagePageState extends State<CDIManagePage> {
 
     if (dataId != null) {
       result = await cdiRepository.postData(
-          editEndpoint, {"id": dataId, ...inputValues, ...imagesResponse});
+          editEndpoint, {"id": dataId, ...inputValues, ...imagesResponse, ...checkControllers});
     } else {
       result = await cdiRepository
-          .postData(addEndpoint, {...inputValues, ...imagesResponse});
+          .postData(addEndpoint, {...inputValues, ...imagesResponse, ...checkControllers});
     }
     if (result) {
       Get.back(closeOverlays: true, result: result);
@@ -105,6 +107,7 @@ class _CDIManagePageState extends State<CDIManagePage> {
                     callBackById: (p0) => cdiRepository.getDataById(
                         getByIdEndpoint, dataId.toString()),
                     imageControllers: imageControllers,
+                    checkControllers: checkControllers,
                     controllers: formControllers,
                     enable: true,
                     id: dataId,
@@ -133,7 +136,8 @@ class _CDIManagePageState extends State<CDIManagePage> {
                             formWidgets, formControllers);
                         final imageValues = retrieveFormControllersImage(
                             formWidgets, imageControllers);
-                        _handleSaveFormData(inputValues, imageValues, {});
+                        final checkButtonsValues = retrieveFormControllersCheckBox(formWidgets, checkControllers);
+                        _handleSaveFormData(inputValues, imageValues, {}, checkButtonsValues);
                       } else {
                         EasyLoading.showInfo(
                             "Por favor verifique que los campos sean validos.");

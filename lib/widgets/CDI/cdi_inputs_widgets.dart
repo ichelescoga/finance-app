@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:developer_company/controllers/cdi_check_button_controller.dart';
 import 'package:developer_company/utils/cdi_components.dart';
-import 'package:developer_company/widgets/departments_municipalities_dropdown_widget.dart';
+import 'package:developer_company/widgets/CDI/cdi_check_button_widget.dart';
+import 'package:developer_company/widgets/two_cascade_dropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 import 'package:developer_company/widgets/custom_input_widget.dart';
@@ -103,9 +105,11 @@ Widget buildTwoDropDownCascade(Map<String, dynamic> widgetEP, String id,
       text: childrenWidgetEP["defaultValue"] != null
           ? childrenWidgetEP["defaultValue"]
           : "");
-  controllers[id] = childrenController;
+  controllers[childrenWidgetEP["bodyKey"]] = childrenController;
 
   return TwoDropdownCascade(
+    childrenWidgetEP:childrenWidgetEP,
+    fatherWidgetEP: widgetEP,
     childrenDropdownKeys: childrenWidgetEP["listKeys"],
     fatherOptions: widgetEP["dropdownValues"] as List<DropDownOption>,
     onSelectedFather: "",
@@ -114,21 +118,24 @@ Widget buildTwoDropDownCascade(Map<String, dynamic> widgetEP, String id,
     childrenController: childrenController,
     onFatherSelectedId: (fatherSelectedId) {
       childrenController.clear();
+      // LOGIC FOR UPDATE THE CONTROLLER VALUE ON DEPARTMENT
       List<DropDownOption> options =
           widgetEP["dropdownValues"] as List<DropDownOption>;
-
       final selectedClientDropdown =
           options.firstWhere((element) => element.id == fatherSelectedId);
       fatherController.text = selectedClientDropdown.id;
-      
-      
-      
-      // LOGIC FOR UPDATE THE CONTROLLER VALUE ON DEPARTMENT
     },
-
     onChildrenSelected: (municipalityId) {
-
+      childrenController.text = municipalityId;
     },
     // LOGIC FOR UPDATE THE CONTROLLER VALUE ON MUNICIPALITY QTS_DepartmentMunicipality
   );
+}
+
+Widget buildCheckBox(Map<String, dynamic> widgetEP, String id,
+    Map<String, CDICheckController> controllers) {
+    CDICheckController controller = CDICheckController();
+    controllers[id] = controller;
+
+    return CDICheckButton(text: widgetEP["Place_holder"]!, controller: controller);
 }

@@ -1,3 +1,4 @@
+import "package:developer_company/controllers/cdi_check_button_controller.dart";
 import "package:developer_company/data/models/image_model.dart";
 import 'package:developer_company/controllers/manage_company_page_controller.dart';
 import "package:developer_company/shared/utils/http_adapter.dart";
@@ -13,6 +14,7 @@ class DynamicDatabaseForm extends StatefulWidget {
   final String? id;
   final Map<String, TextEditingController> controllers;
   final Map<String, ImageToUpload> imageControllers;
+  final Map<String, CDICheckController> checkControllers;
   final List<dynamic> formCustomWidgets;
   final Future<dynamic> Function(dynamic) callBackById;
 
@@ -22,6 +24,7 @@ class DynamicDatabaseForm extends StatefulWidget {
     required this.controllers,
     required this.formCustomWidgets,
     required this.imageControllers,
+    required this.checkControllers,
     required this.callBackById,
     this.id,
   }) : super(key: key);
@@ -81,6 +84,10 @@ class _DynamicDatabaseFormState extends State<DynamicDatabaseForm> {
         if(widgetEP["Type"] == CDIConstants.twoCascadeDropdown && widgetEP["listKeys"].toString().contains("father")) {
           return buildTwoDropDownCascade(widgetEP, id, widget.controllers, formWidgets);
         }
+        if(widgetEP["Type"] == CDIConstants.checkButton) {
+          return buildCheckBox(widgetEP, id, widget.checkControllers);
+        }
+
 
         return Container();
       }).toList(),

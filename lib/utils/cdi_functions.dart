@@ -16,8 +16,12 @@ Future<List<Map<String, dynamic>>> fetchDataFormByID(
     final companyResult = await callBack(id);
     data = companyResult;
     customInputs.forEach((element) {
-      // IF THE RESPONSE HAS NOT GOOG PROPERLY FAILS.
-      element["defaultValue"] = data[element["bodyKey"]].toString();
+      // IF THE RESPONSE HAS NOT GOOD PROPERLY FAILS.
+      if(element["Type"] == CDIConstants.checkButton){
+        element["defaultValue"] = data[element["bodyKey"]] == 1 ? true : false;
+      }else {
+        element["defaultValue"] = data[element["bodyKey"]].toString();
+      }
     });
   }
   return customInputs;
