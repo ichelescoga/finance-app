@@ -1,11 +1,13 @@
-import 'package:developer_company/data/implementations/project__repository_impl.dart';
+import 'package:get/get.dart';
 import 'package:developer_company/data/models/project_model.dart';
 import 'package:developer_company/data/providers/project_provider.dart';
 import 'package:developer_company/data/repositories/project_repository.dart';
-import 'package:get/get.dart';
+import 'package:developer_company/data/implementations/project__repository_impl.dart';
 
 class ExpressRequestController extends GetxController {
-  ExpressRequestController(this._projectId);
+  ExpressRequestController(int projectId)
+      : _projectId = projectId;
+
   final int _projectId;
   final ProjectRepository projectRepository =
       ProjectRepositoryImpl(ProjectProvider());
