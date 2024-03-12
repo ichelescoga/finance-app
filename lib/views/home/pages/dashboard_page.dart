@@ -66,7 +66,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final spaceButton = SizedBox(height: Dimensions.heightSize);
   final defaultPadding = EdgeInsets.only(left: 0, right: 0);
 
-  final List<Map<String, String?>> cdi = [
+  final List<Map<String, dynamic>> cdi = [
     {
       "entityId": "1",
       "label": "Empresas",
@@ -74,7 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
       "editEndpoint": "orders/v1/editCompany",
       "addEndpoint": "orders/v1/addCompany",
       "removeEndpoint": "orders/v1/getCompanies",
-      "getByIdEndpoint": "orders/v1/getCompanyById",
+      "getByIdEndpoint": "orders/v1/getCompanyById"
     },
     {
       "entityId": "2",
