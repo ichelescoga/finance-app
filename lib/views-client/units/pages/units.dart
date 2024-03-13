@@ -20,7 +20,7 @@ class _UnitsState extends State<Units> {
   List<ClientUnitsModel> tempUnits = [];
   final userClient = container.read(userClientProvider);
 
-  ClientUnitProvider _clientUnitProvider = ClientUnitProvider();
+  // ClientUnitProvider _clientUnitProvider = ClientUnitProvider();
 
   @override
   void initState() {

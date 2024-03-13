@@ -1,4 +1,5 @@
 import 'package:developer_company/shared/resources/dimensions.dart';
+import 'package:developer_company/shared/routes/router_client_paths.dart';
 import 'package:developer_company/widgets/app_bar_sidebar.dart';
 import 'package:developer_company/widgets/custom_button_widget.dart';
 import 'package:developer_company/widgets/layout.dart';
@@ -24,14 +25,29 @@ class _DashboardClientPageState extends State<DashboardClientPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: Dimensions.heightSize),
-          CustomButtonWidget(
-              text: "Mis inversiones",
-              onTap: () => {},
-              padding: const EdgeInsets.only(left: 0.0, right: 0.0)),
+          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
+          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
+          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
+          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
+          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
+          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
         ],
       ),
     );
   }
 }
 
+Widget buildButton(String name, String route, Map<String, dynamic> params) {
+  final spaceButton = SizedBox(height: Dimensions.heightSize);
+  final defaultPadding = EdgeInsets.only(left: 0, right: 0);
+
+  return Column(
+    children: [
+      spaceButton,
+      CustomButtonWidget(
+          text: name,
+          onTap: () => Get.toNamed(route, arguments: params),
+          padding: defaultPadding),
+    ],
+  );
+}
