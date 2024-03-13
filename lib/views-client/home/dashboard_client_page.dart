@@ -26,11 +26,6 @@ class _DashboardClientPageState extends State<DashboardClientPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
-          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
-          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
-          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
-          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
-          buildButton("Mis Inversiones", RouterClientPaths.UNITS, {}),
         ],
       ),
     );

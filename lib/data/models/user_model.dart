@@ -69,13 +69,16 @@ class UserClient {
   final String role;
   final String token;
   final bool needChangePassword;
+  final String userProfileId;
 
-  UserClient(
-      {required this.email,
-      required this.name,
-      required this.role,
-      required this.token,
-      required this.needChangePassword});
+  UserClient({
+    required this.email,
+    required this.name,
+    required this.role,
+    required this.token,
+    required this.needChangePassword,
+    required this.userProfileId,
+  });
 
   factory UserClient.fromJson(Map<String, dynamic> json) {
     return UserClient(
@@ -83,7 +86,8 @@ class UserClient {
         name: json["name"],
         role: json["roleId"].toString(),
         token: json["token"],
-        needChangePassword: json["needUpdatePassword"]);
+        needChangePassword: json["needUpdatePassword"],
+        userProfileId: json["idUserProfile"].toString());
   }
 }
 

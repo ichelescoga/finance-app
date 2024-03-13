@@ -28,7 +28,13 @@ class UserNotifier extends StateNotifier<User> {
 
 class UserClientNotifier extends StateNotifier<UserClient> {
   UserClientNotifier()
-      : super(UserClient(email: "", name: "", role: "", token: "", needChangePassword: false));
+      : super(UserClient(
+            email: "",
+            name: "",
+            role: "",
+            token: "",
+            needChangePassword: false,
+            userProfileId: ""));
 
   void setUser(UserClient user) {
     state = user;
