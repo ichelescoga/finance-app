@@ -3,6 +3,7 @@ import 'package:developer_company/client_rest_api/models/units/client_units_mode
 import 'package:developer_company/global_state/providers/user_provider_state.dart';
 import 'package:developer_company/main.dart';
 import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/shared/routes/router_client_paths.dart';
 import 'package:developer_company/widgets/app_bar_title.dart';
 import 'package:developer_company/widgets/data_table.dart';
 import 'package:developer_company/widgets/filter_box.dart';
@@ -11,14 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
-class Units extends StatefulWidget {
-  const Units({Key? key}) : super(key: key);
+class UnitsPage extends StatefulWidget {
+  const UnitsPage({Key? key}) : super(key: key);
 
   @override
-  _UnitsState createState() => _UnitsState();
+  _UnitsPageState createState() => _UnitsPageState();
 }
 
-class _UnitsState extends State<Units> {
+class _UnitsPageState extends State<UnitsPage> {
   List<ClientUnitsModel> units = [];
   List<ClientUnitsModel> tempUnits = [];
   final userClient = container.read(userClientProvider);
@@ -78,7 +79,10 @@ class _UnitsState extends State<Units> {
                               child: Text(element.name))),
                           DataCell(IconButton(
                             icon: Icon(Icons.article_outlined),
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.toNamed(RouterClientPaths.PAYMENTS,
+                                  arguments: {"payments": element.payments});
+                            },
                           ))
                         ],
                         color: appColors.dataRowColors(index),

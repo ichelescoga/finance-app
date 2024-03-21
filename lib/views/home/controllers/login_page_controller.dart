@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class LoginPageController extends BaseController {
   TextEditingController emailController = TextEditingController(text: "pablozapetalop@gmail.com");
-  TextEditingController passwordController = TextEditingController(text: "FinanceApp2!");
+  TextEditingController passwordController = TextEditingController(text: "FinanceApp");
   RxBool passwordVisibility = false.obs;
   RxBool confirmPasswordVisibility = false.obs;
 

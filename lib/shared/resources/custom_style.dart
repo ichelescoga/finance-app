@@ -11,10 +11,10 @@ class CustomStyle {
       fontSize: Dimensions.defaultTextSize);
 
   static var listStyle =
-  TextStyle(color: Colors.white, fontSize: Dimensions.defaultTextSize);
+      TextStyle(color: Colors.white, fontSize: Dimensions.defaultTextSize);
 
   static var defaultStyle =
-  TextStyle(color: Colors.black, fontSize: Dimensions.largeTextSize);
+      TextStyle(color: Colors.black, fontSize: Dimensions.largeTextSize);
 
   static var focusBorder = OutlineInputBorder(
     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -29,5 +29,12 @@ class CustomStyle {
   static var searchBox = OutlineInputBorder(
     borderRadius: const BorderRadius.all(Radius.circular(10.0)),
     borderSide: BorderSide(color: Colors.black.withOpacity(0.1), width: 1.0),
+  );
+
+  static var tableHeader = TextStyle(
+    fontWeight: FontWeight.w600,
+    fontSize: 17,
+    color: Colors.white,
+    overflow: TextOverflow.ellipsis,
   );
 }
