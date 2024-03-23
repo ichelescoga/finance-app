@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:developer_company/client-controllers/payment_controller.dart';
 import 'package:developer_company/client_rest_api/api/payment_resources_api.dart';
 // import 'package:developer_company/client_rest_api/models/payments/resources_payment_model.dart';
 import 'package:developer_company/shared/resources/colors.dart';
+import 'package:developer_company/shared/services/quetzales_currency.dart';
+import 'package:developer_company/shared/utils/http_adapter.dart';
 import 'package:developer_company/shared/validations/image_button_validator.dart';
+import 'package:developer_company/utils/handle_upload_image.dart';
 // import 'package:developer_company/shared/validations/not_empty.dart';
 import 'package:developer_company/widgets/autocomplete_dropdown.dart';
 import 'package:developer_company/widgets/custom_dropdownv2_widget.dart';
@@ -13,12 +18,18 @@ import 'package:developer_company/widgets/upload_button_widget.dart';
 // import "package:developer_company/widgets/custom_dropdown_widget.dart";
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class PaymentDialog extends StatefulWidget {
   final ClientPaymentController paymentController;
+  final double payment;
+  final String quoteId;
+
   PaymentDialog({
     required this.paymentController,
+    required this.payment,
+    required this.quoteId,
     Key? key,
   }) : super(key: key);
 
@@ -45,6 +56,33 @@ class _PaymentDialogState extends State<PaymentDialog> {
         .toList();
 
     setState(() {});
+  }
+
+  Future<void> handlePayment() async {
+    final http = HttpAdapter();
+    final url = await saveImage(widget.paymentController.evidenceUrl);
+    setState(() {
+      isLoading = true;
+    });
+
+    final response = await http.postApi(
+        "orders/v1/createBoletaPago",
+        json.encode({
+          "referencia": widget.paymentController.reference.text,
+          "url": url,
+          "idFormaPago": widget.paymentController.paymentType.text,
+          "idStatusPago": widget.paymentController.idPaymentStatus.text,
+          "idEstablecimiento": widget.paymentController.bank.text,
+          "idCotizacion": widget.quoteId
+        }),
+        {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      EasyLoading.showInfo("Pago realizado correctamente");
+      Navigator.pop(context, true);
+    } else {
+      EasyLoading.showInfo("Algo salio mal");
+    }
   }
 
   @override
@@ -119,7 +157,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                         validationText: "Imagen es requerida.")),
                 CustomLabelWidget(
                   title: "Monto a pagar",
-                  label: "Q.90000.00",
+                  label: quetzalesCurrency(widget.payment.toString()),
                   prefixIcon: Icons.monetization_on,
                 )
               ],
@@ -131,19 +169,19 @@ class _PaymentDialogState extends State<PaymentDialog> {
         ElevatedCustomButton(
           color: AppColors.softMainColor,
           text: "Guardar",
-          isLoading: false,
-          onPress: () {
-            // IMPLEMENT PAYMENT SERVICE POST
-            //     final linkResponse = await saveImage(value);
-
-            print(widget.paymentController.bank.text);
-            print(widget.paymentController.paymentType.text);
+          isLoading: isLoading,
+          onPress: () async {
+            await handlePayment().whenComplete(() {
+              setState(() {
+                isLoading = false;
+              });
+            });
           },
         ),
         ElevatedCustomButton(
           color: AppColors.secondaryMainColor,
           text: "Cerrar",
-          isLoading: false,
+          isLoading: isLoading,
           onPress: () => Navigator.pop(context, false),
         )
       ],

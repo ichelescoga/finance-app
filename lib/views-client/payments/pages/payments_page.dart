@@ -27,11 +27,14 @@ class _PaymentsPageState extends State<PaymentsPage> {
   bool markAll = false;
   ClientPaymentController paymentController = ClientPaymentController();
   List<bool> checkboxes = [];
+  double totalPayment = 0;
+  String? quoteId;
 
   @override
   void initState() {
     super.initState();
     payments = arguments["payments"] as List<ClientPaymentModel>;
+    quoteId = arguments["quoteId"];
     leftRightAnimationScrollView(_scrollController, 2);
     checkboxes = List.generate(payments.length, (index) => false);
   }
@@ -40,6 +43,18 @@ class _PaymentsPageState extends State<PaymentsPage> {
   Widget build(BuildContext context) {
     return Layout(
         sideBarList: [],
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        // actionButton: totalPayment == 0
+        //     ? null
+        //     : FloatingActionButton(
+        //         backgroundColor: AppColors.softMainColor,
+        //         tooltip: 'Subir comprobante',
+        //         onPressed: () {
+        //           _paymentDialog(context, totalPayment, "");
+        //         },
+        //         child: const Icon(Icons.receipt,
+        //             color: AppColors.officialWhite, size: 28),
+        //       ),
         appBar: CustomAppBarTitle(
           title: "Pagos",
         ),
@@ -58,18 +73,25 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 columns: [],
                 isHeaderWidgets: true,
                 headerWidgets: [
-                  CustomCheckbox(
-                    selectedColor: AppColors.secondaryMainColor,
-                    unSelectedColor: AppColors.officialWhite,
-                    checkColor: AppColors.officialWhite,
-                    value: checkboxes.every((value) => value == true),
-                    onChanged: (value) {
-                      print(value);
-                      checkboxes =
-                          List.generate(checkboxes.length, (index) => !value);
-                      setState(() {});
-                    },
-                  ),
+                  // CustomCheckbox(  //! COMMENTED because in the future the client would be multiple payments
+                  //   selectedColor: AppColors.secondaryMainColor,
+                  //   unSelectedColor: AppColors.officialWhite,
+                  //   checkColor: AppColors.officialWhite,
+                  //   value: checkboxes.every((value) => value == true),
+                  //   onChanged: (value) {
+                  //     checkboxes = List.generate(checkboxes.length, (index) {
+                  //       if (!value == true) {
+                  //         totalPayment = double.parse(payments[index].amount) +
+                  //             totalPayment;
+                  //       } else {
+                  //         totalPayment = 0;
+                  //       }
+                  //       return !value;
+                  //     });
+
+                  //     setState(() {});
+                  //   },
+                  // ),
                   Text("Tipo", style: CustomStyle.tableHeader),
                   Text("Estado", style: CustomStyle.tableHeader),
                   Text("Monto", style: CustomStyle.tableHeader),
@@ -81,20 +103,31 @@ class _PaymentsPageState extends State<PaymentsPage> {
                         index,
                         DataRow(
                           cells: [
-                            DataCell(CheckBoxPayments(
-                              isMarkCheck: checkboxes[index],
-                              onChanged: (value) {
-                                setState(() {
-                                  checkboxes[index] = !value;
-                                });
-                              },
-                            )),
+                            // DataCell(CheckBoxPayments( //! COMMENTED because in the future the client would be multiple payments
+                            //   isMarkCheck: checkboxes[index],
+                            //   onChanged: (value) {
+                            //     setState(() {
+                            //       if (!value == true) {
+                            //         totalPayment =
+                            //             double.parse(element.amount) +
+                            //                 totalPayment;
+                            //       } else {
+                            //         totalPayment = totalPayment -
+                            //             double.parse(element.amount);
+                            //       }
+                            //       checkboxes[index] = !value;
+                            //     });
+                            //   },
+                            // )),
                             DataCell(Text(element.type)),
                             DataCell(Text(element.status)),
                             DataCell(Text(element.amount)),
                             DataCell(IconButton(
-                              icon: Icon(Icons.abc_rounded),
-                              onPressed: () => {_paymentDialog(context)},
+                              icon: Icon(Icons.receipt),
+                              onPressed: () => {
+                                _paymentDialog(context,
+                                    double.parse(element.amount), quoteId!)
+                              },
                             ))
                           ],
                           color: appColors.dataRowColors(index),
@@ -107,13 +140,15 @@ class _PaymentsPageState extends State<PaymentsPage> {
         ));
   }
 
-  _paymentDialog(BuildContext context) {
+  _paymentDialog(BuildContext context, double paymentAmount, String quoteId) {
     return showDialog(
         context: context,
         builder: (context) {
           return PopScope(
               canPop: false,
               child: PaymentDialog(
+                quoteId: quoteId,
+                payment: paymentAmount,
                 paymentController: paymentController,
               ));
         }).then((result) {

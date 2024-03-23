@@ -11,6 +11,7 @@ class Layout extends StatefulWidget {
   final Widget? actionButton;
   final bool useScroll;
   final Function? onBackFunction;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   const Layout(
       {Key? key,
@@ -19,6 +20,7 @@ class Layout extends StatefulWidget {
       required this.child,
       this.actionButton,
       this.onBackFunction,
+      this.floatingActionButtonLocation = FloatingActionButtonLocation.endTop,
       this.useScroll = true})
       : super(key: key);
 
@@ -35,7 +37,7 @@ class _LayoutState extends State<Layout> {
 
     return WillPopScope(
         child: Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButtonLocation: widget.floatingActionButtonLocation,
           key: scaffoldKey,
           floatingActionButton: widget.actionButton,
           backgroundColor: AppColors.BACKGROUND,

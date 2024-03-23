@@ -81,7 +81,10 @@ class _UnitsPageState extends State<UnitsPage> {
                             icon: Icon(Icons.article_outlined),
                             onPressed: () {
                               Get.toNamed(RouterClientPaths.PAYMENTS,
-                                  arguments: {"payments": element.payments});
+                                  arguments: {
+                                    "payments": element.payments,
+                                    "quoteId": element.quoteId
+                                  });
                             },
                           ))
                         ],

@@ -34,7 +34,8 @@ class HttpAdapter extends http.BaseClient {
 
     if (response.statusCode == 200 || response.statusCode == 202) {
       return response;
-    } else if (response.statusCode == 403 && response.body.contains(Constants.TOKEN_EXPIRED_OR_INVALID_PASSWORD)) {
+    } else if (response.statusCode == 403 &&
+        response.body.contains(Constants.TOKEN_EXPIRED_OR_INVALID_PASSWORD)) {
       Get.offAllNamed(RouterPaths.HOME_PAGE);
       EasyLoading.showInfo(Strings.sessionExpired);
       throw Exception('Login Expired');
@@ -47,10 +48,12 @@ class HttpAdapter extends http.BaseClient {
   Future<http.Response> getApi(
       String url, Map<String, String>? headersApi) async {
     final user = container.read(userProviderWithoutNotifier);
+    final userClient = container.read(userClientProviderWithoutNotifier);
+    final userJwt = user.jwt == "" ? userClient.jwt : user.jwt;
 
     try {
       final headers = {
-        'Authorization': 'Bearer ${user.jwt}',
+        'Authorization': 'Bearer ${userJwt}',
         ...headersApi ?? {},
       };
 
@@ -66,13 +69,15 @@ class HttpAdapter extends http.BaseClient {
     }
   }
 
-  Future<http.Response> getApiWithBody(
-      String url, Map<String, String>? headersApi, Map<String, dynamic>? body) async {
+  Future<http.Response> getApiWithBody(String url,
+      Map<String, String>? headersApi, Map<String, dynamic>? body) async {
     final user = container.read(userProviderWithoutNotifier);
+    final userClient = container.read(userClientProviderWithoutNotifier);
+    final userJwt = user.jwt == "" ? userClient.jwt : user.jwt;
 
     try {
       final headers = {
-        'Authorization': 'Bearer ${user.jwt}',
+        'Authorization': 'Bearer ${userJwt}',
         ...headersApi ?? {},
       };
 
@@ -94,9 +99,11 @@ class HttpAdapter extends http.BaseClient {
       String url, Object body, Map<String, String>? headersApi) async {
     try {
       final user = container.read(userProviderWithoutNotifier);
+      final userClient = container.read(userClientProviderWithoutNotifier);
+      final userJwt = user.jwt == "" ? userClient.jwt : user.jwt;
 
       final headers = {
-        'Authorization': 'bearer ${user.jwt}',
+        'Authorization': 'bearer ${userJwt}',
         ...headersApi ?? {},
       };
       print("POST BODY 😉😉 $body");
@@ -117,9 +124,11 @@ class HttpAdapter extends http.BaseClient {
       String url, Object body, Map<String, String>? headersApi) async {
     try {
       final user = container.read(userProviderWithoutNotifier);
+      final userClient = container.read(userClientProviderWithoutNotifier);
+      final userJwt = user.jwt == "" ? userClient.jwt : user.jwt;
 
       final headers = {
-        'Authorization': 'Bearer ${user.jwt}',
+        'Authorization': 'Bearer ${userJwt}',
         ...headersApi ?? {},
       };
 
